@@ -11,8 +11,8 @@ package com.nthn.pojo;
 public enum Role {
     ADMIN(1, "Người quản trị"),USER(2,"Người dùng");
 
-    private final int roleID;
-    private final String roleName;
+    private int roleID;
+    private  String roleName;
 
     Role() {
         this.roleID = 0;

@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * JavaFX App
@@ -34,7 +36,7 @@ public class App extends Application {
         return fxmlLoader.load();
     }
 
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) throws NoSuchAlgorithmException, SQLException {
         //launch();
 //        Account account = new Account();
 //        account.inputUsername();
@@ -45,7 +47,10 @@ public class App extends Application {
         RoleService roleService = new RoleService();
 //        roleService.addRole(Role.USER);
 //        roleService.addRole(Role.ADMIN);
-        roleService.deleteRole(Role.USER);
+        List<String> results = roleService.getRoles();
+        for (String result : results) {
+            System.out.println("com.nthn.coffeemanagementapp.App.main(): " + result.toString());
+        }
 
     }
 
