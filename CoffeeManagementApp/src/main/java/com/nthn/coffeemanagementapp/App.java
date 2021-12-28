@@ -1,9 +1,15 @@
 package com.nthn.coffeemanagementapp;
 
 import com.nthn.pojo.Active;
+import com.nthn.pojo.Gender;
 import com.nthn.pojo.Role;
+import com.nthn.pojo.State;
+import com.nthn.pojo.Status;
 import com.nthn.services.ActiveService;
+import com.nthn.services.GenderService;
 import com.nthn.services.RoleService;
+import com.nthn.services.StateService;
+import com.nthn.services.StatusService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -59,6 +65,22 @@ public class App extends Application {
 //        ActiveService activeService = new ActiveService();
 //        activeService.addActive(Active.AVAILABLE);
 //        activeService.addActive(Active.LOCK);
+
+//            StateService stateService = new StateService();
+//            stateService.addState(State.SERVE);
+//            stateService.addState(State.BARTENDER);
+//            stateService.addState(State.RECEPTION);
+            
+//            StatusService statusService= new StatusService();
+//            statusService.addStatus(Status.EMPTY);
+//            statusService.addStatus(Status.FULL);
+            
+//            GenderService genderService = new GenderService();
+//            genderService.addGender(Gender.OTHER);
+//            genderService.addGender(Gender.FEMALE);
+//            genderService.addGender(Gender.MALE);
+                    
+                    
 
     }
 

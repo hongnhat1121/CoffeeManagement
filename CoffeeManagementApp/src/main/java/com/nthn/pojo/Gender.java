@@ -9,5 +9,31 @@ package com.nthn.pojo;
  * @author HONGNHAT
  */
 public enum Gender {
-    MALE, FEMALE, OTHER;
+    MALE(1, "Nam"), FEMALE(2, "Nữ"), OTHER(3, "Khác");
+    private final int genderID;
+    private final String genderName;
+
+    private Gender(int genderID, String genderName) {
+        this.genderID = genderID;
+        this.genderName = genderName;
+    }
+
+    @Override
+    public String toString() {
+        return this.getGenderName();
+    }
+
+    /**
+     * @return the genderID
+     */
+    public int getGenderID() {
+        return genderID;
+    }
+
+    /**
+     * @return the genderName
+     */
+    public String getGenderName() {
+        return genderName;
+    }
 }

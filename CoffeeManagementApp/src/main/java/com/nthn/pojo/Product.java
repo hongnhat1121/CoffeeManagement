@@ -9,6 +9,7 @@ package com.nthn.pojo;
  * @author HONGNHAT
  */
 public abstract class Product {
+
     private int productID;
     private String productName;
     private long unitPrice;
@@ -23,6 +24,31 @@ public abstract class Product {
         this.unitPrice = unitPrice;
         this.category = category;
     }
+
+    public void edit(long price) {
+        this.unitPrice = price;
+    }
+
+    public void edit(String name) {
+        this.productName = name;
+    }
+
+    public void edit(Category category) {
+        this.category = category;
+    }
+    
+    public void viewDetail(){
+        System.out.println("Tên sản phẩm: " + this.productName);
+        System.out.println("Đơn giá: " + this.unitPrice);
+        System.out.println("Danh mục: " + this.category.toString());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s\t%d", this.productName, this.unitPrice);
+    }
+    
+    
 
     /**
      * @return the productID
@@ -79,6 +105,5 @@ public abstract class Product {
     public void setCategory(Category category) {
         this.category = category;
     }
-    
-    
+
 }
