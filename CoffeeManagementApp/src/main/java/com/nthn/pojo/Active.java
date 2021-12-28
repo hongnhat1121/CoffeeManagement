@@ -9,7 +9,7 @@ package com.nthn.pojo;
  * @author HONGNHAT
  */
 public enum Active {
-    AVAILABLE(1, "Đang hoạt động"), LOCK(2,"Bị khoá");
+    AVAILABLE(1, "Đang hoạt động"), LOCK(2, "Bị khoá");
     private final int activeId;
     private final String acitveName;
 
@@ -20,8 +20,21 @@ public enum Active {
 
     @Override
     public String toString() {
+        return getAcitveName();
+    }
+
+    /**
+     * @return the activeId
+     */
+    public int getActiveId() {
+        return activeId;
+    }
+
+    /**
+     * @return the acitveName
+     */
+    public String getAcitveName() {
         return acitveName;
     }
-    
-    
+
 }

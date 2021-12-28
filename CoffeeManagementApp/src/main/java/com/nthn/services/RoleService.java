@@ -28,7 +28,7 @@ public class RoleService {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM roles");
             while (rs.next()) {
-                roles.add(rs.getString("roleName"));
+                roles.add(rs.getString("RoleName"));
             }
         }
         return roles;

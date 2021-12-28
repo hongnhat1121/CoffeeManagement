@@ -4,41 +4,51 @@
  */
 package com.nthn.services;
 
+import com.nthn.configs.JdbcUtils;
+import com.nthn.pojo.Active;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author HONGNHAT
  */
 public class ActiveService {
+
     public List<String> getActives() throws SQLException {
-        List<String> roles = new ArrayList<>();
+        List<String> actives = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM roles");
+            ResultSet rs = s.executeQuery("SELECT * FROM actives");
             while (rs.next()) {
-                roles.add(rs.getString("roleName"));
+                actives.add(rs.getString("activeName"));
             }
         }
-        return roles;
+        return actives;
     }
 
-    public void addActive(Active role) {
-
+    public void addActive(Active active) {
         try {
             Connection connection = JdbcUtils.getConnection();
 
             connection.setAutoCommit(false);
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO roles(RoleID, RoleName) VALUES(?,?)");
-            preparedStatement.setInt(1, role.getRoleID());
-            preparedStatement.setString(2, role.getRoleName());
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO actives(ActiveID, ActiveName) VALUES(?,?)");
+            preparedStatement.setInt(1, active.getActiveId());
+            preparedStatement.setString(2, active.getAcitveName());
 
             preparedStatement.executeUpdate();
 
             connection.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(RoleService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ActiveService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

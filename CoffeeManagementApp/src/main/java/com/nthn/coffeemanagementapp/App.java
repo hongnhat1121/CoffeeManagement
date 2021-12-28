@@ -1,6 +1,8 @@
 package com.nthn.coffeemanagementapp;
 
+import com.nthn.pojo.Active;
 import com.nthn.pojo.Role;
+import com.nthn.services.ActiveService;
 import com.nthn.services.RoleService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -44,13 +46,19 @@ public class App extends Application {
 //        account.setActive(Active.AVAILABLE);
 //        account.setRole(Role.USER);
 ////        account.display();
-        RoleService roleService = new RoleService();
+
+//        RoleService roleService = new RoleService();
 //        roleService.addRole(Role.USER);
 //        roleService.addRole(Role.ADMIN);
-        List<String> results = roleService.getRoles();
-        for (String result : results) {
-            System.out.println("com.nthn.coffeemanagementapp.App.main(): " + result.toString());
-        }
+//        List<String> results = roleService.getRoles();
+//        for (String result : results) {
+//            System.out.println("com.nthn.coffeemanagementapp.App.main(): " + result.toString());
+//        }
+
+
+//        ActiveService activeService = new ActiveService();
+//        activeService.addActive(Active.AVAILABLE);
+//        activeService.addActive(Active.LOCK);
 
     }
 
