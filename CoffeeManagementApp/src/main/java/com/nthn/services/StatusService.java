@@ -5,7 +5,7 @@
 package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
-import com.nthn.pojo.State;
+import com.nthn.pojo.Status;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,30 +20,30 @@ import java.util.logging.Logger;
  *
  * @author HONGNHAT
  */
-public class StateService {
+public class StatusService {
 
-    public List<String> getStates() throws SQLException {
-        List<String> states = new ArrayList<>();
+    public List<String> getStatus() throws SQLException {
+        List<String> status = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM states");
+            ResultSet rs = s.executeQuery("SELECT * FROM status");
             while (rs.next()) {
-                states.add(rs.getString("StateName"));
+                status.add(rs.getString("StatusName"));
             }
         }
-        return states;
+        return status;
     }
 
-    public void addState(State state) {
+    public void addStatus(Status status) {
 
         try {
             Connection connection = JdbcUtils.getConnection();
 
             connection.setAutoCommit(false);
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO states(StateID, StateName) VALUES(?,?)");
-            preparedStatement.setInt(1, state.getStateID());
-            preparedStatement.setString(2, state.getStateName());
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO status(StatusID, StatusName) VALUES(?,?)");
+            preparedStatement.setInt(1, status.getStatusID());
+            preparedStatement.setString(2, status.getStatusName());
 
             preparedStatement.executeUpdate();
 

@@ -10,11 +10,8 @@ package com.nthn.pojo;
  */
 public enum State {
     SERVE(1, "Phục vụ"), BARTENDER(2, "Pha chế"), RECEPTION(3, "Tiếp tân");
-    private int stateID;
-    private String stateName;
-
-    private State() {
-    }
+    private final int stateID;
+    private final String stateName;
 
     private State(int stateID, String stateName) {
         this.stateID = stateID;
@@ -25,7 +22,6 @@ public enum State {
     public String toString() {
         return this.stateName;
     }
-    
 
     /**
      * @return the stateID
@@ -35,24 +31,9 @@ public enum State {
     }
 
     /**
-     * @param stateID the stateID to set
-     */
-    public void setStateID(int stateID) {
-        this.stateID = stateID;
-    }
-
-    /**
      * @return the stateName
      */
     public String getStateName() {
         return stateName;
     }
-
-    /**
-     * @param stateName the stateName to set
-     */
-    public void setStateName(String stateName) {
-        this.stateName = stateName;
-    }
-
 }

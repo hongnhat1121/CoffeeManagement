@@ -9,5 +9,28 @@ package com.nthn.pojo;
  * @author HONGNHAT
  */
 public enum Status {
-    EMPTY, FULL;
+    EMPTY(1,"Còn trống"), FULL(2,"Đã đặt");
+    private final int statusID;
+    private final String statusName;
+
+
+    private Status(int statusID, String statusName) {
+        this.statusID = statusID;
+        this.statusName = statusName;
+    }
+
+    /**
+     * @return the statusID
+     */
+    public int getStatusID() {
+        return statusID;
+    }
+
+    /**
+     * @return the statusName
+     */
+    public String getStatusName() {
+        return statusName;
+    }
+    
 }
