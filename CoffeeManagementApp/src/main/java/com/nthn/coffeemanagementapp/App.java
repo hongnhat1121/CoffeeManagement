@@ -1,11 +1,13 @@
 package com.nthn.coffeemanagementapp;
 
 import com.nthn.pojo.Active;
+import com.nthn.pojo.Category;
 import com.nthn.pojo.Gender;
 import com.nthn.pojo.Role;
 import com.nthn.pojo.State;
 import com.nthn.pojo.Status;
 import com.nthn.services.ActiveService;
+import com.nthn.services.CategoryService;
 import com.nthn.services.GenderService;
 import com.nthn.services.RoleService;
 import com.nthn.services.StateService;
@@ -60,28 +62,27 @@ public class App extends Application {
 //        for (String result : results) {
 //            System.out.println("com.nthn.coffeemanagementapp.App.main(): " + result.toString());
 //        }
-
-
+//
 //        ActiveService activeService = new ActiveService();
 //        activeService.addActive(Active.AVAILABLE);
 //        activeService.addActive(Active.LOCK);
-
-//            StateService stateService = new StateService();
-//            stateService.addState(State.SERVE);
-//            stateService.addState(State.BARTENDER);
-//            stateService.addState(State.RECEPTION);
-            
-//            StatusService statusService= new StatusService();
-//            statusService.addStatus(Status.EMPTY);
-//            statusService.addStatus(Status.FULL);
-            
-//            GenderService genderService = new GenderService();
-//            genderService.addGender(Gender.OTHER);
-//            genderService.addGender(Gender.FEMALE);
-//            genderService.addGender(Gender.MALE);
-                    
-                    
-
+//
+//        StateService stateService = new StateService();
+//        stateService.addState(State.SERVE);
+//        stateService.addState(State.BARTENDER);
+//        stateService.addState(State.RECEPTION);
+//
+//        StatusService statusService = new StatusService();
+//        statusService.addStatus(Status.EMPTY);
+//        statusService.addStatus(Status.FULL);
+//
+//        GenderService genderService = new GenderService();
+//        genderService.addGender(Gender.OTHER);
+//        genderService.addGender(Gender.FEMALE);
+//        genderService.addGender(Gender.MALE);
+//        CategoryService categoryService = new CategoryService();
+//        categoryService.addCategory(new Category(1, "Đồ uống"));
+//        categoryService.addCategory(new Category(2, "Thức ăn"));
     }
 
 }
