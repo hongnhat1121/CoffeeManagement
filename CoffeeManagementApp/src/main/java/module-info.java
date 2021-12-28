@@ -5,4 +5,6 @@ module com.nthn.coffeemanagementapp {
 
     opens com.nthn.coffeemanagementapp to javafx.fxml;
     exports com.nthn.coffeemanagementapp;
+    requires org.apache.commons.codec; //Apache Commons Codecs - SHA256
+
 }
