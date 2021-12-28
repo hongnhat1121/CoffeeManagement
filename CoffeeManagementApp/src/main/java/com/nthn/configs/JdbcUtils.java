@@ -7,27 +7,28 @@ package com.nthn.configs;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 /**
  *
  * @author HONGNHAT
  */
+@SuppressWarnings("static-access")
 public class JdbcUtils {
+
+    private static Connection connection;
 
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
+            Logger.getLogger(JdbcUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    /**
-     * @return the conn
-     */
-    public static Connection getConn() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost/coffeemanagementappdb",
-                "root", "1121");
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:mysql://localhost/coffeemanagementdb", "root", "1121");
     }
 }
