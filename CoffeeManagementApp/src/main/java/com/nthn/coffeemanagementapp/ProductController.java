@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -39,16 +40,25 @@ public class ProductController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-         
+        
+        this.loadTableViewProduct();
+        
         ProductService ps = new ProductService();
         List<Product> products = new ArrayList<>();
         try {
             products = ps.getProducts();
+            this.loadTableDataProduct(null);
         } catch (SQLException ex) {
             Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        this.loadTableViewProduct();
+            
+        this.txtProduct.textProperty().addListener((evt) -> {
+            try {
+                this.loadTableDataProduct(this.txtProduct.getText());
+            } catch (SQLException ex) {
+                Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }    
     
     private void loadTableViewProduct() {
@@ -60,7 +70,11 @@ public class ProductController implements Initializable {
         colProductName.setCellValueFactory(new PropertyValueFactory("UnitPrice"));
         colProductName.setPrefWidth(400);
         
-        this.tbProduct.getColumns().addAll(colProductName, colUnitPrice);
-                
+        this.tbProduct.getColumns().addAll(colProductName, colUnitPrice);            
+    }
+    
+    private void loadTableDataProduct(String kw) throws SQLException {      
+        ProductService ps = new ProductService();
+        this.tbProduct.setItems(FXCollections.observableList(ps.getProductsByName(kw)));        
     }
 }

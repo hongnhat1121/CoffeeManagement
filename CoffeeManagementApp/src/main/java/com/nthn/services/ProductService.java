@@ -38,8 +38,34 @@ public class ProductService {
     public List<Product> getProductsByName(String productName) throws SQLException {
         List<Product> results = new ArrayList<>();
         try (Connection conn = JdbcUtils.getConnection()){
-            PreparedStatement stm = conn.prepareStatement("SELECT * FROM products WHERE ProductName = %(?)%");
-            stm.setString(1, productName);
+            String sql = "SELECT * FROM products";
+            if(productName != null && !productName.isEmpty())
+                sql += "WHERE ProductName like concat('%', ?, '%')";
+            
+            PreparedStatement stm = conn.prepareStatement(sql);
+            if(productName != null && !productName.isEmpty())
+                stm.setString(1, productName);
+            ResultSet rs = stm.executeQuery();
+            
+            while (rs.next()) {
+                Product p = new Product(rs.getInt("ProductId"), 
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
+                results.add(p);
+            }
+        }
+        return results;
+    }
+    
+     public List<Product> getProductsByUnitPrice(String productPrice) throws SQLException {
+        List<Product> results = new ArrayList<>();
+        try (Connection conn = JdbcUtils.getConnection()){
+            String sql = "SELECT * FROM products";
+            if(productPrice != null && !productPrice.isEmpty())
+                sql += "WHERE UnitPrice like concat('%', ?, '%')";
+            
+            PreparedStatement stm = conn.prepareStatement(sql);
+            if(productPrice != null && !productPrice.isEmpty())
+                stm.setString(1, productPrice);
             ResultSet rs = stm.executeQuery();
             
             while (rs.next()) {
