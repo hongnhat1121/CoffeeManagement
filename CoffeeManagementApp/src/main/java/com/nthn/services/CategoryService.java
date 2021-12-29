@@ -57,4 +57,14 @@ public class CategoryService {
             Logger.getLogger(RoleService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+   
+//   public Catagory getCatagoryById(int catagoryId) throws SQLException {
+//       try (Connection Conn = JdbcUtils.getConnection()){
+//           PreparedStatement stm = new PreparedStatement("SELECT * FROM catagories WHERE CatagoryId = ?");
+//           stm.setInt(1, catagoryId);
+//           ResultSet rs = stm.executeQuery();
+//           
+//           
+//       }
+//   }
 }

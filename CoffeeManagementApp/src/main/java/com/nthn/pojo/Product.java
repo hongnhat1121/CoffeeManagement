@@ -8,47 +8,33 @@ package com.nthn.pojo;
  *
  * @author HONGNHAT
  */
-public abstract class Product {
+public class Product {
 
     private int productID;
     private String productName;
     private long unitPrice;
-    private Category category;
+    private int categoryId;
 
     public Product() {
     }
 
-    public Product(int productID, String productName, long unitPrice, Category category) {
+    public Product(int productID, String productName, long unitPrice, int categoryId) {
         this.productID = productID;
         this.productName = productName;
         this.unitPrice = unitPrice;
-        this.category = category;
-    }
-
-    public void edit(long price) {
-        this.unitPrice = price;
-    }
-
-    public void edit(String name) {
-        this.productName = name;
-    }
-
-    public void edit(Category category) {
-        this.category = category;
+        this.categoryId = categoryId;
     }
     
     public void viewDetail(){
-        System.out.println("Tên sản phẩm: " + this.productName);
-        System.out.println("Đơn giá: " + this.unitPrice);
-        System.out.println("Danh mục: " + this.category.toString());
+        System.out.println("Tên sản phẩm: " + this.getProductName());
+        System.out.println("Đơn giá: " + this.getUnitPrice());
+        System.out.println("Danh mục: " + this.getCategoryId());
     }
 
     @Override
     public String toString() {
-        return String.format("%s\t%d", this.productName, this.unitPrice);
+        return String.format("%s\t%d", this.getProductName(), this.getUnitPrice());
     }
-    
-    
 
     /**
      * @return the productID
@@ -93,17 +79,20 @@ public abstract class Product {
     }
 
     /**
-     * @return the category
+     * @return the categoryId
      */
-    public Category getCategory() {
-        return category;
+    public int getCategoryId() {
+        return categoryId;
     }
 
     /**
-     * @param category the category to set
+     * @param categoryId the categoryId to set
      */
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
+    
+  
+    
 
 }
