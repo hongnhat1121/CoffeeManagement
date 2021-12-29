@@ -47,7 +47,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException, SQLException {
-        //launch();
+        launch();
 //        Account account = new Account();
 //        account.inputUsername();
 //        account.inputPassword();
