@@ -56,16 +56,16 @@ public class ProductService {
         return results;
     }
     
-     public List<Product> getProductsByUnitPrice(String productPrice) throws SQLException {
+     public List<Product> getProductsByUnitPrice(Long productPrice) throws SQLException {
         List<Product> results = new ArrayList<>();
         try (Connection conn = JdbcUtils.getConnection()){
             String sql = "SELECT * FROM products";
-            if(productPrice != null && !productPrice.isEmpty())
+            if(productPrice != null)
                 sql += "WHERE UnitPrice like concat('%', ?, '%')";
             
             PreparedStatement stm = conn.prepareStatement(sql);
-            if(productPrice != null && !productPrice.isEmpty())
-                stm.setString(1, productPrice);
+            if(productPrice != null)
+                stm.setLong(1, productPrice);
             ResultSet rs = stm.executeQuery();
             
             while (rs.next()) {
