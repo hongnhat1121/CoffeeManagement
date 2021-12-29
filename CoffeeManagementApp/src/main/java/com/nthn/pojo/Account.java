@@ -17,17 +17,17 @@ public class Account {
     private int accountID;
     private String username;
     private String password;
-    private int activeID;
-    private int roleID;
+    private Active active;
+    private Role role;
 
     public Account() {
     }
 
-    public Account(String username, String password, int activeID, int roleID) {
+    public Account(String username, String password, Active active, Role role) {
         this.username = username;
         this.password = password;
-        this.activeID = activeID;
-        this.roleID = roleID;
+        this.active = active;
+        this.role = role;
     }
 
     public void inputUsername() {
@@ -40,19 +40,19 @@ public class Account {
         this.setPassword(DigestUtils.sha256Hex(Utils.SCANNER.nextLine())); //Apache Commons Codecs - SHA256
     }
 
-    public void display() {
-        System.out.println("Tên đăng nhập: " + getUsername());
-        System.out.println("Mật khẩu: " + getPassword());
-        System.out.println("Hoạt động: " + getActiveID());
-        System.out.println("Phân quyền: " + getRoleID());
-    }
-
     public void changePassword(String text) {
         this.setPassword(text);
     }
 
-    public void changeRole(int role) {
-        this.setRoleID(role);
+    public void changeRole(Role role) {
+        this.role = role;
+    }
+
+    public void display() {
+        System.out.println("Tên đăng nhập: " + this.username);
+        System.out.println("Mật khẩu: " + this.password);
+        System.out.println("Hoạt động: " + this.active.getAcitveName());
+        System.out.println("Phân quyền: " + this.role.getRoleName());
     }
 
     /**
@@ -98,30 +98,30 @@ public class Account {
     }
 
     /**
-     * @return the roleID
+     * @return the active
      */
-    public int getRoleID() {
-        return roleID;
+    public Active getActive() {
+        return active;
     }
 
     /**
-     * @param roleID the roleID to set
+     * @param active the active to set
      */
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
+    public void setActive(Active active) {
+        this.active = active;
     }
 
     /**
-     * @return the activeID
+     * @return the role
      */
-    public int getActiveID() {
-        return activeID;
+    public Role getRole() {
+        return role;
     }
 
     /**
-     * @param activeID the activeID to set
+     * @param role the role to set
      */
-    public void setActiveID(int activeID) {
-        this.activeID = activeID;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

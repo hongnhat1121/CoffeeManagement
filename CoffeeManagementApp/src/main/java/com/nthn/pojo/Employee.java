@@ -10,7 +10,8 @@ import java.sql.Date;
  *
  * @author HONGNHAT
  */
-public class Employee extends User{
+public class Employee extends User {
+
     private int employeeID;
     private Date hireDate;
     private State state;
@@ -30,12 +31,16 @@ public class Employee extends User{
         this.hireDate = hireDate;
         this.state = state;
     }
-    
+
+    public void changeState(State state) {
+        this.state = state;
+    }
+
     @Override
-    public void display(){
-        super.display();
-        System.out.println("Ngày vào làm: " + hireDate.toString());
-        System.out.println("Bộ phận: " + state.toString());
+    public void viewDetail() {
+        super.viewDetail();
+        System.out.println("Ngày vào làm: " + this.hireDate.toString());
+        System.out.println("Bộ phận: " + this.state.getStateName());
     }
 
     /**
@@ -79,6 +84,5 @@ public class Employee extends User{
     public void setState(State state) {
         this.state = state;
     }
-    
-    
+
 }

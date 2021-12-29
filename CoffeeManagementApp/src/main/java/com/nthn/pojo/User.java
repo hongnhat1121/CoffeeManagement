@@ -8,7 +8,7 @@ package com.nthn.pojo;
  *
  * @author HONGNHAT
  */
-public class User extends Account {
+public abstract class User extends Account {
 
     private Account account;
     private String lastName;
@@ -29,7 +29,15 @@ public class User extends Account {
         this.phone = phone;
     }
 
-    public void display() {
+    public void edit(String text) {
+        
+    }
+
+    public void edit(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void viewDetail() {
         System.out.println("Họ và tên: " + lastName + " " + firstName);
         System.out.println("Giới tính: " + gender.toString());
         System.out.println("Địa chỉ: " + address);

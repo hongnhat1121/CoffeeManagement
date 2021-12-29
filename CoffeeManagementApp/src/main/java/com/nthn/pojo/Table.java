@@ -9,6 +9,7 @@ package com.nthn.pojo;
  * @author HONGNHAT
  */
 public class Table {
+
     private int tableID;
     private String tableName;
     private int capacity;
@@ -22,6 +23,27 @@ public class Table {
         this.tableName = tableName;
         this.capacity = capacity;
         this.status = status;
+    }
+
+    public void edit(String text) {
+        this.tableName = text;
+    }
+
+    public void edit(int number) {
+        this.capacity = number;
+    }
+
+    public void changeStatus() {
+        if (this.status == Status.FULL) {
+            this.status = Status.EMPTY;
+        } else {
+            this.status = Status.FULL;
+        }
+    }
+    
+    public void viewDetail(){
+        System.out.print("Sức chứa: " + this.capacity);
+        System.out.println("Trạng thái: " + this.status.toString());
     }
 
     /**
@@ -79,6 +101,5 @@ public class Table {
     public void setStatus(Status status) {
         this.status = status;
     }
-    
-    
+
 }
