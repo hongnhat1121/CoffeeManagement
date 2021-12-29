@@ -4,14 +4,17 @@
  */
 package com.nthn.pojo;
 
+import com.nthn.services.ProductService;
+import java.sql.SQLException;
+
 /**
  *
  * @author HONGNHAT
  */
 public class OrderDetail {
 
-    private Order order;
-    private Product product;
+    private int orderID;
+    private int productID;
     private int quantity;
     private long unitPrice;
     private String note;
@@ -19,48 +22,31 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(Order order, Product product, int quantity, long unitPrice, String note) {
-        this.order = order;
-        this.product = product;
+    public OrderDetail(int orderID, int productID, int quantity, long unitPrice, String note) {
+        this.orderID = orderID;
+        this.productID = productID;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.note = note;
     }
 
+    public void changeProduct(int id) {
+        this.setProductID(id);
+    }
+
     public void changeQuantity(int number) {
-        this.quantity = number;
+        this.setQuantity(number);
     }
 
     public void changeNote(String text) {
-        this.note = text;
+        this.setNote(text);
     }
 
-    /**
-     * @return the order
-     */
-    public Order getOrder() {
-        return order;
-    }
-
-    /**
-     * @param order the order to set
-     */
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    /**
-     * @return the product
-     */
-    public Product getProduct() {
-        return product;
-    }
-
-    /**
-     * @param product the product to set
-     */
-    public void setProduct(Product product) {
-        this.product = product;
+    public void viewDetail() throws SQLException {
+        System.out.println(new ProductService().getProduct(productID).toString());
+        System.out.println("Số lượng: " + this.quantity);
+        System.out.println("Đơn giá: " + this.unitPrice);
+        System.out.println("Ghi chú: " + this.note);
     }
 
     /**
@@ -105,4 +91,31 @@ public class OrderDetail {
         this.note = note;
     }
 
+    /**
+     * @return the orderID
+     */
+    public int getOrderID() {
+        return orderID;
+    }
+
+    /**
+     * @param orderID the orderID to set
+     */
+    public void setOrderID(int orderID) {
+        this.orderID = orderID;
+    }
+
+    /**
+     * @return the productID
+     */
+    public int getProductID() {
+        return productID;
+    }
+
+    /**
+     * @param productID the productID to set
+     */
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
 }

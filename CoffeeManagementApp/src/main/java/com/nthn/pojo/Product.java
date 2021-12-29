@@ -4,20 +4,25 @@
  */
 package com.nthn.pojo;
 
+import com.nthn.services.CategoryService;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author HONGNHAT
  */
 public class Product {
-
+    
     private int productID;
     private String productName;
     private long unitPrice;
     private int categoryId;
-
+    
     public Product() {
     }
-
+    
     public Product(int productID, String productName, long unitPrice, int categoryId) {
         this.productID = productID;
         this.productName = productName;
@@ -25,15 +30,20 @@ public class Product {
         this.categoryId = categoryId;
     }
     
-    public void viewDetail(){
+    public void viewDetail() throws SQLException {
         System.out.println("Tên sản phẩm: " + this.getProductName());
         System.out.println("Đơn giá: " + this.getUnitPrice());
-        System.out.println("Danh mục: " + this.getCategoryId());
+        System.out.println("Danh mục: " + new CategoryService().getCatagory(categoryId));
     }
-
+    
     @Override
     public String toString() {
-        return String.format("%s\t%d", this.getProductName(), this.getUnitPrice());
+        try {
+            return String.format("%s\t%s", this.getProductName(), new CategoryService().getCatagory(categoryId));
+        } catch (SQLException ex) {
+            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     /**
@@ -92,7 +102,4 @@ public class Product {
         this.categoryId = categoryId;
     }
     
-  
-    
-
 }

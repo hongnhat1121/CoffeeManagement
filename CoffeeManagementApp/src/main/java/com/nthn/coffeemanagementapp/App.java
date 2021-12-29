@@ -62,11 +62,12 @@ public class App extends Application {
 //        for (String result : results) {
 //            System.out.println("com.nthn.coffeemanagementapp.App.main(): " + result.toString());
 //        }
-//
-//        ActiveService activeService = new ActiveService();
+
+        ActiveService activeService = new ActiveService();
+        System.out.println("com.nthn.coffeemanagementapp.App.main().1" + activeService.getActive(2));
 //        activeService.addActive(Active.AVAILABLE);
 //        activeService.addActive(Active.LOCK);
-//
+
 //        StateService stateService = new StateService();
 //        stateService.addState(State.SERVE);
 //        stateService.addState(State.BARTENDER);

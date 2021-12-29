@@ -51,4 +51,15 @@ public class ActiveService {
             Logger.getLogger(ActiveService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public String getActive(int activeID) throws SQLException {
+        try (Connection c = JdbcUtils.getConnection()) {
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery("SELECT ActiveName FROM actives WHERE ActiveID=" + activeID);
+            while (rs.next()) {
+                return rs.getString("ActiveName");
+            }
+        }
+        return null;
+    }
 }

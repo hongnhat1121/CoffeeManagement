@@ -20,56 +20,75 @@ import java.util.List;
  * @author PC
  */
 public class ProductService {
+
     public List<Product> getProducts() throws SQLException {
         List<Product> results = new ArrayList<>();
-        try (Connection conn = JdbcUtils.getConnection()){
+        try (Connection conn = JdbcUtils.getConnection()) {
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery("SELECT * FROM products");
-            
+
             while (rs.next()) {
-                Product p = new Product(rs.getInt("ProductId"), 
+                Product p = new Product(rs.getInt("ProductId"),
                         rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
                 results.add(p);
             }
         }
         return results;
     }
-    
+
+    public Product getProduct(int id) throws SQLException {
+        try (Connection conn = JdbcUtils.getConnection()) {
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("SELECT * FROM products WHERE ProductID=" + id);
+
+            while (rs.next()) {
+                Product p = new Product(rs.getInt("ProductId"),
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
+                return p;
+            }
+        }
+        return null;
+    }
+
     public List<Product> getProductsByName(String productName) throws SQLException {
         List<Product> results = new ArrayList<>();
-        try (Connection conn = JdbcUtils.getConnection()){
+        try (Connection conn = JdbcUtils.getConnection()) {
             String sql = "SELECT * FROM products";
-            if(productName != null && !productName.isEmpty())
+            if (productName != null && !productName.isEmpty()) {
                 sql += "WHERE ProductName like concat('%', ?, '%')";
-            
+            }
+
             PreparedStatement stm = conn.prepareStatement(sql);
-            if(productName != null && !productName.isEmpty())
+            if (productName != null && !productName.isEmpty()) {
                 stm.setString(1, productName);
+            }
             ResultSet rs = stm.executeQuery();
-            
+
             while (rs.next()) {
-                Product p = new Product(rs.getInt("ProductId"), 
+                Product p = new Product(rs.getInt("ProductId"),
                         rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
                 results.add(p);
             }
         }
         return results;
     }
-    
-     public List<Product> getProductsByUnitPrice(String productPrice) throws SQLException {
+
+    public List<Product> getProductsByUnitPrice(String productPrice) throws SQLException {
         List<Product> results = new ArrayList<>();
-        try (Connection conn = JdbcUtils.getConnection()){
+        try (Connection conn = JdbcUtils.getConnection()) {
             String sql = "SELECT * FROM products";
-            if(productPrice != null && !productPrice.isEmpty())
+            if (productPrice != null && !productPrice.isEmpty()) {
                 sql += "WHERE UnitPrice like concat('%', ?, '%')";
-            
+            }
+
             PreparedStatement stm = conn.prepareStatement(sql);
-            if(productPrice != null && !productPrice.isEmpty())
+            if (productPrice != null && !productPrice.isEmpty()) {
                 stm.setString(1, productPrice);
+            }
             ResultSet rs = stm.executeQuery();
-            
+
             while (rs.next()) {
-                Product p = new Product(rs.getInt("ProductId"), 
+                Product p = new Product(rs.getInt("ProductId"),
                         rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
                 results.add(p);
             }

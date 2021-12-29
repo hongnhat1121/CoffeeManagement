@@ -4,7 +4,11 @@
  */
 package com.nthn.pojo;
 
+import com.nthn.configs.Utils;
+import com.nthn.services.EmployeeService;
+import com.nthn.services.TableService;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -16,38 +20,40 @@ public class Order {
     private int orderID;
     private Date orderDate;
     private long total;
-    private Employee employee;
-    private Table table;
+    private int employeeID;
+    private int tableID;
     private boolean payment;
     private List<OrderDetail> orderDetails;
 
     public Order() {
     }
 
-    public Order(int orderID, Date orderDate, long total, Employee employee, Table table, boolean payment) {
+    public Order(int orderID, Date orderDate, long total, int employeeID,
+            int tableID, boolean payment, List<OrderDetail> orderDetails) {
         this.orderID = orderID;
         this.orderDate = orderDate;
         this.total = total;
-        this.employee = employee;
-        this.table = table;
-        this.payment = payment;
-    }
-
-    public Order(int orderID, Date orderDate, long total, Employee employee, Table table, boolean payment, List<OrderDetail> orderDetails) {
-        this.orderID = orderID;
-        this.orderDate = orderDate;
-        this.total = total;
-        this.employee = employee;
-        this.table = table;
+        this.employeeID = employeeID;
+        this.tableID = tableID;
         this.payment = payment;
         this.orderDetails = orderDetails;
     }
 
     //Tính toán hoá đơn
     public void calculate() {
-        for (OrderDetail orderDetail : orderDetails) {
-            this.total += orderDetail.getQuantity() * orderDetail.getUnitPrice();
-        }
+        getOrderDetails().forEach(orderDetail -> {
+            this.setTotal((long) (this.getTotal() + orderDetail.getQuantity()
+                    * orderDetail.getUnitPrice()));
+        });
+    }
+
+    public void viewDetail() throws SQLException {
+        System.out.println("Mã hoá đơn: " + this.orderID);
+        System.out.println("Ngày tạo: " + Utils.DATEFORMAT.format(orderDate));
+        System.out.println("Tổng tiền: " + this.total);
+        System.out.println("Nhân viên:" + new EmployeeService().
+                getEmployee(employeeID).getLastName());
+        System.out.println("Bàn: " + new TableService().getTable(orderID).toString());
     }
 
     /**
@@ -93,31 +99,31 @@ public class Order {
     }
 
     /**
-     * @return the employee
+     * @return the employeeID
      */
-    public Employee getEmployee() {
-        return employee;
+    public int getEmployeeID() {
+        return employeeID;
     }
 
     /**
-     * @param employee the employee to set
+     * @param employeeID the employeeID to set
      */
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public void setEmployeeID(int employeeID) {
+        this.employeeID = employeeID;
     }
 
     /**
-     * @return the table
+     * @return the tableID
      */
-    public Table getTable() {
-        return table;
+    public int getTableID() {
+        return tableID;
     }
 
     /**
-     * @param table the table to set
+     * @param tableID the tableID to set
      */
-    public void setTable(Table table) {
-        this.table = table;
+    public void setTableID(int tableID) {
+        this.tableID = tableID;
     }
 
     /**
@@ -132,6 +138,20 @@ public class Order {
      */
     public void setPayment(boolean payment) {
         this.payment = payment;
+    }
+
+    /**
+     * @return the orderDetails
+     */
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    /**
+     * @param orderDetails the orderDetails to set
+     */
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
     }
 
 }

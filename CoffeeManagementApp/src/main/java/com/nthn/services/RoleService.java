@@ -52,4 +52,15 @@ public class RoleService {
             Logger.getLogger(RoleService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public String getRole(int id) throws SQLException{
+        try (Connection c = JdbcUtils.getConnection()) {
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery("SELECT RoleName FROM roles WHERE RoleID="+id);
+            while (rs.next()) {
+                return rs.getString("RoleName");
+            }
+        }
+        return null;
+    }
 }
