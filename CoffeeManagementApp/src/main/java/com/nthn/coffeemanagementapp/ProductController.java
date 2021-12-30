@@ -46,7 +46,6 @@ public class ProductController implements Initializable {
             
         try {
             this.loadComboBoxDataProduct();
-            switch(cbProduct.getSe)
             this.loadTableDataProduct(null);
         } catch (SQLException ex) {
             Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
