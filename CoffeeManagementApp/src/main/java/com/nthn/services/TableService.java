@@ -22,13 +22,13 @@ import java.util.logging.Logger;
  */
 public class TableService {
 
-    public List<String> getTables() throws SQLException {
-        List<String> tables = new ArrayList<>();
+    public List<Table> getTables() throws SQLException {
+        List<Table> tables = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM tables");
             while (rs.next()) {
-                tables.add(rs.getString("TableName"));
+                tables.add(new Table(rs.getInt("TableID"), rs.getInt("Capacity"), rs.getInt("StatusID")));
             }
         }
         return tables;
@@ -42,12 +42,11 @@ public class TableService {
             connection.setAutoCommit(false);
 
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO tables(TableID, TableName, Capacity, StatusID) "
-                    + "VALUES(?, ?, ?, ?)");
+                    "INSERT INTO tables(TableID, Capacity, StatusID) "
+                    + "VALUES(?, ?, ?)");
             preparedStatement.setInt(1, table.getTableID());
-            preparedStatement.setString(2, table.getTableName());
-            preparedStatement.setInt(3, table.getCapacity());
-            preparedStatement.setInt(4, table.getStatusID());
+            preparedStatement.setInt(2, table.getCapacity());
+            preparedStatement.setInt(3, table.getStatusID());
 
             preparedStatement.executeUpdate();
 
@@ -62,7 +61,7 @@ public class TableService {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT TableName FROM tables WHERE TableID=" + id);
             while (rs.next()) {
-                return new Table(rs.getInt("TableID"), rs.getString("TableName"),
+                return new Table(rs.getInt("TableID"),
                         rs.getInt("Capacity"), rs.getInt("StatusID"));
             }
         }

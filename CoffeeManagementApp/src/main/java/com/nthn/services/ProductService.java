@@ -50,6 +50,24 @@ public class ProductService {
         return null;
     }
 
+    public void addProduct(Product p) throws SQLException {
+        try (Connection connection = JdbcUtils.getConnection()) {
+            connection.setAutoCommit(false);
+
+            PreparedStatement preparedStatement = connection.prepareStatement(""
+                    + "INSERT INTO products(ProductID, ProductName, UnitPrice, CategoryID) "
+                    + "VALUES(?, ?, ?, ?)");
+            preparedStatement.setInt(1, p.getProductID());
+            preparedStatement.setString(2, p.getProductName());
+            preparedStatement.setLong(3, p.getUnitPrice());
+            preparedStatement.setInt(4, p.getCategoryId());
+
+            preparedStatement.executeUpdate();
+
+            connection.commit();
+        }
+    }
+
     public List<Product> getProductsByName(String productName) throws SQLException {
         List<Product> results = new ArrayList<>();
         try (Connection conn = JdbcUtils.getConnection()) {
@@ -72,41 +90,34 @@ public class ProductService {
         }
         return results;
     }
-<<<<<<< HEAD
-
-    public List<Product> getProductsByUnitPrice(String productPrice) throws SQLException {
-=======
-    
-     public List<Product> getProductsByUnitPrice(Long productPrice) throws SQLException {
->>>>>>> 8ed4e65eac4271ded17278f6363a76ebadd0c8ed
-        List<Product> results = new ArrayList<>();
-        try (Connection conn = JdbcUtils.getConnection()) {
-            String sql = "SELECT * FROM products";
-<<<<<<< HEAD
-            if (productPrice != null && !productPrice.isEmpty()) {
-=======
-            if(productPrice != null)
->>>>>>> 8ed4e65eac4271ded17278f6363a76ebadd0c8ed
-                sql += "WHERE UnitPrice like concat('%', ?, '%')";
-            }
-
-            PreparedStatement stm = conn.prepareStatement(sql);
-<<<<<<< HEAD
-            if (productPrice != null && !productPrice.isEmpty()) {
-                stm.setString(1, productPrice);
-            }
-=======
-            if(productPrice != null)
-                stm.setLong(1, productPrice);
->>>>>>> 8ed4e65eac4271ded17278f6363a76ebadd0c8ed
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-                Product p = new Product(rs.getInt("ProductId"),
-                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
-                results.add(p);
-            }
-        }
-        return results;
-    }
+//
+//    public List<Product> getProductsByUnitPrice(Long productPrice) throws SQLException {
+//
+//        List<Product> results = new ArrayList<>();
+//        try (Connection conn = JdbcUtils.getConnection()) {
+//            String sql = "SELECT * FROM products";
+//            if (productPrice != null && !productPrice.isEmpty()) {
+//
+//                if (productPrice != null) {
+//                    sql += "WHERE UnitPrice like concat('%', ?, '%')";
+//                }
+//            }
+//
+//            PreparedStatement stm = conn.prepareStatement(sql);
+//            if (productPrice != null && !productPrice.isEmpty()) {
+//                stm.setString(1, productPrice);
+//            }
+//            if (productPrice != null) {
+//                stm.setLong(1, productPrice);
+//            }
+//            ResultSet rs = stm.executeQuery();
+//
+//            while (rs.next()) {
+//                Product p = new Product(rs.getInt("ProductId"),
+//                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
+//                results.add(p);
+//            }
+//        }
+//        return results;
+//    }
 }

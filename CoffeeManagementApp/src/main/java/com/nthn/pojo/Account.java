@@ -17,21 +17,22 @@ import org.apache.commons.codec.digest.DigestUtils; //Apache Commons Codecs - SH
  */
 public class Account {
 
-    private int accountID;
+    private static int accountID = 0;
     private String username;
     private String password;
     private int activeID;
     private int roleID;
 
     public Account() {
+        Account.accountID++;
     }
 
-    public Account(int accountID, String username, String password, int activeID, int roleID) {
-        this.accountID = accountID;
+    public Account(String username, String password, int activeID, int roleID) {
         this.username = username;
         this.password = password;
         this.activeID = activeID;
         this.roleID = roleID;
+        Account.accountID++;
     }
 
     public void inputUsername() {
@@ -88,34 +89,6 @@ public class Account {
     }
 
     /**
-     * @return the accountID
-     */
-    public int getAccountID() {
-        return accountID;
-    }
-
-    /**
-     * @param accountID the accountID to set
-     */
-    public void setAccountID(int accountID) {
-        this.accountID = accountID;
-    }
-
-    /**
-     * @return the roleID
-     */
-    public int getRole() {
-        return getRoleID();
-    }
-
-    /**
-     * @param role the roleID to set
-     */
-    public void setRole(int role) {
-        this.setRoleID(role);
-    }
-
-    /**
      * @return the activeID
      */
     public int getActiveID() {
@@ -142,4 +115,19 @@ public class Account {
     public void setRoleID(int roleID) {
         this.roleID = roleID;
     }
+
+    /**
+     * @return the accountID
+     */
+    public static int getAccountID() {
+        return accountID;
+    }
+
+    /**
+     * @param aAccountID the accountID to set
+     */
+    public static void setAccountID(int aAccountID) {
+        accountID = aAccountID;
+    }
+
 }

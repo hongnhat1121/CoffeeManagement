@@ -52,21 +52,7 @@ public abstract class User extends Account {
         return String.format("", getLastName());
     }
 
-    /**
-     * @return the accountID
-     */
-    @Override
-    public int getAccountID() {
-        return accountID;
-    }
-
-    /**
-     * @param accountID the accountID to set
-     */
-    @Override
-    public void setAccountID(int accountID) {
-        this.accountID = accountID;
-    }
+    
 
     /**
      * @return the lastName
@@ -137,5 +123,7 @@ public abstract class User extends Account {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    
 
 }

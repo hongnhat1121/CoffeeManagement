@@ -6,9 +6,6 @@ package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.Account;
-import com.nthn.pojo.Active;
-import com.nthn.pojo.Category;
-import com.nthn.pojo.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,7 +28,7 @@ public class AccountService {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM accounts");
             while (rs.next()) {
-                Account a = new Account(rs.getInt("AccountID"), rs.getString("Username"), rs.getString("Password"), rs.getInt("ActiveID"), rs.getInt("RoleID"));
+                Account a = new Account(rs.getString("Username"), rs.getString("Password"), rs.getInt("ActiveID"), rs.getInt("RoleID"));
                 accounts.add(a);
             }
         }
@@ -39,15 +36,13 @@ public class AccountService {
     }
 
     public void addAccount(Account account) {
-        try {
-            Connection connection = JdbcUtils.getConnection();
-
+        try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
 
             PreparedStatement preparedStatement = connection.prepareStatement(""
                     + "INSERT INTO accounts(AccountID, Username, Password, ActiveID, RoleID) "
-                    + "VALUES(?, ?, ?, ?, ?)");
-            preparedStatement.setInt(1, account.getAccountID());
+                    + "VALUES(?,?,?,?,?)");
+            preparedStatement.setInt(1, Account.getAccountID());
             preparedStatement.setString(2, account.getUsername());
             preparedStatement.setString(3, account.getPassword());
             preparedStatement.setInt(4, account.getActiveID());
@@ -57,7 +52,7 @@ public class AccountService {
 
             connection.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(RoleService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -66,7 +61,7 @@ public class AccountService {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM accounts WHERE AccountID=" + id);
             while (rs.next()) {
-                return new Account(rs.getInt("AccountID"), rs.getString("Username"), rs.getString("Password"), rs.getInt("ActiveID"), rs.getInt("RoleID"));
+                return new Account(rs.getString("Username"), rs.getString("Password"), rs.getInt("ActiveID"), rs.getInt("RoleID"));
             }
         }
         return null;

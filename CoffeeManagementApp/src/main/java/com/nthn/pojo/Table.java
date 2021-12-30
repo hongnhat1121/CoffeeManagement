@@ -21,12 +21,20 @@ public class Table {
     public Table() {
     }
 
+    public Table(int tableID, int capacity, int statusID) {
+        this.tableID = tableID;
+        this.tableName = String.format("B%03d", tableID);
+        this.capacity = capacity;
+        this.statusID = statusID;
+    }
+
     public Table(int tableID, String tableName, int capacity, int statusID) {
         this.tableID = tableID;
         this.tableName = tableName;
         this.capacity = capacity;
         this.statusID = statusID;
     }
+    
 
     public void edit(String text) {
         this.setTableName(text);
