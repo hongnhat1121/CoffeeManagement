@@ -19,6 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -32,7 +33,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class ProductController implements Initializable {
     @FXML private TextField txtProduct;
-    @FXML private Button btnSubmit;
+    @FXML private ComboBox cbProduct;
     @FXML private TableView<Product> tbProduct;
     /**
      * Initializes the controller class.
@@ -42,11 +43,10 @@ public class ProductController implements Initializable {
         // TODO
         
         this.loadTableViewProduct();
-        
-        ProductService ps = new ProductService();
-        List<Product> products = new ArrayList<>();
+            
         try {
-            products = ps.getProducts();
+            this.loadComboBoxDataProduct();
+            switch(cbProduct.getSe)
             this.loadTableDataProduct(null);
         } catch (SQLException ex) {
             Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,11 +64,11 @@ public class ProductController implements Initializable {
     private void loadTableViewProduct() {
         TableColumn colProductName = new TableColumn("Product name");
         colProductName.setCellValueFactory(new PropertyValueFactory("ProductName"));
-        colProductName.setPrefWidth(400);
+        colProductName.setPrefWidth(300);
         
         TableColumn colUnitPrice = new TableColumn("Unit price");
-        colProductName.setCellValueFactory(new PropertyValueFactory("UnitPrice"));
-        colProductName.setPrefWidth(400);
+        colUnitPrice.setCellValueFactory(new PropertyValueFactory("UnitPrice"));
+        colUnitPrice.setPrefWidth(200);
         
         this.tbProduct.getColumns().addAll(colProductName, colUnitPrice);            
     }
@@ -76,5 +76,11 @@ public class ProductController implements Initializable {
     private void loadTableDataProduct(String kw) throws SQLException {      
         ProductService ps = new ProductService();
         this.tbProduct.setItems(FXCollections.observableList(ps.getProductsByName(kw)));        
+    }
+    
+    private void loadComboBoxDataProduct() throws SQLException {
+        ProductService ps = new ProductService();
+        this.cbProduct.setItems(FXCollections.observableList(ps.getColumnsName())); 
+        this.cbProduct.getSelectionModel().select(0);
     }
 }

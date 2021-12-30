@@ -40,7 +40,7 @@ public class ProductService {
         try (Connection conn = JdbcUtils.getConnection()){
             String sql = "SELECT * FROM products";
             if(productName != null && !productName.isEmpty())
-                sql += "WHERE ProductName like concat('%', ?, '%')";
+                sql += " WHERE ProductName like concat('%', ?, '%')";
             
             PreparedStatement stm = conn.prepareStatement(sql);
             if(productName != null && !productName.isEmpty())
@@ -72,6 +72,22 @@ public class ProductService {
                 Product p = new Product(rs.getInt("ProductId"), 
                         rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
                 results.add(p);
+            }
+        }
+        return results;
+    }
+     
+    public List<String> getColumnsName() throws SQLException{
+        List<String> results = new ArrayList<>();
+        try (Connection conn = JdbcUtils.getConnection()){
+            Statement stm = conn.createStatement();
+            ResultSet rs = stm.executeQuery("SELECT COLUMN_NAME\n" +
+                                            "FROM INFORMATION_SCHEMA.COLUMNS\n" +
+                                            "WHERE TABLE_SCHEMA = 'coffeemanagementdb' AND TABLE_NAME = 'products'");
+            while (rs.next()) {
+                String columnName = rs.getString("COLUMN_NAME");
+                if(!columnName.contains("ID"))
+                    results.add(columnName);
             }
         }
         return results;
