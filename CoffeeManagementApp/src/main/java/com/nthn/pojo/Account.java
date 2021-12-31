@@ -4,10 +4,8 @@
  */
 package com.nthn.pojo;
 
-import com.nthn.configs.Utils;
 import com.nthn.services.ActiveService;
 import com.nthn.services.RoleService;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import org.apache.commons.codec.digest.DigestUtils; //Apache Commons Codecs - SHA256
 
@@ -17,36 +15,30 @@ import org.apache.commons.codec.digest.DigestUtils; //Apache Commons Codecs - SH
  */
 public class Account {
 
-    private static int accountID = 0;
+    private String accountID;
     private String username;
     private String password;
     private int activeID;
     private int roleID;
 
     public Account() {
-        Account.accountID++;
     }
 
-    public Account(String username, String password, int activeID, int roleID) {
+    public Account(String accountID, String username, String password, int roleID) {
+        this.accountID = accountID;
         this.username = username;
-        this.password = password;
-        this.activeID = activeID;
+        this.password = DigestUtils.sha256Hex(password);
+        this.activeID = Active.AVAILABLE.getActiveId();
         this.roleID = roleID;
-        Account.accountID++;
     }
 
-    public void inputUsername() {
-        System.out.println("com.nthn.pojo.Account.inputUsername()");
-        this.setUsername(Utils.SCANNER.nextLine());
-    }
-
-    public void inputPassword() throws NoSuchAlgorithmException {
-        System.out.println("com.nthn.pojo.Account.inputPassword()");
-        this.setPassword(DigestUtils.sha256Hex(Utils.SCANNER.nextLine())); //Apache Commons Codecs - SHA256
+    public Account(String username, String password) {
+        this.username = username;
+        this.password = DigestUtils.sha256Hex(password);
     }
 
     public void changePassword(String text) {
-        this.setPassword(text);
+        this.setPassword(DigestUtils.sha256Hex(text));
     }
 
     public void changeRole(int role) {
@@ -55,9 +47,8 @@ public class Account {
 
     public void display() throws SQLException {
         System.out.println("Tên đăng nhập: " + this.getUsername());
-        System.out.println("Mật khẩu: " + this.getPassword());
         System.out.println("Hoạt động: " + new ActiveService().getActive(getActiveID()));
-        System.out.println("Phân quyền: " + new RoleService().getRole(getRoleID()));
+        System.out.println("Phân quyền: " + Role.getRoleByID(roleID));
     }
 
     /**
@@ -85,7 +76,7 @@ public class Account {
      * @param password the password to set
      */
     public void setPassword(String password) {
-        this.password = password;
+        this.password = DigestUtils.sha256Hex(password);
     }
 
     /**
@@ -119,15 +110,14 @@ public class Account {
     /**
      * @return the accountID
      */
-    public static int getAccountID() {
+    public String getAccountID() {
         return accountID;
     }
 
     /**
-     * @param aAccountID the accountID to set
+     * @param accountID the accountID to set
      */
-    public static void setAccountID(int aAccountID) {
-        accountID = aAccountID;
+    public void setAccountID(String accountID) {
+        this.accountID = accountID;
     }
-
 }

@@ -14,9 +14,19 @@ public enum Role {
     private final int roleID;
     private final String roleName;
 
-    private Role(int roleID, String roleName) {
+    Role(int roleID, String roleName) {
         this.roleID = roleID;
         this.roleName = roleName;
+    }
+
+    public static Role getRoleByID(int id) {
+        switch (id) {
+            case 1:
+                return ADMIN;
+            case 2:
+                return USER;
+        }
+        return null;
     }
 
     @Override

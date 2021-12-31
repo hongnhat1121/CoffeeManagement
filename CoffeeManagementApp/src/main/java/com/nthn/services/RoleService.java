@@ -22,23 +22,31 @@ import java.util.logging.Logger;
  */
 public class RoleService {
 
-    public List<String> getRoles() throws SQLException {
-        List<String> roles = new ArrayList<>();
+//    public List<String> getRoles() throws SQLException, ClassNotFoundException {
+//        List<String> roles = new ArrayList<>();
+//        try (Connection c = JdbcUtils.getConnection()) {
+//            Statement s = c.createStatement();
+//            ResultSet rs = s.executeQuery("SELECT * FROM roles");
+//            while (rs.next()) {
+//                roles.add(rs.getString("RoleName"));
+//            }
+//        }
+//        return roles;
+//    }
+    public List<Role> getRoles() throws SQLException, ClassNotFoundException {
+        List<Role> roles = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM roles");
             while (rs.next()) {
-                roles.add(rs.getString("RoleName"));
+                roles.add(Role.getRoleByID(rs.getInt("RoleID")));
             }
         }
         return roles;
     }
 
     public void addRole(Role role) {
-
-        try {
-            Connection connection = JdbcUtils.getConnection();
-
+        try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO roles(RoleID, RoleName) VALUES(?,?)");
@@ -52,15 +60,26 @@ public class RoleService {
             Logger.getLogger(RoleService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public String getRole(int id) throws SQLException{
+
+    public String getRole(int id) throws SQLException {
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT RoleName FROM roles WHERE RoleID="+id);
+            ResultSet rs = s.executeQuery("SELECT RoleName FROM roles WHERE RoleID=" + id);
             while (rs.next()) {
                 return rs.getString("RoleName");
             }
         }
         return null;
+    }
+
+    public int getRole(String text) throws SQLException {
+        try (Connection c = JdbcUtils.getConnection()) {
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery("SELECT RoleName FROM roles WHERE RoleName=" + text);
+            while (rs.next()) {
+                return rs.getInt("RoleID");
+            }
+        }
+        return 0;
     }
 }

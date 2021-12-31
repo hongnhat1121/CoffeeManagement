@@ -13,9 +13,21 @@ public enum Gender {
     private final int genderID;
     private final String genderName;
 
-    private Gender(int genderID, String genderName) {
+    Gender(int genderID, String genderName) {
         this.genderID = genderID;
         this.genderName = genderName;
+    }
+
+    public static Gender getGenderByID(int id) {
+        switch (id) {
+            case 1:
+                return MALE;
+            case 2:
+                return FEMALE;
+            case 3:
+                return OTHER;
+        }
+        return null;
     }
 
     @Override

@@ -18,6 +18,16 @@ public enum Active {
         this.acitveName = acitveText;
     }
 
+    public static Active getActiveByID(int id) {
+        switch (id) {
+            case 1:
+                return AVAILABLE;
+            case 2:
+                return LOCK;
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return getAcitveName();

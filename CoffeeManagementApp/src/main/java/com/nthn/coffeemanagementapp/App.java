@@ -1,5 +1,6 @@
 package com.nthn.coffeemanagementapp;
 
+import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.Account;
 import com.nthn.pojo.Active;
 import com.nthn.pojo.Category;
@@ -24,9 +25,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * JavaFX App
@@ -38,6 +42,15 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("FXML_Login"), 640, 480);
+//        stage.setOnHiding((t) -> {
+//            try {
+//                Connection c=JdbcUtils.getConnection();
+//                if (c!=null)
+//                    c.close();
+//            } catch (SQLException ex) {
+//                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        });
         stage.setScene(scene);
         stage.show();
     }
@@ -52,42 +65,38 @@ public class App extends Application {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException, SQLException, ClassNotFoundException {
-       launch();
-       
-//        Account account = new Account();
-//        account.inputUsername();
-//        account.inputPassword();
-//        account.setActiveID(1);
-//        account.setRoleID(1);
+        //launch();
+
+//        Account account = new Account(UUID.randomUUID().toString(),"hongnhat1121", "10102001", 1);
 //        AccountService as = new AccountService();
 //        as.addAccount(account);
-//        as.getAccount(Account.getAccountID()).display();
-        
-//        Table t = new Table(2, 8, 1);
+//        account.display();
+//String name = "B%03d"+UUID.randomUUID();
+//        Table t = new Table(UUID.randomUUID().toString(), name, 8, 1);
 //        System.out.println(t.toString());
 //        TableService ts = new TableService();
-//        ts.addTable(t);
+////        ts.addTable(t);
 //        RoleService roleService = new RoleService();
-//        roleService.addRole(Role.USER);
 //        roleService.addRole(Role.ADMIN);
-//        List<String> results = roleService.getRoles();
-//        for (String result : results) {
+//        roleService.addRole(Role.USER);
+//        
+//        List<Role> results = roleService.getRoles();
+//        results.forEach(result -> {
 //            System.out.println("com.nthn.coffeemanagementapp.App.main(): " + result.toString());
-//        }
-
+////        });
 //        ActiveService activeService = new ActiveService();
 //        activeService.addActive(Active.AVAILABLE);
 //        activeService.addActive(Active.LOCK);
-////
+//////
 //        StateService stateService = new StateService();
 //        stateService.addState(State.SERVE);
 //        stateService.addState(State.BARTENDER);
 //        stateService.addState(State.RECEPTION);
-////
+//////
 //        StatusService statusService = new StatusService();
 //        statusService.addStatus(Status.EMPTY);
 //        statusService.addStatus(Status.FULL);
-////
+//////
 //        GenderService genderService = new GenderService();
 //        genderService.addGender(Gender.OTHER);
 //        genderService.addGender(Gender.FEMALE);

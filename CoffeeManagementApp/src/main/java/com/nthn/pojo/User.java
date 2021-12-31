@@ -12,18 +12,18 @@ import java.sql.SQLException;
  * @author HONGNHAT
  */
 public abstract class User extends Account {
-    
-    private int accountID;
+
+    private String accountID;
     private String lastName;
     private String firstName;
     private int genderID;
     private String address;
     private String phone;
-    
+
     public User() {
     }
-    
-    public User(int accountID, String lastName, String firstName, int genderID, String address, String phone) {
+
+    public User(String accountID, String lastName, String firstName, int genderID, String address, String phone) {
         this.accountID = accountID;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -31,28 +31,26 @@ public abstract class User extends Account {
         this.address = address;
         this.phone = phone;
     }
-    
+
     public void edit(String text) {
-        
+
     }
-    
+
     public void edit(int genderId) {
         this.setGenderID(genderId);
     }
-    
+
     public void viewDetail() throws SQLException {
         System.out.println("Họ và tên: " + getLastName() + " " + getFirstName());
         System.out.println("Giới tính: " + new GenderService().getGender(getGenderID()));
         System.out.println("Địa chỉ: " + getAddress());
         System.out.println("Số điện thoại: " + getPhone());
     }
-    
+
     @Override
     public String toString() {
         return String.format("", getLastName());
     }
-
-    
 
     /**
      * @return the lastName
@@ -124,6 +122,20 @@ public abstract class User extends Account {
         this.phone = phone;
     }
 
-    
+    /**
+     * @return the accountID
+     */
+    @Override
+    public String getAccountID() {
+        return accountID;
+    }
+
+    /**
+     * @param accountID the accountID to set
+     */
+    @Override
+    public void setAccountID(String accountID) {
+        this.accountID = accountID;
+    }
 
 }

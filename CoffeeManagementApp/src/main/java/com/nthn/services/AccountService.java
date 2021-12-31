@@ -22,19 +22,28 @@ import java.util.logging.Logger;
  */
 public class AccountService {
 
+    /**
+     *
+     * @return @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public List<Account> getAccounts() throws SQLException, ClassNotFoundException {
         List<Account> accounts = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM accounts");
             while (rs.next()) {
-                Account a = new Account(rs.getString("Username"), rs.getString("Password"), rs.getInt("ActiveID"), rs.getInt("RoleID"));
+                Account a = new Account(rs.getString("AccountID"), rs.getString("Username"), rs.getString("Password"), rs.getInt("RoleID"));
                 accounts.add(a);
             }
         }
         return accounts;
     }
 
+    /**
+     *
+     * @param account
+     */
     public void addAccount(Account account) {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
@@ -42,7 +51,7 @@ public class AccountService {
             PreparedStatement preparedStatement = connection.prepareStatement(""
                     + "INSERT INTO accounts(AccountID, Username, Password, ActiveID, RoleID) "
                     + "VALUES(?,?,?,?,?)");
-            preparedStatement.setInt(1, Account.getAccountID());
+            preparedStatement.setString(1, account.getAccountID());
             preparedStatement.setString(2, account.getUsername());
             preparedStatement.setString(3, account.getPassword());
             preparedStatement.setInt(4, account.getActiveID());
@@ -56,12 +65,18 @@ public class AccountService {
         }
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     * @throws SQLException
+     */
     public Account getAccount(int id) throws SQLException {
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM accounts WHERE AccountID=" + id);
             while (rs.next()) {
-                return new Account(rs.getString("Username"), rs.getString("Password"), rs.getInt("ActiveID"), rs.getInt("RoleID"));
+                return new Account(rs.getString("AccountID"), rs.getString("Username"), rs.getString("Password"), rs.getInt("RoleID"));
             }
         }
         return null;

@@ -13,9 +13,21 @@ public enum State {
     private final int stateID;
     private final String stateName;
 
-    private State(int stateID, String stateName) {
+    State(int stateID, String stateName) {
         this.stateID = stateID;
         this.stateName = stateName;
+    }
+
+    public static State getStateByID(int id) {
+        switch (id) {
+            case 1:
+                return SERVE;
+            case 2:
+                return BARTENDER;
+            case 3:
+                return RECEPTION;
+        }
+        return null;
     }
 
     @Override

@@ -15,20 +15,20 @@ import java.sql.SQLException;
  */
 public class Employee extends User {
 
-    private int employeeID;
+    private String employeeID;
     private Date hireDate;
     private int stateID;
 
     public Employee() {
     }
 
-    public Employee(int employeeID, Date hireDate, int stateID) {
+    public Employee(String employeeID, Date hireDate, int stateID) {
         this.employeeID = employeeID;
         this.hireDate = hireDate;
         this.stateID = stateID;
     }
 
-    public Employee(int employeeID, Date hireDate, int stateID, int accountID, String lastName, String firstName, int genderID, String address, String phone) {
+    public Employee(String employeeID, Date hireDate, int stateID, String accountID, String lastName, String firstName, int genderID, String address, String phone) {
         super(accountID, lastName, firstName, genderID, address, phone);
         this.employeeID = employeeID;
         this.hireDate = hireDate;
@@ -40,20 +40,6 @@ public class Employee extends User {
         super.viewDetail();
         System.out.println("Ngày vào làm: " + Utils.DATEFORMAT.format(getHireDate()));
         System.out.println("Bộ phận: " + new StateService().getState(getStateID()));
-    }
-
-    /**
-     * @return the employeeID
-     */
-    public int getEmployeeID() {
-        return employeeID;
-    }
-
-    /**
-     * @param employeeID the employeeID to set
-     */
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
     }
 
     /**
@@ -82,6 +68,20 @@ public class Employee extends User {
      */
     public void setStateID(int stateID) {
         this.stateID = stateID;
+    }
+
+    /**
+     * @return the employeeID
+     */
+    public String getEmployeeID() {
+        return employeeID;
+    }
+
+    /**
+     * @param employeeID the employeeID to set
+     */
+    public void setEmployeeID(String employeeID) {
+        this.employeeID = employeeID;
     }
 
 }

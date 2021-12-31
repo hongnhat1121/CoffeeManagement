@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 public class Table {
 
-    private int tableID;
+    private String tableID;
     private String tableName;
     private int capacity;
     private int statusID;
@@ -21,20 +21,12 @@ public class Table {
     public Table() {
     }
 
-    public Table(int tableID, int capacity, int statusID) {
-        this.tableID = tableID;
-        this.tableName = String.format("B%03d", tableID);
-        this.capacity = capacity;
-        this.statusID = statusID;
-    }
-
-    public Table(int tableID, String tableName, int capacity, int statusID) {
+    public Table(String tableID, String tableName, int capacity, int statusID) {
         this.tableID = tableID;
         this.tableName = tableName;
         this.capacity = capacity;
         this.statusID = statusID;
     }
-    
 
     public void edit(String text) {
         this.setTableName(text);
@@ -46,27 +38,12 @@ public class Table {
 
     public void viewDetail() throws SQLException {
         System.out.print("Sức chứa: " + this.getCapacity());
-        System.out.println("Trạng thái: " + new StatusService().getStatus(getTableID()));
+        System.out.println("Trạng thái: " + Status.getStatusByID(statusID));
     }
 
     @Override
     public String toString() {
-        return String.format("%s\t%d", this.tableName, this.capacity);
-    }
-
-    
-    /**
-     * @return the tableID
-     */
-    public int getTableID() {
-        return tableID;
-    }
-
-    /**
-     * @param tableID the tableID to set
-     */
-    public void setTableID(int tableID) {
-        this.tableID = tableID;
+        return String.format("%s\t%d", this.getTableName(), this.getCapacity());
     }
 
     /**
@@ -109,6 +86,20 @@ public class Table {
      */
     public void setStatusID(int statusID) {
         this.statusID = statusID;
+    }
+
+    /**
+     * @return the tableID
+     */
+    public String getTableID() {
+        return tableID;
+    }
+
+    /**
+     * @param tableID the tableID to set
+     */
+    public void setTableID(String tableID) {
+        this.tableID = tableID;
     }
 
 }

@@ -22,12 +22,13 @@ public class JdbcUtils {
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException ex) {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/coffeemanagementdb", "root", "1121");
+        } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(JdbcUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost/coffeemanagementdb", "root", "1121");
+    public static Connection getConnection() {
+        return connection;
     }
 }

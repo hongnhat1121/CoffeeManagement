@@ -17,6 +17,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,14 +34,11 @@ public class EmployeeService {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM employees");
             while (rs.next()) {
-                int id = rs.getInt("EmployeeID");
-                String lastName = rs.getString("LastName");
-                String firstName = rs.getString("FirstName");
-                String address = rs.getString("Address");
-                String phone = rs.getString("Phone");
-                Date hireDate = rs.getDate("HireDate");
-                int accountID = rs.getInt("AccountID");
-                Employee e = new Employee(accountID, hireDate, id, accountID, lastName, firstName, id, address, phone);
+                Employee e = new Employee(rs.getString("EmployeeID"), 
+                        rs.getDate("HireDate"), rs.getInt("StateID"), 
+                        rs.getString("AccountID"), rs.getString("LastName"), 
+                        rs.getString("FirstName"), rs.getInt("GenderID"), 
+                        rs.getString("Address"), rs.getString("Phone"));
                 employees.add(e);
             }
         }
@@ -57,12 +56,12 @@ public class EmployeeService {
                     "INSERT INTO employees(EmployeeID, LastName, FirstName, "
                     + "HireDate, StateID, AccountID, genderID, Address, Phone) "
                     + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement.setInt(1, e.getEmployeeID());
+            preparedStatement.setString(1, e.getEmployeeID());
             preparedStatement.setString(2, e.getLastName());
             preparedStatement.setString(3, e.getFirstName());
             preparedStatement.setDate(4, e.getHireDate());
             preparedStatement.setInt(5, e.getStateID());
-            preparedStatement.setInt(6, e.getAccountID());
+            preparedStatement.setString(6, e.getAccountID());
             preparedStatement.setInt(7, e.getGenderID());
             preparedStatement.setString(8, e.getAddress());
             preparedStatement.setString(9, e.getPhone());
@@ -81,14 +80,11 @@ public class EmployeeService {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM employees WHERE EmployeeID=" + id);
             while (rs.next()) {
-                String lastName = rs.getString("LastName");
-                String firstName = rs.getString("FirstName");
-                String address = rs.getString("Address");
-                String phone = rs.getString("Phone");
-                Date hireDate = rs.getDate("HireDate");
-                int accountID = rs.getInt("AccountID");
-                Employee e = new Employee(accountID, hireDate, id, accountID, lastName, firstName, id, address, phone);
-                return e;
+                return new Employee(rs.getString("EmployeeID"), 
+                        rs.getDate("HireDate"), rs.getInt("StateID"), 
+                        rs.getString("AccountID"), rs.getString("LastName"), 
+                        rs.getString("FirstName"), rs.getInt("GenderID"), 
+                        rs.getString("Address"), rs.getString("Phone"));
             }
         }
         return null;

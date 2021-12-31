@@ -28,7 +28,10 @@ public class TableService {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM tables");
             while (rs.next()) {
-                tables.add(new Table(rs.getInt("TableID"), rs.getInt("Capacity"), rs.getInt("StatusID")));
+                Table t = new Table(rs.getString("TableID"),
+                        rs.getString("TableName"), rs.getInt("Capacity"),
+                        rs.getInt("StatusID"));
+                tables.add(t);
             }
         }
         return tables;
@@ -44,7 +47,7 @@ public class TableService {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "INSERT INTO tables(TableID, Capacity, StatusID) "
                     + "VALUES(?, ?, ?)");
-            preparedStatement.setInt(1, table.getTableID());
+            preparedStatement.setString(1, table.getTableID());
             preparedStatement.setInt(2, table.getCapacity());
             preparedStatement.setInt(3, table.getStatusID());
 
@@ -61,8 +64,9 @@ public class TableService {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT TableName FROM tables WHERE TableID=" + id);
             while (rs.next()) {
-                return new Table(rs.getInt("TableID"),
-                        rs.getInt("Capacity"), rs.getInt("StatusID"));
+                return new Table(rs.getString("TableID"),
+                        rs.getString("TableName"), rs.getInt("Capacity"),
+                        rs.getInt("StatusID"));
             }
         }
         return null;

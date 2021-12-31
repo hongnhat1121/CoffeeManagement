@@ -28,7 +28,7 @@ public class ProductService {
             ResultSet rs = stm.executeQuery("SELECT * FROM products");
 
             while (rs.next()) {
-                Product p = new Product(rs.getInt("ProductId"),
+                Product p = new Product(rs.getString("ProductID"),
                         rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
                 results.add(p);
             }
@@ -42,7 +42,7 @@ public class ProductService {
             ResultSet rs = stm.executeQuery("SELECT * FROM products WHERE ProductID=" + id);
 
             while (rs.next()) {
-                Product p = new Product(rs.getInt("ProductId"),
+                Product p = new Product(rs.getString("ProductID"),
                         rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
                 return p;
             }
@@ -57,7 +57,7 @@ public class ProductService {
             PreparedStatement preparedStatement = connection.prepareStatement(""
                     + "INSERT INTO products(ProductID, ProductName, UnitPrice, CategoryID) "
                     + "VALUES(?, ?, ?, ?)");
-            preparedStatement.setInt(1, p.getProductID());
+            preparedStatement.setString(1, p.getProductID());
             preparedStatement.setString(2, p.getProductName());
             preparedStatement.setLong(3, p.getUnitPrice());
             preparedStatement.setInt(4, p.getCategoryId());
@@ -83,7 +83,7 @@ public class ProductService {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                Product p = new Product(rs.getInt("ProductId"),
+                Product p = new Product(rs.getString("ProductID"),
                         rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
                 results.add(p);
             }

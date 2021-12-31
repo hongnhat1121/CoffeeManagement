@@ -61,7 +61,7 @@ public class AccountTester {
     @Test
     public void testGetAccountByInvalidID() {
         try {
-            Account a = as.getAccount(1);
+            Account a = as.getAccount(2);
             Assertions.assertNull(a);
         } catch (SQLException ex) {
             Logger.getLogger(AccountTester.class.getName()).log(Level.SEVERE, null, ex);
@@ -71,8 +71,8 @@ public class AccountTester {
     public void testGetAccountByValidID() {
         try {
             Account a = as.getAccount(1);
-            Assertions.assertEquals("hongnhat", a.getUsername());
-            Assertions.assertEquals(Account.getAccountID(), 1);
+            Assertions.assertEquals("hongnhat1121", a.getUsername());
+            Assertions.assertEquals("efc0e953-52c7-453a-bf99-a5f120d973cf", a.getAccountID());
         } catch (SQLException ex) {
             Logger.getLogger(AccountTester.class.getName()).log(Level.SEVERE, null, ex);
         }
