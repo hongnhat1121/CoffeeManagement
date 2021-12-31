@@ -4,7 +4,6 @@
  */
 package com.nthn.pojo;
 
-import com.nthn.services.GenderService;
 import java.sql.SQLException;
 
 /**
@@ -16,40 +15,57 @@ public abstract class User extends Account {
     private String accountID;
     private String lastName;
     private String firstName;
-    private int genderID;
+    private Gender gender;
     private String address;
     private String phone;
 
     public User() {
     }
 
-    public User(String accountID, String lastName, String firstName, int genderID, String address, String phone) {
+    public User(String accountID, String lastName, String firstName,
+            Gender gender, String address, String phone) {
         this.accountID = accountID;
         this.lastName = lastName;
         this.firstName = firstName;
-        this.genderID = genderID;
+        this.gender = gender;
         this.address = address;
         this.phone = phone;
     }
 
-    public void edit(String text) {
-
+    public User(String accountID, String lastName, String firstName,
+            Gender gender, String address, String phone, String username,
+            String password) {
+        super(username, password);
+        this.accountID = accountID;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.gender = gender;
+        this.address = address;
+        this.phone = phone;
     }
 
-    public void edit(int genderId) {
-        this.setGenderID(genderId);
+    public User(String accountID, String lastName, String firstName,
+            Gender gender, String address, String phone, String username,
+            String password, Active active, Role role) {
+        super(accountID, username, password, active, role);
+        this.accountID = accountID;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.gender = gender;
+        this.address = address;
+        this.phone = phone;
     }
 
     public void viewDetail() throws SQLException {
         System.out.println("Họ và tên: " + getLastName() + " " + getFirstName());
-        System.out.println("Giới tính: " + new GenderService().getGender(getGenderID()));
+        System.out.println("Giới tính: " + getGender());
         System.out.println("Địa chỉ: " + getAddress());
         System.out.println("Số điện thoại: " + getPhone());
     }
 
     @Override
     public String toString() {
-        return String.format("", getLastName());
+        return String.format("%s %s - %s  - %s", this.getLastName(), this.getFirstName(), this.getGender(), this.getPhone());
     }
 
     /**
@@ -78,20 +94,6 @@ public abstract class User extends Account {
      */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-    }
-
-    /**
-     * @return the genderID
-     */
-    public int getGenderID() {
-        return genderID;
-    }
-
-    /**
-     * @param genderID the genderID to set
-     */
-    public void setGenderID(int genderID) {
-        this.genderID = genderID;
     }
 
     /**
@@ -136,6 +138,20 @@ public abstract class User extends Account {
     @Override
     public void setAccountID(String accountID) {
         this.accountID = accountID;
+    }
+
+    /**
+     * @return the gender
+     */
+    public Gender getGender() {
+        return gender;
+    }
+
+    /**
+     * @param gender the gender to set
+     */
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
 }

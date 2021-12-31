@@ -4,7 +4,6 @@
  */
 package com.nthn.pojo;
 
-import com.nthn.services.StatusService;
 import java.sql.SQLException;
 
 /**
@@ -16,16 +15,16 @@ public class Table {
     private String tableID;
     private String tableName;
     private int capacity;
-    private int statusID;
+    private Status status;
 
     public Table() {
     }
 
-    public Table(String tableID, String tableName, int capacity, int statusID) {
+    public Table(String tableID, String tableName, int capacity, Status status) {
         this.tableID = tableID;
         this.tableName = tableName;
         this.capacity = capacity;
-        this.statusID = statusID;
+        this.status = status;
     }
 
     public void edit(String text) {
@@ -37,13 +36,28 @@ public class Table {
     }
 
     public void viewDetail() throws SQLException {
+        System.out.println("Tên bàn: " + this.tableName);
         System.out.print("Sức chứa: " + this.getCapacity());
-        System.out.println("Trạng thái: " + Status.getStatusByID(statusID));
+        System.out.println("Trạng thái: " + this.status);
     }
 
     @Override
     public String toString() {
-        return String.format("%s\t%d", this.getTableName(), this.getCapacity());
+        return String.format("%s\t%d\t", this.getTableName(), this.getCapacity());
+    }
+
+    /**
+     * @return the tableID
+     */
+    public String getTableID() {
+        return tableID;
+    }
+
+    /**
+     * @param tableID the tableID to set
+     */
+    public void setTableID(String tableID) {
+        this.tableID = tableID;
     }
 
     /**
@@ -75,31 +89,17 @@ public class Table {
     }
 
     /**
-     * @return the statusID
+     * @return the status
      */
-    public int getStatusID() {
-        return statusID;
+    public Status getStatus() {
+        return status;
     }
 
     /**
-     * @param statusID the statusID to set
+     * @param status the status to set
      */
-    public void setStatusID(int statusID) {
-        this.statusID = statusID;
-    }
-
-    /**
-     * @return the tableID
-     */
-    public String getTableID() {
-        return tableID;
-    }
-
-    /**
-     * @param tableID the tableID to set
-     */
-    public void setTableID(String tableID) {
-        this.tableID = tableID;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
 }

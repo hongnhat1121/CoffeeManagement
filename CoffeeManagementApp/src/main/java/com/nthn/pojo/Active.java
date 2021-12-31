@@ -9,20 +9,18 @@ package com.nthn.pojo;
  * @author HONGNHAT
  */
 public enum Active {
-    AVAILABLE(1, "Đang hoạt động"), LOCK(2, "Bị khoá");
-    private final int activeId;
-    private final String acitveName;
+    AVAILABLE("Đang hoạt động"), LOCK("Bị khoá");
+    private final String content;
 
-    private Active(int activeId, String acitveText) {
-        this.activeId = activeId;
-        this.acitveName = acitveText;
+    private Active(String content) {
+        this.content = content;
     }
 
-    public static Active getActiveByID(int id) {
-        switch (id) {
-            case 1:
+    public static Active getByContent(String text) {
+        switch (text) {
+            case "Đang hoạt động":
                 return AVAILABLE;
-            case 2:
+            case "Bị khoá":
                 return LOCK;
         }
         return null;
@@ -30,21 +28,13 @@ public enum Active {
 
     @Override
     public String toString() {
-        return getAcitveName();
+        return this.getContent();
     }
 
     /**
-     * @return the activeId
+     * @return the content
      */
-    public int getActiveId() {
-        return activeId;
+    public String getContent() {
+        return content;
     }
-
-    /**
-     * @return the acitveName
-     */
-    public String getAcitveName() {
-        return acitveName;
-    }
-
 }

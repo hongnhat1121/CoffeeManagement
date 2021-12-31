@@ -5,16 +5,15 @@
 package com.nthn.coffeemanagementapp;
 
 import com.nthn.pojo.Account;
+import com.nthn.pojo.Active;
 import com.nthn.pojo.Role;
 import com.nthn.services.AccountService;
-import com.nthn.services.RoleService;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,22 +48,20 @@ public class FXML_LoginController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try {
-            this.cbRoles.getItems().addAll(new RoleService().getRoles());
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(FXML_LoginController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        this.cbRoles.getItems().addAll(Role.values());
+//        this.cbRoles.setValue(Role.USER);
     }
 
     public void loginHandler(ActionEvent actionEvent) throws SQLException {
-        Account a = new Account(UUID.randomUUID().toString(), this.txtUsername.getText(), this.txtPassword.getText(), this.cbRoles.getSelectionModel().getSelectedItem().getRoleID());
+        Account a = new Account(UUID.randomUUID().toString(),
+                txtUsername.getText(), txtPassword.getText(), Active.AVAILABLE,
+                cbRoles.getSelectionModel().getSelectedItem());
         a.display();
-        new AccountService().addAccount(a);
-        
     }
 
     public void resetHandler(ActionEvent actionEvent) {
-
+        this.txtUsername.clear();
+        this.txtPassword.clear();
     }
 
 }

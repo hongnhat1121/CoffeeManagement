@@ -4,8 +4,6 @@
  */
 package com.nthn.pojo;
 
-import com.nthn.services.ActiveService;
-import com.nthn.services.RoleService;
 import java.sql.SQLException;
 import org.apache.commons.codec.digest.DigestUtils; //Apache Commons Codecs - SHA256
 
@@ -18,18 +16,18 @@ public class Account {
     private String accountID;
     private String username;
     private String password;
-    private int activeID;
-    private int roleID;
+    private Active active;
+    private Role role;
 
     public Account() {
     }
 
-    public Account(String accountID, String username, String password, int roleID) {
+    public Account(String accountID, String username, String password, Active active, Role role) {
         this.accountID = accountID;
         this.username = username;
         this.password = DigestUtils.sha256Hex(password);
-        this.activeID = Active.AVAILABLE.getActiveId();
-        this.roleID = roleID;
+        this.active = active;
+        this.role = role;
     }
 
     public Account(String username, String password) {
@@ -41,14 +39,15 @@ public class Account {
         this.setPassword(DigestUtils.sha256Hex(text));
     }
 
-    public void changeRole(int role) {
-        this.setRoleID(role);
-    }
-
     public void display() throws SQLException {
         System.out.println("Tên đăng nhập: " + this.getUsername());
-        System.out.println("Hoạt động: " + new ActiveService().getActive(getActiveID()));
-        System.out.println("Phân quyền: " + Role.getRoleByID(roleID));
+        System.out.println("Hoạt động: " + this.getActive().getContent());
+        System.out.println("Phân quyền: " + this.getRole().getContent());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s\t%s\t%s", this.username, this.active, this.role);
     }
 
     /**
@@ -80,34 +79,6 @@ public class Account {
     }
 
     /**
-     * @return the activeID
-     */
-    public int getActiveID() {
-        return activeID;
-    }
-
-    /**
-     * @param activeID the activeID to set
-     */
-    public void setActiveID(int activeID) {
-        this.activeID = activeID;
-    }
-
-    /**
-     * @return the roleID
-     */
-    public int getRoleID() {
-        return roleID;
-    }
-
-    /**
-     * @param roleID the roleID to set
-     */
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
-    }
-
-    /**
      * @return the accountID
      */
     public String getAccountID() {
@@ -119,5 +90,33 @@ public class Account {
      */
     public void setAccountID(String accountID) {
         this.accountID = accountID;
+    }
+
+    /**
+     * @return the active
+     */
+    public Active getActive() {
+        return active;
+    }
+
+    /**
+     * @param active the active to set
+     */
+    public void setActive(Active active) {
+        this.active = active;
+    }
+
+    /**
+     * @return the role
+     */
+    public Role getRole() {
+        return role;
+    }
+
+    /**
+     * @param role the role to set
+     */
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

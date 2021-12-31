@@ -67,7 +67,8 @@ public class AccountTester {
             Logger.getLogger(AccountTester.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-     @Test
+
+    @Test
     public void testGetAccountByValidID() {
         try {
             Account a = as.getAccount(1);

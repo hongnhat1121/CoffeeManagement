@@ -43,10 +43,15 @@ public class OrderDetail {
     }
 
     public void viewDetail() throws SQLException {
-        System.out.println(new ProductService().getProduct(productID).toString());
+        System.out.println(this.productID);
         System.out.println("Số lượng: " + this.quantity);
         System.out.println("Đơn giá: " + this.unitPrice);
         System.out.println("Ghi chú: " + this.note);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s\t%s\t%s", this.quantity, this.unitPrice, this.note);
     }
 
     /**

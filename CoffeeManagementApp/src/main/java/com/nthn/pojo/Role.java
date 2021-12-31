@@ -9,21 +9,20 @@ package com.nthn.pojo;
  * @author HONGNHAT
  */
 public enum Role {
-    ADMIN(1, "Người quản trị"), USER(2, "Người dùng");
+    ADMIN("Người quản trị"), USER("Người dùng");
+    private final String content;
 
-    private final int roleID;
-    private final String roleName;
-
-    Role(int roleID, String roleName) {
-        this.roleID = roleID;
-        this.roleName = roleName;
+    private Role(String content) {
+        this.content = content;
     }
 
-    public static Role getRoleByID(int id) {
-        switch (id) {
-            case 1:
+    
+
+    public static Role getByContent(String text) {
+        switch (text) {
+            case "Người quản trị":
                 return ADMIN;
-            case 2:
+            case "Người dùng":
                 return USER;
         }
         return null;
@@ -31,20 +30,13 @@ public enum Role {
 
     @Override
     public String toString() {
-        return this.getRoleName();
+        return this.content;
     }
 
     /**
-     * @return the roleID
+     * @return the content
      */
-    public int getRoleID() {
-        return roleID;
-    }
-
-    /**
-     * @return the roleName
-     */
-    public String getRoleName() {
-        return roleName;
+    public String getContent() {
+        return content;
     }
 }

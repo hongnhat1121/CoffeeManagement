@@ -9,22 +9,20 @@ package com.nthn.pojo;
  * @author HONGNHAT
  */
 public enum Gender {
-    MALE(1, "Nam"), FEMALE(2, "Nữ"), OTHER(3, "Khác");
-    private final int genderID;
-    private final String genderName;
+    MALE("Nam"), FEMALE("Nữ"), OTHER("Khác");
+    private final String content;
 
-    Gender(int genderID, String genderName) {
-        this.genderID = genderID;
-        this.genderName = genderName;
+    private Gender(String content) {
+        this.content = content;
     }
 
-    public static Gender getGenderByID(int id) {
-        switch (id) {
-            case 1:
+    public static Gender getByContent(String text) {
+        switch (text) {
+            case "Nam":
                 return MALE;
-            case 2:
+            case "Nữ":
                 return FEMALE;
-            case 3:
+            case "Khác":
                 return OTHER;
         }
         return null;
@@ -32,20 +30,13 @@ public enum Gender {
 
     @Override
     public String toString() {
-        return this.getGenderName();
+        return this.content;
     }
 
     /**
-     * @return the genderID
+     * @return the content
      */
-    public int getGenderID() {
-        return genderID;
-    }
-
-    /**
-     * @return the genderName
-     */
-    public String getGenderName() {
-        return genderName;
+    public String getContent() {
+        return content;
     }
 }

@@ -9,37 +9,33 @@ package com.nthn.pojo;
  * @author HONGNHAT
  */
 public enum Status {
-    EMPTY(1, "Còn trống"), FULL(2, "Đã đặt");
-    private final int statusID;
-    private final String statusName;
+    EMPTY("Còn trống"), FULL("Đã đặt");
+    private final String content;
 
-    Status(int statusID, String statusName) {
-        this.statusID = statusID;
-        this.statusName = statusName;
+    private Status(String content) {
+        this.content = content;
     }
 
-    public static Status getStatusByID(int id) {
-        switch (id) {
-            case 1:
+    public static Status getByContent(String text) {
+        switch (text) {
+            case "Còn trống":
                 return EMPTY;
-            case 2:
+            case "Đã đặt":
                 return FULL;
         }
         return null;
     }
 
-    /**
-     * @return the statusID
-     */
-    public int getStatusID() {
-        return statusID;
+    @Override
+    public String toString() {
+        return this.content;
     }
 
     /**
-     * @return the statusName
+     * @return the content
      */
-    public String getStatusName() {
-        return statusName;
+    public String getContent() {
+        return content;
     }
 
 }

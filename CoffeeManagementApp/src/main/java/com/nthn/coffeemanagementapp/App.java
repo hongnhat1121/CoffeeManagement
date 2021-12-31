@@ -1,22 +1,5 @@
 package com.nthn.coffeemanagementapp;
 
-import com.nthn.configs.JdbcUtils;
-import com.nthn.pojo.Account;
-import com.nthn.pojo.Active;
-import com.nthn.pojo.Category;
-import com.nthn.pojo.Gender;
-import com.nthn.pojo.Role;
-import com.nthn.pojo.State;
-import com.nthn.pojo.Status;
-import com.nthn.pojo.Table;
-import com.nthn.services.AccountService;
-import com.nthn.services.ActiveService;
-import com.nthn.services.CategoryService;
-import com.nthn.services.GenderService;
-import com.nthn.services.RoleService;
-import com.nthn.services.StateService;
-import com.nthn.services.StatusService;
-import com.nthn.services.TableService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,12 +8,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * JavaFX App
@@ -65,8 +43,12 @@ public class App extends Application {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException, SQLException, ClassNotFoundException {
-        //launch();
-
+        launch();
+////       System.out.println(StatusEnum.getStatusEnumByContent("Đã đặt"));
+//TableService service= new TableService();
+//service.getTables().forEach((t) -> {
+//    System.out.println(t.getS().getContent());
+//});
 //        Account account = new Account(UUID.randomUUID().toString(),"hongnhat1121", "10102001", 1);
 //        AccountService as = new AccountService();
 //        as.addAccount(account);

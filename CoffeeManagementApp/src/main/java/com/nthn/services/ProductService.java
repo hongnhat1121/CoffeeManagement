@@ -7,6 +7,7 @@ package com.nthn.services;
 
 import com.nthn.pojo.Product;
 import com.nthn.configs.JdbcUtils;
+import com.nthn.pojo.Category;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,38 +30,40 @@ public class ProductService {
 
             while (rs.next()) {
                 Product p = new Product(rs.getString("ProductID"),
-                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"),
+                        Category.valueOf(rs.getString("Category")));
                 results.add(p);
             }
         }
         return results;
     }
 
-    public Product getProduct(int id) throws SQLException {
-        try (Connection conn = JdbcUtils.getConnection()) {
-            Statement stm = conn.createStatement();
-            ResultSet rs = stm.executeQuery("SELECT * FROM products WHERE ProductID=" + id);
-
-            while (rs.next()) {
-                Product p = new Product(rs.getString("ProductID"),
-                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
-                return p;
-            }
-        }
-        return null;
-    }
+//    public Product getProduct(int id) throws SQLException {
+//        try (Connection conn = JdbcUtils.getConnection()) {
+//            Statement stm = conn.createStatement();
+//            ResultSet rs = stm.executeQuery("SELECT * FROM products WHERE ProductID=" + id);
+//
+//            while (rs.next()) {
+//                Product p = new Product(rs.getString("ProductID"),
+//                        rs.getString("ProductName"), rs.getLong("UnitPrice"),
+//                        Category.getByContent(rs.getString("Category")));
+//                return p;
+//            }
+//        }
+//        return null;
+//    }
 
     public void addProduct(Product p) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
 
             PreparedStatement preparedStatement = connection.prepareStatement(""
-                    + "INSERT INTO products(ProductID, ProductName, UnitPrice, CategoryID) "
+                    + "INSERT INTO products(ProductID, ProductName, UnitPrice, Category) "
                     + "VALUES(?, ?, ?, ?)");
             preparedStatement.setString(1, p.getProductID());
             preparedStatement.setString(2, p.getProductName());
             preparedStatement.setLong(3, p.getUnitPrice());
-            preparedStatement.setInt(4, p.getCategoryId());
+            preparedStatement.setString(4, p.getCategory().name());
 
             preparedStatement.executeUpdate();
 
@@ -84,7 +87,8 @@ public class ProductService {
 
             while (rs.next()) {
                 Product p = new Product(rs.getString("ProductID"),
-                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"),
+                        Category.getByContent(rs.getString("Category")));
                 results.add(p);
             }
         }

@@ -9,22 +9,20 @@ package com.nthn.pojo;
  * @author HONGNHAT
  */
 public enum State {
-    SERVE(1, "Phục vụ"), BARTENDER(2, "Pha chế"), RECEPTION(3, "Tiếp tân");
-    private final int stateID;
-    private final String stateName;
+    SERVE("Phục vụ"), BARTENDER("Pha chế"), RECEPTION("Tiếp tân");
+    private final String content;
 
-    State(int stateID, String stateName) {
-        this.stateID = stateID;
-        this.stateName = stateName;
+    private State(String content) {
+        this.content = content;
     }
 
-    public static State getStateByID(int id) {
-        switch (id) {
-            case 1:
+    public static State getByContent(String text) {
+        switch (text) {
+            case "Phục vụ":
                 return SERVE;
-            case 2:
+            case "Pha chế":
                 return BARTENDER;
-            case 3:
+            case "Tiếp tân":
                 return RECEPTION;
         }
         return null;
@@ -32,20 +30,13 @@ public enum State {
 
     @Override
     public String toString() {
-        return this.stateName;
+        return this.content;
     }
 
     /**
-     * @return the stateID
+     * @return the content
      */
-    public int getStateID() {
-        return stateID;
-    }
-
-    /**
-     * @return the stateName
-     */
-    public String getStateName() {
-        return stateName;
+    public String getContent() {
+        return content;
     }
 }

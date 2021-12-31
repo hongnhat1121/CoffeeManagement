@@ -4,50 +4,40 @@
  */
 package com.nthn.pojo;
 
-import com.nthn.services.CategoryService;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author HONGNHAT
  */
 public class Product {
-    
+
     private String productID;
     private String productName;
     private long unitPrice;
-    private int categoryId;
-    
+    private Category category;
+
     public Product() {
     }
 
-    public Product(String productID, String productName, long unitPrice, int categoryId) {
+    public Product(String productID, String productName, long unitPrice, Category category) {
         this.productID = productID;
         this.productName = productName;
         this.unitPrice = unitPrice;
-        this.categoryId = categoryId;
+        this.category = category;
     }
-    
-    
+
     public void viewDetail() throws SQLException {
         System.out.println("Tên sản phẩm: " + this.getProductName());
         System.out.println("Đơn giá: " + this.getUnitPrice());
-        System.out.println("Danh mục: " + new CategoryService().getCatagory(getCategoryId()));
-    }
-    
-    @Override
-    public String toString() {
-        try {
-            return String.format("%s\t%s", this.getProductName(), new CategoryService().getCatagory(getCategoryId()));
-        } catch (SQLException ex) {
-            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        System.out.println("Danh mục: " + this.getCategory());
     }
 
-  
+    @Override
+    public String toString() {
+        return String.format("%s\t%s", this.getProductName(), this.getCategory());
+    }
+
     /**
      * @return the productName
      */
@@ -77,20 +67,6 @@ public class Product {
     }
 
     /**
-     * @return the categoryId
-     */
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    /**
-     * @param categoryId the categoryId to set
-     */
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    /**
      * @return the productID
      */
     public String getProductID() {
@@ -103,5 +79,19 @@ public class Product {
     public void setProductID(String productID) {
         this.productID = productID;
     }
-    
+
+    /**
+     * @return the category
+     */
+    public Category getCategory() {
+        return category;
+    }
+
+    /**
+     * @param category the category to set
+     */
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
 }
