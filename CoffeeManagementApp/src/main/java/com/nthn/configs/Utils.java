@@ -4,6 +4,8 @@
  */
 package com.nthn.configs;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 /**
@@ -11,5 +13,7 @@ import java.util.Scanner;
  * @author HONGNHAT
  */
 public class Utils {
+
     public static final Scanner SCANNER = new Scanner(System.in);
+    public static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("dd/MM/yyyy");
 }

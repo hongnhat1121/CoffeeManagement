@@ -5,7 +5,7 @@
 package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
-import com.nthn.pojo.Active;
+import com.nthn.pojo.Table;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,44 +20,49 @@ import java.util.logging.Logger;
  *
  * @author HONGNHAT
  */
-public class ActiveService {
+public class TableService {
 
-    public List<String> getActives() throws SQLException {
-        List<String> actives = new ArrayList<>();
+    public List<Table> getTables() throws SQLException {
+        List<Table> tables = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM actives");
+            ResultSet rs = s.executeQuery("SELECT * FROM tables");
             while (rs.next()) {
-                actives.add(rs.getString("activeName"));
+                tables.add(new Table(rs.getInt("TableID"), rs.getInt("Capacity"), rs.getInt("StatusID")));
             }
         }
-        return actives;
+        return tables;
     }
 
-    public void addActive(Active active) {
+    public void addTable(Table table) {
+
         try {
             Connection connection = JdbcUtils.getConnection();
 
             connection.setAutoCommit(false);
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO actives(ActiveID, ActiveName) VALUES(?,?)");
-            preparedStatement.setInt(1, active.getActiveId());
-            preparedStatement.setString(2, active.getAcitveName());
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "INSERT INTO tables(TableID, Capacity, StatusID) "
+                    + "VALUES(?, ?, ?)");
+            preparedStatement.setInt(1, table.getTableID());
+            preparedStatement.setInt(2, table.getCapacity());
+            preparedStatement.setInt(3, table.getStatusID());
 
             preparedStatement.executeUpdate();
 
             connection.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(ActiveService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TableService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public String getActive(int activeID) throws SQLException {
+    public Table getTable(int id) throws SQLException {
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT ActiveName FROM actives WHERE ActiveID=" + activeID);
+            ResultSet rs = s.executeQuery("SELECT TableName FROM tables WHERE TableID=" + id);
             while (rs.next()) {
-                return rs.getString("ActiveName");
+                return new Table(rs.getInt("TableID"),
+                        rs.getInt("Capacity"), rs.getInt("StatusID"));
             }
         }
         return null;

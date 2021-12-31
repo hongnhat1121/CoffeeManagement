@@ -21,7 +21,8 @@ import java.util.logging.Logger;
  * @author HONGNHAT
  */
 public class GenderService {
-     public List<String> getGenders() throws SQLException {
+
+    public List<String> getGenders() throws SQLException {
         List<String> genders = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
@@ -49,5 +50,16 @@ public class GenderService {
         } catch (SQLException ex) {
             Logger.getLogger(GenderService.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public String getGender(int id) throws SQLException {
+        try (Connection c = JdbcUtils.getConnection()) {
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery("SELECT GenderName FROM genders WHERE GenderID=" + id);
+            while (rs.next()) {
+                return rs.getString("genderName");
+            }
+        }
+        return null;
     }
 }

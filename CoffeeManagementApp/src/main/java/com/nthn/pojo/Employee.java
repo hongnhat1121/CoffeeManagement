@@ -4,7 +4,10 @@
  */
 package com.nthn.pojo;
 
+import com.nthn.configs.Utils;
+import com.nthn.services.StateService;
 import java.sql.Date;
+import java.sql.SQLException;
 
 /**
  *
@@ -14,33 +17,29 @@ public class Employee extends User {
 
     private int employeeID;
     private Date hireDate;
-    private State state;
+    private int stateID;
 
     public Employee() {
     }
 
-    public Employee(int employeeID, Date hireDate, State state) {
+    public Employee(int employeeID, Date hireDate, int stateID) {
         this.employeeID = employeeID;
         this.hireDate = hireDate;
-        this.state = state;
+        this.stateID = stateID;
     }
 
-    public Employee(int employeeID, Date hireDate, State state, Account account, String lastName, String firstName, Gender gender, String address, String phone) {
-        super(account, lastName, firstName, gender, address, phone);
+    public Employee(int employeeID, Date hireDate, int stateID, int accountID, String lastName, String firstName, int genderID, String address, String phone) {
+        super(accountID, lastName, firstName, genderID, address, phone);
         this.employeeID = employeeID;
         this.hireDate = hireDate;
-        this.state = state;
-    }
-
-    public void changeState(State state) {
-        this.state = state;
+        this.stateID = stateID;
     }
 
     @Override
-    public void viewDetail() {
+    public void viewDetail() throws SQLException {
         super.viewDetail();
-        System.out.println("Ngày vào làm: " + this.hireDate.toString());
-        System.out.println("Bộ phận: " + this.state.getStateName());
+        System.out.println("Ngày vào làm: " + Utils.DATEFORMAT.format(getHireDate()));
+        System.out.println("Bộ phận: " + new StateService().getState(getStateID()));
     }
 
     /**
@@ -72,17 +71,17 @@ public class Employee extends User {
     }
 
     /**
-     * @return the state
+     * @return the stateID
      */
-    public State getState() {
-        return state;
+    public int getStateID() {
+        return stateID;
     }
 
     /**
-     * @param state the state to set
+     * @param stateID the stateID to set
      */
-    public void setState(State state) {
-        this.state = state;
+    public void setStateID(int stateID) {
+        this.stateID = stateID;
     }
 
 }

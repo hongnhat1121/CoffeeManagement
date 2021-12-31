@@ -28,6 +28,6 @@ public class JdbcUtils {
     }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost/coffeemanagementdb", "root", "tinhyeulathe1");
+        return DriverManager.getConnection("jdbc:mysql://localhost/coffeemanagementdb", "root", "1121");
     }
 }

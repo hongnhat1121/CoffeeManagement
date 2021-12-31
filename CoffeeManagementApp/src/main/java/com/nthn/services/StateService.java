@@ -52,4 +52,15 @@ public class StateService {
             Logger.getLogger(RoleService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public String getState(int id) throws SQLException {
+        try (Connection c = JdbcUtils.getConnection()) {
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery("SELECT StateName FROM states WHERE StateID=" + id);
+            while (rs.next()) {
+                return rs.getString("StateName");
+            }
+        }
+        return null;
+    }
 }

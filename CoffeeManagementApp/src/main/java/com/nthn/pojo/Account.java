@@ -5,7 +5,10 @@
 package com.nthn.pojo;
 
 import com.nthn.configs.Utils;
+import com.nthn.services.ActiveService;
+import com.nthn.services.RoleService;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import org.apache.commons.codec.digest.DigestUtils; //Apache Commons Codecs - SHA256
 
 /**
@@ -14,20 +17,22 @@ import org.apache.commons.codec.digest.DigestUtils; //Apache Commons Codecs - SH
  */
 public class Account {
 
-    private int accountID;
+    private static int accountID = 0;
     private String username;
     private String password;
-    private Active active;
-    private Role role;
+    private int activeID;
+    private int roleID;
 
     public Account() {
+        Account.accountID++;
     }
 
-    public Account(String username, String password, Active active, Role role) {
+    public Account(String username, String password, int activeID, int roleID) {
         this.username = username;
         this.password = password;
-        this.active = active;
-        this.role = role;
+        this.activeID = activeID;
+        this.roleID = roleID;
+        Account.accountID++;
     }
 
     public void inputUsername() {
@@ -44,15 +49,15 @@ public class Account {
         this.setPassword(text);
     }
 
-    public void changeRole(Role role) {
-        this.role = role;
+    public void changeRole(int role) {
+        this.setRoleID(role);
     }
 
-    public void display() {
-        System.out.println("Tên đăng nhập: " + this.username);
-        System.out.println("Mật khẩu: " + this.password);
-        System.out.println("Hoạt động: " + this.active.getAcitveName());
-        System.out.println("Phân quyền: " + this.role.getRoleName());
+    public void display() throws SQLException {
+        System.out.println("Tên đăng nhập: " + this.getUsername());
+        System.out.println("Mật khẩu: " + this.getPassword());
+        System.out.println("Hoạt động: " + new ActiveService().getActive(getActiveID()));
+        System.out.println("Phân quyền: " + new RoleService().getRole(getRoleID()));
     }
 
     /**
@@ -84,44 +89,45 @@ public class Account {
     }
 
     /**
+     * @return the activeID
+     */
+    public int getActiveID() {
+        return activeID;
+    }
+
+    /**
+     * @param activeID the activeID to set
+     */
+    public void setActiveID(int activeID) {
+        this.activeID = activeID;
+    }
+
+    /**
+     * @return the roleID
+     */
+    public int getRoleID() {
+        return roleID;
+    }
+
+    /**
+     * @param roleID the roleID to set
+     */
+    public void setRoleID(int roleID) {
+        this.roleID = roleID;
+    }
+
+    /**
      * @return the accountID
      */
-    public int getAccountID() {
+    public static int getAccountID() {
         return accountID;
     }
 
     /**
-     * @param accountID the accountID to set
+     * @param aAccountID the accountID to set
      */
-    public void setAccountID(int accountID) {
-        this.accountID = accountID;
+    public static void setAccountID(int aAccountID) {
+        accountID = aAccountID;
     }
 
-    /**
-     * @return the active
-     */
-    public Active getActive() {
-        return active;
-    }
-
-    /**
-     * @param active the active to set
-     */
-    public void setActive(Active active) {
-        this.active = active;
-    }
-
-    /**
-     * @return the role
-     */
-    public Role getRole() {
-        return role;
-    }
-
-    /**
-     * @param role the role to set
-     */
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }

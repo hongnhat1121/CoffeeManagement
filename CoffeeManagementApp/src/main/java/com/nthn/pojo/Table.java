@@ -4,6 +4,9 @@
  */
 package com.nthn.pojo;
 
+import com.nthn.services.StatusService;
+import java.sql.SQLException;
+
 /**
  *
  * @author HONGNHAT
@@ -13,39 +16,45 @@ public class Table {
     private int tableID;
     private String tableName;
     private int capacity;
-    private Status status;
+    private int statusID;
 
     public Table() {
     }
 
-    public Table(int tableID, String tableName, int capacity, Status status) {
+    public Table(int tableID, int capacity, int statusID) {
+        this.tableID = tableID;
+        this.tableName = String.format("B%03d", tableID);
+        this.capacity = capacity;
+        this.statusID = statusID;
+    }
+
+    public Table(int tableID, String tableName, int capacity, int statusID) {
         this.tableID = tableID;
         this.tableName = tableName;
         this.capacity = capacity;
-        this.status = status;
+        this.statusID = statusID;
     }
+    
 
     public void edit(String text) {
-        this.tableName = text;
+        this.setTableName(text);
     }
 
     public void edit(int number) {
-        this.capacity = number;
+        this.setCapacity(number);
     }
 
-    public void changeStatus() {
-        if (this.status == Status.FULL) {
-            this.status = Status.EMPTY;
-        } else {
-            this.status = Status.FULL;
-        }
+    public void viewDetail() throws SQLException {
+        System.out.print("Sức chứa: " + this.getCapacity());
+        System.out.println("Trạng thái: " + new StatusService().getStatus(getTableID()));
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s\t%d", this.tableName, this.capacity);
+    }
+
     
-    public void viewDetail(){
-        System.out.print("Sức chứa: " + this.capacity);
-        System.out.println("Trạng thái: " + this.status.toString());
-    }
-
     /**
      * @return the tableID
      */
@@ -89,17 +98,17 @@ public class Table {
     }
 
     /**
-     * @return the status
+     * @return the statusID
      */
-    public Status getStatus() {
-        return status;
+    public int getStatusID() {
+        return statusID;
     }
 
     /**
-     * @param status the status to set
+     * @param statusID the statusID to set
      */
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatusID(int statusID) {
+        this.statusID = statusID;
     }
 
 }

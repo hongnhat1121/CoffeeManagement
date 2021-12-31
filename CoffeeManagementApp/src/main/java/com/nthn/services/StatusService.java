@@ -52,4 +52,15 @@ public class StatusService {
             Logger.getLogger(RoleService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public String getStatus(int id) throws SQLException {
+        try (Connection c = JdbcUtils.getConnection()) {
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery("SELECT StatusName FROM status WHERE StatusID="+id);
+            while (rs.next()) {
+                return rs.getString("StatusName");
+            }
+        }
+        return null;
+    }
 }

@@ -4,64 +4,55 @@
  */
 package com.nthn.pojo;
 
+import com.nthn.services.GenderService;
+import java.sql.SQLException;
+
 /**
  *
  * @author HONGNHAT
  */
 public abstract class User extends Account {
-
-    private Account account;
+    
+    private int accountID;
     private String lastName;
     private String firstName;
-    private Gender gender;
+    private int genderID;
     private String address;
     private String phone;
-
+    
     public User() {
     }
-
-    public User(Account account, String lastName, String firstName, Gender gender, String address, String phone) {
-        this.account = account;
+    
+    public User(int accountID, String lastName, String firstName, int genderID, String address, String phone) {
+        this.accountID = accountID;
         this.lastName = lastName;
         this.firstName = firstName;
-        this.gender = gender;
+        this.genderID = genderID;
         this.address = address;
         this.phone = phone;
     }
-
+    
     public void edit(String text) {
         
     }
-
-    public void edit(Gender gender) {
-        this.gender = gender;
+    
+    public void edit(int genderId) {
+        this.setGenderID(genderId);
     }
-
-    public void viewDetail() {
-        System.out.println("Họ và tên: " + lastName + " " + firstName);
-        System.out.println("Giới tính: " + gender.toString());
-        System.out.println("Địa chỉ: " + address);
-        System.out.println("Số điện thoại: " + phone);
+    
+    public void viewDetail() throws SQLException {
+        System.out.println("Họ và tên: " + getLastName() + " " + getFirstName());
+        System.out.println("Giới tính: " + new GenderService().getGender(getGenderID()));
+        System.out.println("Địa chỉ: " + getAddress());
+        System.out.println("Số điện thoại: " + getPhone());
     }
-
+    
     @Override
     public String toString() {
-        return String.format("", lastName);
+        return String.format("", getLastName());
     }
 
-    /**
-     * @return the account
-     */
-    public Account getAccount() {
-        return account;
-    }
-
-    /**
-     * @param account the account to set
-     */
-    public void setAccount(Account account) {
-        this.account = account;
-    }
+    
 
     /**
      * @return the lastName
@@ -92,17 +83,17 @@ public abstract class User extends Account {
     }
 
     /**
-     * @return the gender
+     * @return the genderID
      */
-    public Gender getGender() {
-        return gender;
+    public int getGenderID() {
+        return genderID;
     }
 
     /**
-     * @param gender the gender to set
+     * @param genderID the genderID to set
      */
-    public void setGender(Gender gender) {
-        this.gender = gender;
+    public void setGenderID(int genderID) {
+        this.genderID = genderID;
     }
 
     /**
@@ -132,5 +123,7 @@ public abstract class User extends Account {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    
 
 }

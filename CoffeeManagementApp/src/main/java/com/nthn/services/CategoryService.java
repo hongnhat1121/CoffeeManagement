@@ -38,8 +38,8 @@ public class CategoryService {
 
         return categories;
     }
-    
-   public void addCategory(Category category) {
+
+    public void addCategory(Category category) {
 
         try {
             Connection connection = JdbcUtils.getConnection();
@@ -57,14 +57,15 @@ public class CategoryService {
             Logger.getLogger(RoleService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-   
-//   public Catagory getCatagoryById(int catagoryId) throws SQLException {
-//       try (Connection Conn = JdbcUtils.getConnection()){
-//           PreparedStatement stm = new PreparedStatement("SELECT * FROM catagories WHERE CatagoryId = ?");
-//           stm.setInt(1, catagoryId);
-//           ResultSet rs = stm.executeQuery();
-//           
-//           
-//       }
-//   }
+
+    public String getCatagory(int id) throws SQLException {
+        try (Connection c = JdbcUtils.getConnection()) {
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery("SELECT CategoryName FROM categories WHERE CategoryID=" + id);
+            while (rs.next()) {
+                return rs.getString("CategoryName");
+            }
+        }
+        return null;
+    }
 }
