@@ -49,7 +49,7 @@ public class Order {
         System.out.println("Ngày tạo: " + Utils.DATEFORMAT.format(getOrderDate()));
         System.out.println("Tổng tiền: " + this.getTotal());
         System.out.println("Nhân viên:" + new EmployeeService().
-                getEmployee(getEmployeeID()).getLastName());
+                getEmployee(getEmployeeID()).getFullName());
         System.out.println("Bàn: " + new TableService().getTable(getTableID()).toString());
     }
 

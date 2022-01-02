@@ -4,6 +4,7 @@
  */
 package com.nthn.pojo;
 
+import java.sql.Date;
 import java.sql.SQLException;
 
 /**
@@ -13,51 +14,56 @@ import java.sql.SQLException;
 public abstract class User extends Account {
 
     private String accountID;
-    private String lastName;
-    private String firstName;
+    private String fullName;
+    private Date birthDate;
     private Gender gender;
+    private String identityCard;
     private String address;
     private String phone;
 
     public User() {
     }
 
-    public User(String accountID, String lastName, String firstName,
-            Gender gender, String address, String phone) {
+    public User(String accountID, String fullName, Date birthDate, Gender gender, 
+            String identityCard, String address, String phone) {
         this.accountID = accountID;
-        this.lastName = lastName;
-        this.firstName = firstName;
+        this.fullName = fullName;
+        this.birthDate = birthDate;
         this.gender = gender;
+        this.identityCard = identityCard;
         this.address = address;
         this.phone = phone;
     }
 
-    public User(String accountID, String lastName, String firstName,
-            Gender gender, String address, String phone, String username,
+    public User(String accountID, String fullName, Date birthDate, Gender gender, 
+            String identityCard, String address, String phone, String username, 
             String password) {
         super(username, password);
         this.accountID = accountID;
-        this.lastName = lastName;
-        this.firstName = firstName;
+        this.fullName = fullName;
+        this.birthDate = birthDate;
         this.gender = gender;
+        this.identityCard = identityCard;
         this.address = address;
         this.phone = phone;
     }
 
-    public User(String accountID, String lastName, String firstName,
-            Gender gender, String address, String phone, String username,
+    public User(String accountID, String fullName, Date birthDate, Gender gender, 
+            String identityCard, String address, String phone, String username, 
             String password, Active active, Role role) {
         super(accountID, username, password, active, role);
         this.accountID = accountID;
-        this.lastName = lastName;
-        this.firstName = firstName;
+        this.fullName = fullName;
+        this.birthDate = birthDate;
         this.gender = gender;
+        this.identityCard = identityCard;
         this.address = address;
         this.phone = phone;
     }
 
+
     public void viewDetail() throws SQLException {
-        System.out.println("Họ và tên: " + getLastName() + " " + getFirstName());
+        System.out.println("Họ và tên: " + getFullName());
         System.out.println("Giới tính: " + getGender());
         System.out.println("Địa chỉ: " + getAddress());
         System.out.println("Số điện thoại: " + getPhone());
@@ -65,63 +71,7 @@ public abstract class User extends Account {
 
     @Override
     public String toString() {
-        return String.format("%s %s - %s  - %s", this.getLastName(), this.getFirstName(), this.getGender(), this.getPhone());
-    }
-
-    /**
-     * @return the lastName
-     */
-    public String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * @param lastName the lastName to set
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    /**
-     * @return the firstName
-     */
-    public String getFirstName() {
-        return firstName;
-    }
-
-    /**
-     * @param firstName the firstName to set
-     */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    /**
-     * @return the address
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * @param address the address to set
-     */
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    /**
-     * @return the phone
-     */
-    public String getPhone() {
-        return phone;
-    }
-
-    /**
-     * @param phone the phone to set
-     */
-    public void setPhone(String phone) {
-        this.phone = phone;
+        return String.format("%s - %s - %s  - %s", this.getFullName(), this.getGender(), this.getPhone(), this.getAddress());
     }
 
     /**
@@ -141,6 +91,34 @@ public abstract class User extends Account {
     }
 
     /**
+     * @return the fullName
+     */
+    public String getFullName() {
+        return fullName;
+    }
+
+    /**
+     * @param fullName the fullName to set
+     */
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    /**
+     * @return the birthDate
+     */
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    /**
+     * @param birthDate the birthDate to set
+     */
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    /**
      * @return the gender
      */
     public Gender getGender() {
@@ -152,6 +130,50 @@ public abstract class User extends Account {
      */
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+  
+
+    /**
+     * @return the address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @param address the address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * @return the identityCard
+     */
+    public String getIdentityCard() {
+        return identityCard;
+    }
+
+    /**
+     * @param identityCard the identityCard to set
+     */
+    public void setIdentityCard(String identityCard) {
+        this.identityCard = identityCard;
+    }
+
+    /**
+     * @return the phone
+     */
+    public String getPhone() {
+        return phone;
+    }
+
+    /**
+     * @param phone the phone to set
+     */
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
 }

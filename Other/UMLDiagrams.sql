@@ -28,7 +28,7 @@ CREATE TABLE `accounts` (
   `AccountID` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Username` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Active` enum('LOCK','UNLOCK') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'UNLOCK',
+  `Active` enum('LOCK','AVAILABLE') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'AVAILABLE',
   `Role` enum('USER','ADMIN') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'USER',
   PRIMARY KEY (`AccountID`),
   UNIQUE KEY `Username_UNIQUE` (`Username`)
@@ -53,13 +53,13 @@ DROP TABLE IF EXISTS `employees`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employees` (
   `EmployeeID` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `LastName` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `FirstName` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `FullName` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `BirthDate` date NOT NULL,
   `Gender` enum('MALE','FEMALE','OTHER') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `HireDate` date NOT NULL,
+  `IdentityCard` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Phone` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Phone` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `State` enum('SERVE','BARTENDER','RECEPTION') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `HireDate` date NOT NULL,
   `AccountID` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`EmployeeID`,`AccountID`),
   KEY `fk_employees_accounts1_idx` (`AccountID`),
@@ -87,6 +87,7 @@ CREATE TABLE `orderdetails` (
   `OrderID` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ProductID` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Quantity` int NOT NULL DEFAULT '1',
+  `UnitPrice` decimal(10,0) NOT NULL,
   `Note` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`OrderID`,`ProductID`),
   KEY `fk_orders_has_products_products1_idx` (`ProductID`),
@@ -197,4 +198,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-31 20:27:38
+-- Dump completed on 2022-01-01 21:42:52

@@ -16,58 +16,31 @@ public class Employee extends User {
 
     private String employeeID;
     private Date hireDate;
-    private State state;
 
     public Employee() {
     }
 
-    public Employee(String employeeID, Date hireDate, State state) {
+    public Employee(String employeeID, Date hireDate) {
         this.employeeID = employeeID;
         this.hireDate = hireDate;
-        this.state = state;
     }
 
-    public Employee(String employeeID, Date hireDate, State state,
-            String accountID, String lastName, String firstName, Gender gender,
-            String address, String phone) {
-        super(accountID, lastName, firstName, gender, address, phone);
+    public Employee(String employeeID, Date hireDate, String accountID, String fullName, Date birthDate, Gender gender, String identityCard, String address, String phone) {
+        super(accountID, fullName, birthDate, gender, identityCard, address, phone);
         this.employeeID = employeeID;
         this.hireDate = hireDate;
-        this.state = state;
-    }
-
-    public Employee(String employeeID, Date hireDate, State state,
-            String accountID, String lastName, String firstName, Gender gender,
-            String address, String phone, String username, String password) {
-        super(accountID, lastName, firstName, gender, address, phone, username,
-                password);
-        this.employeeID = employeeID;
-        this.hireDate = hireDate;
-        this.state = state;
-    }
-
-    public Employee(String employeeID, Date hireDate, State state,
-            String accountID, String lastName, String firstName, Gender gender,
-            String address, String phone, String username, String password,
-            Active active, Role role) {
-        super(accountID, lastName, firstName, gender, address, phone, username,
-                password, active, role);
-        this.employeeID = employeeID;
-        this.hireDate = hireDate;
-        this.state = state;
     }
 
     @Override
     public void viewDetail() throws SQLException {
         super.viewDetail();
         System.out.println("Ngày vào làm: " + Utils.DATEFORMAT.format(getHireDate()));
-        System.out.println("Bộ phận: " + this.state);
     }
 
     @Override
     public String toString() {
-        return String.format("%s - %s - %s", super.toString(),
-                Utils.DATEFORMAT.format(getHireDate()), this.getState());
+        return String.format("%s - %s", super.toString(),
+                Utils.DATEFORMAT.format(getHireDate()));
     }
 
     /**
@@ -96,20 +69,6 @@ public class Employee extends User {
      */
     public void setEmployeeID(String employeeID) {
         this.employeeID = employeeID;
-    }
-
-    /**
-     * @return the state
-     */
-    public State getState() {
-        return state;
-    }
-
-    /**
-     * @param state the state to set
-     */
-    public void setState(State state) {
-        this.state = state;
     }
 
 }

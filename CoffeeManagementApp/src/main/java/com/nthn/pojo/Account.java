@@ -6,6 +6,8 @@ package com.nthn.pojo;
 
 import java.sql.SQLException;
 import org.apache.commons.codec.digest.DigestUtils; //Apache Commons Codecs - SHA256
+import org.apache.commons.lang3.RandomStringUtils;
+
 
 /**
  *
@@ -33,10 +35,17 @@ public class Account {
     public Account(String username, String password) {
         this.username = username;
         this.password = DigestUtils.sha256Hex(password);
+        this.active = Active.AVAILABLE;
+        this.role = Role.USER;
     }
 
     public void changePassword(String text) {
         this.setPassword(DigestUtils.sha256Hex(text));
+    }
+
+    public static String createPassword() {
+        char[] possibleCharacters = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?").toCharArray();
+        return RandomStringUtils.random(0, 0, 0, true, true, possibleCharacters);
     }
 
     public void display() throws SQLException {
