@@ -11,56 +11,28 @@ import java.sql.SQLException;
  *
  * @author HONGNHAT
  */
-public abstract class User extends Account {
+public abstract class User {
 
-    private String accountID;
     private String fullName;
     private Date birthDate;
     private Gender gender;
     private String identityCard;
     private String address;
     private String phone;
+    private String accountID;
 
     public User() {
     }
 
-    public User(String accountID, String fullName, Date birthDate, Gender gender, 
-            String identityCard, String address, String phone) {
-        this.accountID = accountID;
+    public User(String fullName, Date birthDate, Gender gender, String identityCard, String address, String phone, String accountID) {
         this.fullName = fullName;
         this.birthDate = birthDate;
         this.gender = gender;
         this.identityCard = identityCard;
         this.address = address;
         this.phone = phone;
-    }
-
-    public User(String accountID, String fullName, Date birthDate, Gender gender, 
-            String identityCard, String address, String phone, String username, 
-            String password) {
-        super(username, password);
         this.accountID = accountID;
-        this.fullName = fullName;
-        this.birthDate = birthDate;
-        this.gender = gender;
-        this.identityCard = identityCard;
-        this.address = address;
-        this.phone = phone;
     }
-
-    public User(String accountID, String fullName, Date birthDate, Gender gender, 
-            String identityCard, String address, String phone, String username, 
-            String password, Active active, Role role) {
-        super(accountID, username, password, active, role);
-        this.accountID = accountID;
-        this.fullName = fullName;
-        this.birthDate = birthDate;
-        this.gender = gender;
-        this.identityCard = identityCard;
-        this.address = address;
-        this.phone = phone;
-    }
-
 
     public void viewDetail() throws SQLException {
         System.out.println("Họ và tên: " + getFullName());
@@ -72,22 +44,6 @@ public abstract class User extends Account {
     @Override
     public String toString() {
         return String.format("%s - %s - %s  - %s", this.getFullName(), this.getGender(), this.getPhone(), this.getAddress());
-    }
-
-    /**
-     * @return the accountID
-     */
-    @Override
-    public String getAccountID() {
-        return accountID;
-    }
-
-    /**
-     * @param accountID the accountID to set
-     */
-    @Override
-    public void setAccountID(String accountID) {
-        this.accountID = accountID;
     }
 
     /**
@@ -132,8 +88,6 @@ public abstract class User extends Account {
         this.gender = gender;
     }
 
-  
-
     /**
      * @return the address
      */
@@ -174,6 +128,20 @@ public abstract class User extends Account {
      */
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    /**
+     * @return the accountID
+     */
+    public String getAccountID() {
+        return accountID;
+    }
+
+    /**
+     * @param accountID the accountID to set
+     */
+    public void setAccountID(String accountID) {
+        this.accountID = accountID;
     }
 
 }

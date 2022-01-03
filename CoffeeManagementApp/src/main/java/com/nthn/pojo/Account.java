@@ -5,9 +5,6 @@
 package com.nthn.pojo;
 
 import java.sql.SQLException;
-import org.apache.commons.codec.digest.DigestUtils; //Apache Commons Codecs - SHA256
-import org.apache.commons.lang3.RandomStringUtils;
-
 
 /**
  *
@@ -27,28 +24,17 @@ public class Account {
     public Account(String accountID, String username, String password, Active active, Role role) {
         this.accountID = accountID;
         this.username = username;
-        this.password = DigestUtils.sha256Hex(password);
+        this.password = password;
         this.active = active;
         this.role = role;
     }
 
-    public Account(String username, String password) {
-        this.username = username;
-        this.password = DigestUtils.sha256Hex(password);
-        this.active = Active.AVAILABLE;
-        this.role = Role.USER;
-    }
-
-    public void changePassword(String text) {
-        this.setPassword(DigestUtils.sha256Hex(text));
-    }
-
-    public static String createPassword() {
-        char[] possibleCharacters = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?").toCharArray();
-        return RandomStringUtils.random(0, 0, 0, true, true, possibleCharacters);
-    }
-
-    public void display() throws SQLException {
+//
+//    public static String createPassword() {
+//        char[] possibleCharacters = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?").toCharArray();
+//        return RandomStringUtils.random(0, 6, 0, true, true, possibleCharacters);
+//    }
+    public void viewDetail() throws SQLException {
         System.out.println("Tên đăng nhập: " + this.getUsername());
         System.out.println("Hoạt động: " + this.getActive().getContent());
         System.out.println("Phân quyền: " + this.getRole().getContent());
@@ -84,7 +70,7 @@ public class Account {
      * @param password the password to set
      */
     public void setPassword(String password) {
-        this.password = DigestUtils.sha256Hex(password);
+        this.password = password;
     }
 
     /**

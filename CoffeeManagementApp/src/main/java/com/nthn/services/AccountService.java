@@ -28,7 +28,7 @@ public class AccountService {
      *
      * @return @throws SQLException
      */
-    public static List<Account> getAccounts() throws SQLException {
+    public List<Account> getAccounts() throws SQLException {
         List<Account> accounts = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
@@ -48,7 +48,7 @@ public class AccountService {
      *
      * @param account
      */
-    public static void addAccount(Account account) {
+    public void addAccount(Account account) {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
 
@@ -76,7 +76,7 @@ public class AccountService {
      * @return
      * @throws SQLException
      */
-    public static Account getAccount(int id) throws SQLException {
+    public Account getAccountByID(String id) throws SQLException {
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM accounts WHERE AccountID=" + id);

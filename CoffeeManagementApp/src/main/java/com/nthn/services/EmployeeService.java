@@ -7,6 +7,7 @@ package com.nthn.services;
 import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Gender;
+import com.nthn.pojo.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,24 +24,25 @@ import java.util.logging.Logger;
  */
 public class EmployeeService {
 
-    public static List<Employee> getEmployees() throws SQLException {
+    public List<Employee> getEmployees() throws SQLException {
         List<Employee> employees = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM employees");
             while (rs.next()) {
-                Employee e = new Employee(rs.getString("EmployeeID"),
-                        rs.getDate("HireDate"), rs.getString("AccountID"),
-                        rs.getString("FullName"), rs.getDate("BirthDate"),
-                        Gender.valueOf("Gender"), rs.getString("IdentityCard"),
-                        rs.getString("Address"), rs.getString("Phone"));
-                employees.add(e);
+                User e = new Employee(rs.getString("EmployeeID"),
+                        rs.getDate("HireDate"), rs.getString("FullName"),
+                        rs.getDate("BirthDate"),
+                        Gender.valueOf(rs.getString("Gender")),
+                        rs.getString("IdentityCard"), rs.getString("Address"),
+                        rs.getString("Phone"), rs.getString("AccountID"));
+                employees.add((Employee) e);
             }
         }
         return employees;
     }
 
-    public static void addEmployee(Employee e) {
+    public void addEmployee(Employee e) {
 
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
@@ -68,17 +70,18 @@ public class EmployeeService {
         }
     }
 
-    public static Employee getEmployee(String id) throws SQLException {
+    public Employee getEmployeeByID(String id) throws SQLException {
 
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM employees WHERE EmployeeID=" + id);
             while (rs.next()) {
                 return new Employee(rs.getString("EmployeeID"),
-                        rs.getDate("HireDate"), rs.getString("AccountID"),
-                        rs.getString("FullName"), rs.getDate("BirthDate"),
-                        Gender.valueOf("Gender"), rs.getString("IdentityCard"),
-                        rs.getString("Address"), rs.getString("Phone"));
+                        rs.getDate("HireDate"), rs.getString("FullName"),
+                        rs.getDate("BirthDate"),
+                        Gender.valueOf(rs.getString("Gender")),
+                        rs.getString("IdentityCard"), rs.getString("Address"),
+                        rs.getString("Phone"), rs.getString("AccountID"));
             }
         }
         return null;

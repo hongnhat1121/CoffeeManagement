@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nthn.coffeemanagementapp.RegisterController">
+    <children>
+        <ImageView fitHeight="600.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../../../coffee-beans-with-props-making-coffee.jpg" />
+            </image>
+        </ImageView>
+        <VBox layoutX="24.0" layoutY="159.0" prefHeight="200.0" prefWidth="426.0">
+            <children>
+                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="46.0" prefWidth="427.0" styleClass="h1" text="CREATE AN ACCOUNT" textAlignment="CENTER" textFill="RED">
+                    <effect>
+                        <DropShadow height="25.0" radius="12.0" spread="0.25" width="25.0" />
+                    </effect>
+                </Label>
+                <HBox alignment="CENTER" opacity="0.75" styleClass="h6">
+                    <children>
+                        <ImageView fitHeight="25.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../../user-solid.png" />
+                            </image>
+                            <effect>
+                                <DropShadow />
+                            </effect>
+                        </ImageView>
+                        <TextField fx:id="txtUsername" prefHeight="30.0" prefWidth="310.0" promptText="Username *" style="-fx-border-color: dark; -fx-background-radius: 50; -fx-border-radius: 50;" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" layoutX="10.0" layoutY="76.0" opacity="0.75" styleClass="h6">
+                    <children>
+                        <ImageView fitHeight="25.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../../lock-solid.png" />
+                            </image>
+                            <effect>
+                                <DropShadow />
+                            </effect>
+                        </ImageView>
+                        <PasswordField fx:id="txtPassword" prefHeight="30.0" prefWidth="312.0" promptText="Password *" style="-fx-border-color: dark; -fx-background-radius: 50; -fx-border-radius: 50;" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" layoutX="10.0" layoutY="126.0" opacity="0.75" styleClass="h6">
+                    <children>
+                        <ImageView fitHeight="25.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../../lock-solid.png" />
+                            </image>
+                            <effect>
+                                <DropShadow />
+                            </effect>
+                        </ImageView>
+                        <PasswordField fx:id="txtConfirm" prefHeight="30.0" prefWidth="312.0" promptText="Confirm password *" style="-fx-border-color: dark; -fx-background-radius: 50; -fx-border-radius: 50;" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" layoutX="20.0" layoutY="186.0" opacity="0.75" prefHeight="28.0" prefWidth="394.0" styleClass="h6">
+                    <effect>
+                        <DropShadow />
+                    </effect>
+                    <children>
+                        <Button fx:id="btnRegister" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#registerHandler" prefHeight="28.0" prefWidth="131.0" style="-fx-background-radius: 50; -fx-border-radius: 50;" text="REGISTER" textAlignment="CENTER">
+                            <effect>
+                                <DropShadow />
+                            </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                        </Button>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" layoutX="10.0" layoutY="268.0" opacity="0.75" prefHeight="28.0" prefWidth="383.0" styleClass="h6">
+                    <effect>
+                        <DropShadow />
+                    </effect>
+                    <children>
+                        <Label fx:id="lbHaveAccount" alignment="CENTER" contentDisplay="CENTER" text="Đã có tài khoản" textAlignment="CENTER" textFill="LIME" underline="true">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Label>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</Pane>

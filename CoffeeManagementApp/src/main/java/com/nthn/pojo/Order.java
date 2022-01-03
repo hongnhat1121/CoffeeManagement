@@ -48,8 +48,7 @@ public class Order {
         System.out.println("Mã hoá đơn: " + this.getOrderID());
         System.out.println("Ngày tạo: " + Utils.DATEFORMAT.format(getOrderDate()));
         System.out.println("Tổng tiền: " + this.getTotal());
-        System.out.println("Nhân viên:" + new EmployeeService().
-                getEmployee(getEmployeeID()).getFullName());
+        System.out.println("Nhân viên:" + new EmployeeService().getEmployeeByID(getEmployeeID()).getFullName());
         System.out.println("Bàn: " + new TableService().getTable(getTableID()).toString());
     }
 

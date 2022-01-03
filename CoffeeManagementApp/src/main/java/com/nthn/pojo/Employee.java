@@ -25,8 +25,8 @@ public class Employee extends User {
         this.hireDate = hireDate;
     }
 
-    public Employee(String employeeID, Date hireDate, String accountID, String fullName, Date birthDate, Gender gender, String identityCard, String address, String phone) {
-        super(accountID, fullName, birthDate, gender, identityCard, address, phone);
+    public Employee(String employeeID, Date hireDate, String fullName, Date birthDate, Gender gender, String identityCard, String address, String phone, String accountID) {
+        super(fullName, birthDate, gender, identityCard, address, phone, accountID);
         this.employeeID = employeeID;
         this.hireDate = hireDate;
     }
