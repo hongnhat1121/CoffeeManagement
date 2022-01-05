@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,8 +32,8 @@ public class EmployeeService {
             ResultSet rs = s.executeQuery("SELECT * FROM employees");
             while (rs.next()) {
                 User e = new Employee(rs.getString("EmployeeID"),
-                        rs.getDate("HireDate"), rs.getString("FullName"),
-                        rs.getDate("BirthDate"),
+                        rs.getObject("HireDate", LocalDate.class), rs.getString("FullName"),
+                        rs.getObject("BirthDate", LocalDate.class),
                         Gender.valueOf(rs.getString("Gender")),
                         rs.getString("IdentityCard"), rs.getString("Address"),
                         rs.getString("Phone"), rs.getString("AccountID"));
@@ -54,12 +55,12 @@ public class EmployeeService {
 
             preparedStatement.setString(1, e.getEmployeeID());
             preparedStatement.setString(2, e.getFullName());
-            preparedStatement.setDate(3, e.getBirthDate());
+            preparedStatement.setObject(3, e.getBirthDate());
             preparedStatement.setString(4, e.getGender().name());
             preparedStatement.setString(5, e.getIdentityCard());
             preparedStatement.setString(6, e.getPhone());
             preparedStatement.setString(7, e.getAddress());
-            preparedStatement.setDate(8, e.getHireDate());
+            preparedStatement.setObject(8, e.getHireDate());
             preparedStatement.setString(9, e.getAccountID());
 
             preparedStatement.executeUpdate();
@@ -77,8 +78,8 @@ public class EmployeeService {
             ResultSet rs = s.executeQuery("SELECT * FROM employees WHERE EmployeeID=" + id);
             while (rs.next()) {
                 return new Employee(rs.getString("EmployeeID"),
-                        rs.getDate("HireDate"), rs.getString("FullName"),
-                        rs.getDate("BirthDate"),
+                        rs.getObject("HireDate", LocalDate.class), rs.getString("FullName"),
+                        rs.getObject("BirthDate", LocalDate.class),
                         Gender.valueOf(rs.getString("Gender")),
                         rs.getString("IdentityCard"), rs.getString("Address"),
                         rs.getString("Phone"), rs.getString("AccountID"));

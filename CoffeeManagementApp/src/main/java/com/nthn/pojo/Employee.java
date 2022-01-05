@@ -5,8 +5,8 @@
 package com.nthn.pojo;
 
 import com.nthn.configs.Utils;
-import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 /**
  *
@@ -15,17 +15,17 @@ import java.sql.SQLException;
 public class Employee extends User {
 
     private String employeeID;
-    private Date hireDate;
+    private LocalDate hireDate;
 
     public Employee() {
     }
 
-    public Employee(String employeeID, Date hireDate) {
+    public Employee(String employeeID, LocalDate hireDate) {
         this.employeeID = employeeID;
         this.hireDate = hireDate;
     }
 
-    public Employee(String employeeID, Date hireDate, String fullName, Date birthDate, Gender gender, String identityCard, String address, String phone, String accountID) {
+    public Employee(String employeeID, LocalDate hireDate, String fullName, LocalDate birthDate, Gender gender, String identityCard, String address, String phone, String accountID) {
         super(fullName, birthDate, gender, identityCard, address, phone, accountID);
         this.employeeID = employeeID;
         this.hireDate = hireDate;
@@ -44,20 +44,6 @@ public class Employee extends User {
     }
 
     /**
-     * @return the hireDate
-     */
-    public Date getHireDate() {
-        return hireDate;
-    }
-
-    /**
-     * @param hireDate the hireDate to set
-     */
-    public void setHireDate(Date hireDate) {
-        this.hireDate = hireDate;
-    }
-
-    /**
      * @return the employeeID
      */
     public String getEmployeeID() {
@@ -69,6 +55,20 @@ public class Employee extends User {
      */
     public void setEmployeeID(String employeeID) {
         this.employeeID = employeeID;
+    }
+
+    /**
+     * @return the hireDate
+     */
+    public LocalDate getHireDate() {
+        return hireDate;
+    }
+
+    /**
+     * @param hireDate the hireDate to set
+     */
+    public void setHireDate(LocalDate hireDate) {
+        this.hireDate = hireDate;
     }
 
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -58,7 +59,7 @@ public class AccountService {
 
             preparedStatement.setString(1, account.getAccountID());
             preparedStatement.setString(2, account.getUsername());
-            preparedStatement.setString(3, account.getPassword());
+            preparedStatement.setString(3, DigestUtils.sha256Hex(account.getPassword()));
             preparedStatement.setString(4, account.getActive().name());
             preparedStatement.setString(5, account.getRole().name());
 
@@ -89,4 +90,47 @@ public class AccountService {
         }
         return null;
     }
+
+    /**
+     *
+     * @param text
+     * @return
+     * @throws SQLException
+     */
+    public Account getAccountByUsername(String text) throws SQLException {
+        try (Connection c = JdbcUtils.getConnection()) {
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username like ?");
+            ps.setString(1, text);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return new Account(rs.getString("AccountID"),
+                        rs.getString("Username"), rs.getString("Password"),
+                        Active.valueOf(rs.getString("Active")),
+                        Role.valueOf(rs.getString("Role")));
+            }
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param username
+     * @param password
+     * @return
+     * @throws SQLException
+     */
+    public boolean checkAccount(String username, String password) throws SQLException {
+        try (Connection c = JdbcUtils.getConnection()) {
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username like ? AND Password like ?");
+            ps.setString(1, username);
+            ps.setString(2, DigestUtils.sha256Hex(password));
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

@@ -6,6 +6,7 @@ package com.nthn.pojo;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 /**
  *
@@ -14,7 +15,7 @@ import java.sql.SQLException;
 public abstract class User {
 
     private String fullName;
-    private Date birthDate;
+    private LocalDate birthDate;
     private Gender gender;
     private String identityCard;
     private String address;
@@ -24,7 +25,7 @@ public abstract class User {
     public User() {
     }
 
-    public User(String fullName, Date birthDate, Gender gender, String identityCard, String address, String phone, String accountID) {
+    public User(String fullName, LocalDate birthDate, Gender gender, String identityCard, String address, String phone, String accountID) {
         this.fullName = fullName;
         this.birthDate = birthDate;
         this.gender = gender;
@@ -63,14 +64,14 @@ public abstract class User {
     /**
      * @return the birthDate
      */
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
     /**
      * @param birthDate the birthDate to set
      */
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 

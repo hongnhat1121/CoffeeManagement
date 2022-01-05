@@ -19,7 +19,6 @@ import org.apache.commons.codec.digest.DigestUtils; //Apache Commons Codecs - SH
  */
 public class Utils {
 
-    public static final Scanner SCANNER = new Scanner(System.in);
     public static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
     public static StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {

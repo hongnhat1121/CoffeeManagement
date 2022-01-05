@@ -7,9 +7,11 @@ package com.nthn.employee;
 import com.nthn.configs.Utils;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Gender;
+import com.nthn.services.CheckService;
 import com.nthn.services.EmployeeService;
-import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
@@ -26,21 +28,66 @@ public class EmployeeTester {
     private static Employee employee;
 
     @BeforeAll
-    public void init() {
+    public static void init() {
         service = new EmployeeService();
-        employee = new Employee(Utils.randomID(), Date.valueOf("3/1/2022"),
-                "Nguyễn Thị Hồng Nhật", Date.valueOf("10/10/2001"),
-                Gender.valueOf("Nữ"), "342010930", "Đồng Tháp", "0836479646", null);
+        employee = new Employee("23c74463-75ea-4835-b0b7-9e6545bac000", LocalDate.now(),
+                "Nguyễn Thị Hồng Nhật", LocalDate.of(2001, Month.OCTOBER, 10),
+                Gender.FEMALE, "342010930", "Đồng Tháp", "0836479646",
+                "563d4212-1042-4c6b-9979-9b171b15d437");
     }
 
     @Test
     public void testGetEmployeeByValidID() {
         try {
-            employee = service.getEmployeeByID("1");
+            Employee e = service.getEmployeeByID("23c74463-75ea-4835-b0b7-9e6545bac000");
 
-            Assertions.assertEquals(employee.getFullName(), "");
+            Assertions.assertEquals(e.getFullName(), employee.getFullName());
+            Assertions.assertEquals(e.getAccountID(), employee.getAccountID());
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeTester.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Test
+    public void testFullnameNotEmpty() {
+        Assertions.assertFalse(employee.getFullName().isEmpty());
+    }
+
+    @Test
+    public void testPhoneNotEmpty() {
+        Assertions.assertFalse(employee.getPhone().isEmpty());
+    }
+
+    @Test
+    public void testIdentityCardNotEmpty() {
+        Assertions.assertFalse(employee.getIdentityCard().isEmpty());
+    }
+
+    //Ngày sinh >= ngày hiện tại - 18 năm
+    @Test
+    public void testBirthDateValid() {
+        LocalDate localDate = LocalDate.now();
+        localDate.minusYears(18);
+
+        Assertions.assertTrue(employee.getBirthDate().compareTo(localDate) < 0);
+    }
+
+    //Số điện thoại phải đủ 10 ký tự
+    @Test
+    public void testPhoneLength() {
+        int length = employee.getPhone().length();
+        Assertions.assertTrue(length == 10);
+    }
+
+    //Số điện thoại phải đủ 10 ký tự số
+    @Test
+    public void testPhoneNumber() {
+        Assertions.assertTrue(employee.getPhone().matches("\\d{10}"));
+    }
+
+    //CMND nhập từ 9-12 
+    @Test
+    public void testIdentityCard() {
+        Assertions.assertTrue(employee.getIdentityCard().matches("\\d{9,12}"));
     }
 }

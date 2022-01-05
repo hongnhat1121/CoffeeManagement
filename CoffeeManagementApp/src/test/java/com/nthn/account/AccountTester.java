@@ -9,6 +9,7 @@ import com.nthn.pojo.Account;
 import com.nthn.pojo.Active;
 import com.nthn.pojo.Role;
 import com.nthn.services.AccountService;
+import com.nthn.services.CheckService;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,7 +33,7 @@ public class AccountTester {
     @BeforeAll
     public static void init() {
         service = new AccountService();
-        account = new Account(Utils.randomID(), "user", "DHito3", Active.AVAILABLE, Role.USER);
+        account = new Account(Utils.randomID(), "user", "DH19IT03_ou", Active.AVAILABLE, Role.USER);
     }
 
     @Test
@@ -58,6 +59,12 @@ public class AccountTester {
         }
     }
 
+    //Tên đăng nhập khác rỗng
+    @Test
+    public void testUsernameNotEmpty() {
+        Assertions.assertFalse(account.getUsername().isEmpty());
+    }
+
     //Tên đăng nhập là duy nhất, không trùng
     @Test
     public void testUsernameUnique() {
@@ -75,14 +82,19 @@ public class AccountTester {
     @Test
     public void testUsernameLength() {
         int length = account.getUsername().length();
-
         Assertions.assertTrue(length <= 20);
     }
 
     //Tên đăng nhập không có ký tự đặc biệt
     @Test
     public void testUsernameNonSpecialLetter() {
-        Assertions.assertFalse(account.getUsername().matches(".*\\W.*"));
+        Assertions.assertFalse(CheckService.containSpecialLetter(account.getUsername()));
+    }
+
+    //Mật khẩu khác rỗng
+    @Test
+    public void testPasswordNotEmpty() {
+        Assertions.assertFalse(account.getPassword().isEmpty());
     }
 
     //Mật khẩu không trùng tên đăng nhập
@@ -102,26 +114,26 @@ public class AccountTester {
     //Mật khẩu có ký tự số
     @Test
     public void testPasswordNumeric() {
-        Assertions.assertTrue(account.getPassword().matches(".*\\d.*"));
+        Assertions.assertTrue(CheckService.containAlnum(account.getPassword()));
     }
 
     //Mật khẩu có chữ thường
     @Test
     public void testPasswordLowercase() {
-        Assertions.assertTrue(account.getPassword().matches(".*[a-z].*"));
+        Assertions.assertTrue(CheckService.containLower(account.getPassword()));
     }
 
     //Mật khẩu có chữ in hoa
     @Test
     public void testPasswordUppercase() {
-        Assertions.assertTrue(account.getPassword().matches(".*[A-Z].*"));
+        Assertions.assertTrue(CheckService.containUpper(account.getPassword()));
     }
 
     //Mật khẩu không có ký tự đặc biệt
     //Ký tự đặc biệt [!@#$%&*()+=|<>?{}\\[\\]~-]
     @Test
     public void testPasswordNonSpecialLetter() {
-        Assertions.assertFalse(account.getPassword().matches(".*\\W.*"));
+        Assertions.assertFalse(CheckService.containSpecialLetter(account.getPassword()));
     }
 
 }
