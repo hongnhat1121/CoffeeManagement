@@ -6,6 +6,7 @@ package com.nthn.coffeemanagementapp;
 
 import com.nthn.configs.JdbcUtils;
 import com.nthn.configs.Utils;
+import com.nthn.pojo.Account;
 import com.nthn.services.AccountService;
 import java.io.IOException;
 import java.net.URL;
@@ -14,6 +15,8 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +28,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
 /**
@@ -43,6 +47,9 @@ public class LoginController implements Initializable {
     @FXML
     private Button btnSwitchRegister;
 
+    private Account account;
+    private final AccountService accountService = new AccountService();
+
     /**
      * Initializes the controller class.
      *
@@ -55,6 +62,8 @@ public class LoginController implements Initializable {
     }
 
     public void loginHandler(ActionEvent event) throws SQLException, IOException {
+        String username = this.txtUsername.getText();
+        String password = this.txtPassword.getText();
         if (this.txtUsername.getText().isEmpty()) {
             Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter username!");
             return;
@@ -63,69 +72,35 @@ public class LoginController implements Initializable {
             Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter password!");
             return;
         }
-        this.checkLogin(this.txtUsername.getText(), this.txtPassword.getText());
-    }
 
-    public void registerHandler(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Register.fxml"));
-
-        Parent root = loader.load();
-
-        RegisterController controller = loader.getController();
-
-        Scene scene = new Scene(root, 900, 600);
-        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-
-        Stage stage = new Stage();
-        stage.setOnHiding((t) -> {
-            try {
-                Connection c = JdbcUtils.getConnection();
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        account = accountService.getAccountByUsername(username);
+        if (account != null) {
+            if (account.getPassword().equals(DigestUtils.sha256Hex(password))) {
+                loadPrimaryController();
+            } else {
+                Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter correct password!");
+                return;
             }
-        });
-        stage.setTitle("Register");
-        stage.setScene(scene);
-        stage.show();
+        } else {
+            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Username doesn't exist!");
+            return;
+        }
+
+        if (username.contains(" ") || username.matches(".*\\W.*") || username.length() > 20) {
+            
+        } else {
+            Utils.showAlert(Alert.AlertType.INFORMATION, "Login Failed!", "Please enter correct password!");
+        }
+    }
+}
+
+public void registerHandler(ActionEvent event) throws IOException {
+        App app = new App();
+        app.loaderController("Register.fxml", "Register");
     }
 
     public void loadPrimaryController() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("primary.fxml"));
-
-        Parent root = loader.load();
-
-        PrimaryController controller = loader.getController();
-
-        Scene scene = new Scene(root, 900, 600);
-        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-
-        Stage stage = new Stage();
-        stage.setOnHiding((t) -> {
-            try {
-                Connection c = JdbcUtils.getConnection();
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-        stage.setTitle("Coffee Management App");
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    private void checkLogin(String username, String password) throws SQLException, IOException {
-        AccountService service = new AccountService();
-        boolean result = service.checkAccount(username, password);
-
-        if (result) {
-            loadPrimaryController();
-        } else {
-            Utils.showAlert(Alert.AlertType.INFORMATION, "Login error", "Please enter correct username and password");
-        }
+        App app = new App();
+        app.loaderController("primary.fxml", "Coffee Management App");
     }
 }

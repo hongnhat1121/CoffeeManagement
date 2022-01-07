@@ -10,6 +10,8 @@ package com.nthn.pojo;
  */
 public enum Gender {
     MALE("Nam"), FEMALE("Nữ"), OTHER("Khác");
+
+    
     private final String content;
 
     private Gender(String content) {

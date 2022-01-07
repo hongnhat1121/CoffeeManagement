@@ -2,12 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.nthn.employee;
+package com.nthn.testcontroller;
 
-import com.nthn.configs.Utils;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Gender;
-import com.nthn.services.CheckService;
 import com.nthn.services.EmployeeService;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -79,15 +77,16 @@ public class EmployeeTester {
         Assertions.assertTrue(length == 10);
     }
 
-    //Số điện thoại phải đủ 10 ký tự số
+    //Số điện thoại phải đủ 10 chữ số
     @Test
     public void testPhoneNumber() {
         Assertions.assertTrue(employee.getPhone().matches("\\d{10}"));
     }
 
-    //CMND nhập từ 9-12 
+    //CMND nhập từ 9-12 chữ số
     @Test
     public void testIdentityCard() {
-        Assertions.assertTrue(employee.getIdentityCard().matches("\\d{9,12}"));
+        Assertions.assertTrue(employee.getIdentityCard().matches("\\d{9}")
+                || employee.getIdentityCard().matches("\\d{12}"));
     }
 }

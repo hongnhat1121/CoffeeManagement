@@ -99,7 +99,7 @@ public class AccountService {
      */
     public Account getAccountByUsername(String text) throws SQLException {
         try (Connection c = JdbcUtils.getConnection()) {
-            PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username like ?");
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username = ?");
             ps.setString(1, text);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -112,25 +112,25 @@ public class AccountService {
         return null;
     }
 
-    /**
-     *
-     * @param username
-     * @param password
-     * @return
-     * @throws SQLException
-     */
-    public boolean checkAccount(String username, String password) throws SQLException {
-        try (Connection c = JdbcUtils.getConnection()) {
-            PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username like ? AND Password like ?");
-            ps.setString(1, username);
-            ps.setString(2, DigestUtils.sha256Hex(password));
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    /**
+//     * Kiểm tra username, password khớp với dữ liệu chưa?
+//     * @param username
+//     * @param password
+//     * @return
+//     * @throws SQLException
+//     */
+//    public boolean checkAccount(String username, String password) throws SQLException {
+//        try (Connection c = JdbcUtils.getConnection()) {
+//            PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username like ? AND Password like ?");
+//            ps.setString(1, username);
+//            ps.setString(2, DigestUtils.sha256Hex(password));
+//
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
 }

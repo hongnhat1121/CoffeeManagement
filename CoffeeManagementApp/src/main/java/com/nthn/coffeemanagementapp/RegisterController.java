@@ -8,16 +8,16 @@ import com.nthn.configs.JdbcUtils;
 import com.nthn.configs.Utils;
 import com.nthn.pojo.Account;
 import com.nthn.pojo.Active;
+import com.nthn.pojo.Employee;
 import com.nthn.pojo.Gender;
 import com.nthn.pojo.Role;
 import com.nthn.services.AccountService;
+import com.nthn.services.EmployeeService;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,16 +29,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.converter.LocalDateStringConverter;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
 /**
@@ -66,6 +61,7 @@ public class RegisterController implements Initializable {
     private TextField txtAddress;
     @FXML
     private DatePicker dpHireDate;
+
     @FXML
     private TextField txtUsername;
     @FXML
@@ -96,49 +92,13 @@ public class RegisterController implements Initializable {
     }
 
     public void registerHandler(ActionEvent event) {
-        if (this.txtFullname.getText().isEmpty()) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter fullname!");
-            this.txtFullname.setFocusTraversable(true);
-            return;
-        }
-        if (this.txtIdentityCard.getText().isEmpty()) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter identity card!");
-            this.txtIdentityCard.setFocusTraversable(true);
-            return;
-        }
-        if (this.txtPhone.getText().isEmpty()) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter phone number!");
-            this.txtPhone.setFocusTraversable(true);
-            return;
-        }
+        AccountService accountService = new AccountService();
+        EmployeeService employeeService = new EmployeeService();
 
-        if (this.txtUsername.getText().isEmpty()) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter username!");
-            this.txtUsername.setFocusTraversable(true);
-            return;
-        }
-        if (this.txtPassword.getText().isEmpty()) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter password");
-            this.txtPassword.setFocusTraversable(true);
-            return;
-        }
-        if (this.txtConfirm.getText().isEmpty()) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter confirm password");
-            this.txtConfirm.setFocusTraversable(true);
-            return;
-        }
-        if (!this.txtConfirm.getText().equals(this.txtPassword.getText())) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please re-enter confirm password");
-            this.txtConfirm.setFocusTraversable(true);
-            return;
-        }
-        Utils.showAlert(Alert.AlertType.INFORMATION, "Registration successfull!", "Welcome to Coffee Management App");
         String fullname = this.txtFullname.getText();
-        Gender gender;
+        Gender gender = Gender.MALE;
         if (rbFemale.isSelected()) {
             gender = Gender.FEMALE;
-        } else if (rbMale.isSelected()) {
-            gender = Gender.MALE;
         } else if (rbOther.isSelected()) {
             gender = Gender.OTHER;
         }
@@ -147,38 +107,85 @@ public class RegisterController implements Initializable {
         String phone = this.txtPhone.getText();
         String address = this.txtAddress.getText();
         LocalDate hireDate = this.getLocalDate(this.dpHireDate);
+
         String username = this.txtUsername.getText();
         String password = this.txtPassword.getText();
         String confirm = this.txtConfirm.getText();
 
-        Account account = new Account(Utils.randomID(), username, password, Active.AVAILABLE, Role.USER);
-        new AccountService().addAccount(account);
+        //Kiểm tra họ và tên
+        if (fullname.isEmpty()) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter fullname!");
+            return;
+        }
+
+        //Kiểm tra ngày sinh >= ngày hiện tại - 18 năm
+        LocalDate localDate = LocalDate.now();
+        localDate.minusYears(18);
+
+        if (birthDate.compareTo(localDate) > 0) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please re-choose birthday!");
+            return;
+        }
+
+        //Kiểm tra CMND/CCCD
+        if (identityCard.isEmpty() || !identityCard.matches("\\d{9,12}")) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter identity card!");
+            return;
+        }
+
+        //Kiểm tra số điện thoại
+        if (phone.isEmpty() || !phone.matches("\\d{10}")) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter phone number!");
+            return;
+        }
+
+        //Kiểm tra tên đăng nhập
+        if (username.isEmpty() || username.length() > 20 || username.matches(".*\\W.*")) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter username!");
+            return;
+        }
+
+        //Kiểm tra mật khẩu
+//        if (password.isEmpty() || password.length() > 6 || password.equals(username) 
+//                || !password.matches(".*[0-9].*") || !password.matches(".*[a-z].*") || !password.matches(".*[A-Z].*") || )
+//            ,) {
+//            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter password");
+//            return;
+//        }
+//
+//        //Kiểm tra xác nhận mật khẩu
+//        if (confirm.isEmpty() || !confirm.equals(password)) {
+//            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter confirm password");
+//            return;
+//        }
+//        if (!this.txtConfirm.getText().equals(this.txtPassword.getText())) {
+//            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please re-enter confirm password");
+//            return;
+//        }
+        //Kiểm tra username đã tồn tại hay chưa?
+        Account account = null;
+        try {
+            account = accountService.getAccountByUsername(username);
+        } catch (SQLException ex) {
+            Logger.getLogger(RegisterController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (account != null) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Username already exists.");
+            return;
+        }
+
+        account = new Account(Utils.randomID(), username, password, Active.AVAILABLE, Role.USER);
+        Employee employee = new Employee(Utils.randomID(), hireDate, fullname, birthDate, gender, identityCard, address, phone, account.getAccountID());
+
+        accountService.addAccount(account);
+        employeeService.addEmployee(employee);
+        Utils.showAlert(Alert.AlertType.INFORMATION, "Registration successfull!", "Welcome to Coffee Management App");
     }
 
     public void loginHandler(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
-
-        Parent root = loader.load();
-
-        LoginController controller = loader.getController();
-
-        Scene scene = new Scene(root, 900, 600);
-        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-
-        Stage stage = new Stage();
-        stage.setOnHiding((t) -> {
-            try {
-                Connection c = JdbcUtils.getConnection();
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-        stage.setTitle("Login");
-        stage.setScene(scene);
-        stage.show();
+        App app = new App();
+        app.loaderController("Login.fxml", "Login");
     }
 
     private LocalDate getLocalDate(DatePicker datePicker) {

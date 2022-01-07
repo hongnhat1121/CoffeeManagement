@@ -7,7 +7,6 @@ package com.nthn.configs;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 import java.util.UUID;
 import javafx.scene.control.Alert;
 import javafx.util.StringConverter;
