@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -24,9 +25,10 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 public class LoginTester {
 
-    private static final PasswordTester PASSWORD_TESTER = new PasswordTester();
-    private static final UsernameTester USERNAME_TESTER = new UsernameTester();
-
+//    @BeforeAll
+//    public void beforeAll(){
+//        
+//    }
     @Test
     public void testGetAccountByInvalidID() {
         try {
@@ -52,18 +54,26 @@ public class LoginTester {
         }
     }
 
-    //Test đăng nhập thành công
+    //Test username hợp lệ
     @ParameterizedTest(name = "{index} => username={0}, password={1}")
-    @CsvSource({"admin, 1121", "user, 1121"})
-    public void testLoginValid(String username, String password) throws SQLException {
-        Assertions.assertEquals(LoginChecker.isSuccessLogin(username, password), true);
+    @CsvSource({"user, 1121", "admin, 1121", "user1, User2022"})
+    public void testLoginSuccess(String username, String password) throws SQLException {
+        try {
+            Assertions.assertTrue(LoginChecker.isSuccessLogin(username, password));
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginTester.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     //Test đăng nhập không thành công
     @ParameterizedTest(name = "{index} => username={0}, password={1}")
     @CsvSource({"usernam=e, ?username2022", "username, username2022", "UserName, USERNAME2022", "username, username"})
-    public void testLoginInvalid(String username, String password) throws SQLException {
-        Assertions.assertEquals(LoginChecker.isSuccessLogin(username, password), false);
+    public void testLoginFailed(String username, String password) {
+        try {
+            Assertions.assertFalse(LoginChecker.isSuccessLogin(username, password));
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginTester.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

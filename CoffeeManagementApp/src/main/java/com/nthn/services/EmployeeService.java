@@ -39,6 +39,8 @@ public class EmployeeService {
                         rs.getString("Phone"), rs.getString("AccountID"));
                 employees.add((Employee) e);
             }
+            s.close();
+            c.close();
         }
         return employees;
     }
@@ -66,6 +68,9 @@ public class EmployeeService {
             preparedStatement.executeUpdate();
 
             connection.commit();
+
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -84,6 +89,8 @@ public class EmployeeService {
                         rs.getString("IdentityCard"), rs.getString("Address"),
                         rs.getString("Phone"), rs.getString("AccountID"));
             }
+            s.close();
+            c.close();
         }
         return null;
     }

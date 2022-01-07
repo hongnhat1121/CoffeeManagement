@@ -1,6 +1,11 @@
 package com.nthn.coffeemanagementapp;
 
 import com.nthn.configs.JdbcUtils;
+import com.nthn.configs.Utils;
+import com.nthn.pojo.Account;
+import com.nthn.pojo.Active;
+import com.nthn.pojo.Role;
+import com.nthn.services.AccountService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -43,6 +48,8 @@ public class App extends Application {
 
     public static void main(String[] args) throws SQLException {
         launch();
+//        Account a=new Account(Utils.randomID(), "user1", "User2022", Active.AVAILABLE, Role.USER);
+//        new AccountService().addAccount(a);
     }
 
     public void loaderController(String resource, String title) throws IOException {

@@ -34,6 +34,8 @@ public class ProductService {
                         Category.valueOf(rs.getString("Category")));
                 results.add(p);
             }
+            stm.close();
+            conn.close();
         }
         return results;
     }
@@ -52,7 +54,6 @@ public class ProductService {
 //        }
 //        return null;
 //    }
-
     public void addProduct(Product p) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
@@ -68,6 +69,9 @@ public class ProductService {
             preparedStatement.executeUpdate();
 
             connection.commit();
+
+            preparedStatement.close();
+            connection.close();
         }
     }
 
@@ -83,6 +87,7 @@ public class ProductService {
             if (productName != null && !productName.isEmpty()) {
                 stm.setString(1, productName);
             }
+            
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -91,6 +96,8 @@ public class ProductService {
                         Category.getByContent(rs.getString("Category")));
                 results.add(p);
             }
+            stm.close();
+            conn.close();
         }
         return results;
     }

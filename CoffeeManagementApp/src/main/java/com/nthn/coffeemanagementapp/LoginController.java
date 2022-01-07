@@ -4,32 +4,21 @@
  */
 package com.nthn.coffeemanagementapp;
 
-import com.nthn.configs.JdbcUtils;
+import com.nthn.check.LoginChecker;
 import com.nthn.configs.Utils;
 import com.nthn.pojo.Account;
 import com.nthn.services.AccountService;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.kordamp.bootstrapfx.BootstrapFX;
 
 /**
  * FXML Controller class
@@ -48,7 +37,6 @@ public class LoginController implements Initializable {
     private Button btnSwitchRegister;
 
     private Account account;
-    private final AccountService accountService = new AccountService();
 
     /**
      * Initializes the controller class.
@@ -64,7 +52,7 @@ public class LoginController implements Initializable {
     public void loginHandler(ActionEvent event) throws SQLException, IOException {
         String username = this.txtUsername.getText();
         String password = this.txtPassword.getText();
-        if (this.txtUsername.getText().isEmpty()) {
+        if (this.txtUsername.getText().isEmpty() || username.contains(" ") || username.matches(".*\\W.*") || username.length() > 20) {
             Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter username!");
             return;
         }
@@ -73,28 +61,14 @@ public class LoginController implements Initializable {
             return;
         }
 
-        account = accountService.getAccountByUsername(username);
-        if (account != null) {
-            if (account.getPassword().equals(DigestUtils.sha256Hex(password))) {
-                loadPrimaryController();
-            } else {
-                Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter correct password!");
-                return;
-            }
+        if (LoginChecker.isSuccessLogin(username, password)) {
+            loadPrimaryController();
         } else {
-            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Username doesn't exist!");
-            return;
-        }
-
-        if (username.contains(" ") || username.matches(".*\\W.*") || username.length() > 20) {
-            
-        } else {
-            Utils.showAlert(Alert.AlertType.INFORMATION, "Login Failed!", "Please enter correct password!");
+            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Login failed!");
         }
     }
-}
 
-public void registerHandler(ActionEvent event) throws IOException {
+    public void registerHandler(ActionEvent event) throws IOException {
         App app = new App();
         app.loaderController("Register.fxml", "Register");
     }

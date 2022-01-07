@@ -67,7 +67,7 @@ public class UsernameTester {
 
     //Test username đã tồn tại
     @ParameterizedTest
-    @ValueSource(strings = {"user", "admin"})
+    @ValueSource(strings = {"user", "admin", "User1"})
     public void testExist(String input) throws SQLException {
         Assertions.assertTrue(LoginChecker.isExistAccount(input));
     }
@@ -89,12 +89,8 @@ public class UsernameTester {
     //Test username hợp lệ
     @ParameterizedTest
     @ValueSource(strings = {"coffee", "coffee_2022"})
-    public void testValid(String input) throws SQLException {
-        testNotEmpty(input);
-        testNotExist(input);
-        testNotSpace(input);
-        testLength(input, "true");
-        testSpecialLetter(input, "false");
+    public void testValid(String input) {
+        Assertions.assertEquals(LoginChecker.isValidUsername(input), true);
     }
 
     //Test username không hợp lệ

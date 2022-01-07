@@ -35,6 +35,8 @@ public class TableService {
                         Status.valueOf(rs.getString("Status")));
                 tables.add(t);
             }
+            s.close();
+            c.close();
         }
         return tables;
     }
@@ -55,6 +57,9 @@ public class TableService {
             preparedStatement.executeUpdate();
 
             connection.commit();
+
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(TableService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -69,6 +74,8 @@ public class TableService {
                         rs.getString("TableName"), rs.getInt("Capacity"),
                         Status.getByContent(rs.getString("Status")));
             }
+            s.close();
+            c.close();
         }
         return null;
     }

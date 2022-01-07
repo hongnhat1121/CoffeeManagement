@@ -41,6 +41,8 @@ public class AccountService {
                         Role.valueOf(rs.getString("Role")));
                 accounts.add(a);
             }
+            s.close();
+            c.close();
         }
         return accounts;
     }
@@ -66,6 +68,8 @@ public class AccountService {
             preparedStatement.executeUpdate();
 
             connection.commit();
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -87,6 +91,8 @@ public class AccountService {
                         Active.valueOf(rs.getString("Active")),
                         Role.valueOf(rs.getString("Role")));
             }
+            s.close();
+            c.close();
         }
         return null;
     }
@@ -108,29 +114,35 @@ public class AccountService {
                         Active.valueOf(rs.getString("Active")),
                         Role.valueOf(rs.getString("Role")));
             }
+            ps.close();
+            c.close();
         }
         return null;
     }
 
-//    /**
-//     * Kiểm tra username, password khớp với dữ liệu chưa?
-//     * @param username
-//     * @param password
-//     * @return
-//     * @throws SQLException
-//     */
-//    public boolean checkAccount(String username, String password) throws SQLException {
-//        try (Connection c = JdbcUtils.getConnection()) {
-//            PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username like ? AND Password like ?");
-//            ps.setString(1, username);
-//            ps.setString(2, DigestUtils.sha256Hex(password));
-//
-//            ResultSet rs = ps.executeQuery();
-//            if (rs.next()) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    /**
+     * Kiểm tra username, password khớp với dữ liệu chưa?
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    public boolean checkAccount(String username, String password) {
+        try (Connection c = JdbcUtils.getConnection()) {
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username = ? AND Password = ?");
+            ps.setString(1, username);
+            ps.setString(2, DigestUtils.sha256Hex(password));
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+            ps.close();
+            c.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 
 }

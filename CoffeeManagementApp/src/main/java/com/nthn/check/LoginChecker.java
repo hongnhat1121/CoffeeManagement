@@ -36,26 +36,20 @@ public class LoginChecker {
 
     public static boolean isValidPassword(String password, String username) {
         return !password.trim().isEmpty() && password.length() >= 6
-                && password.matches(".*[a-z].*") && password.matches(".*[A-z].*")
+                && password.matches(".*[a-z].*") && password.matches(".*[A-Z].*")
                 && password.matches(".*[0-9].*") && !password.matches(".*\\W.*")
                 && !password.equalsIgnoreCase(username);
+       
     }
 
-    public static boolean isSuccessLogin(String username, String password) {
+    public static boolean isSuccessLogin(String username, String password) throws SQLException {
         AccountService accountService = new AccountService();
         Account account = null;
-        try {
-            account = accountService.getAccountByUsername(username);
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginChecker.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        account = accountService.getAccountByUsername(username);
         if (account != null) {
             return account.getPassword().equals(DigestUtils.sha256Hex(password));
+        } else {
+            return false;
         }
-        return false;
-    }
-
-    public static boolean isValidLogin(String username, String password) {
-        return isValidUsername(username) && isValidPassword(password, username);
     }
 }

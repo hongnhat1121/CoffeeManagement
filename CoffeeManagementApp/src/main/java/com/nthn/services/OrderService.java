@@ -5,10 +5,7 @@
 package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
-import com.nthn.pojo.Account;
-import com.nthn.pojo.Active;
 import com.nthn.pojo.Order;
-import com.nthn.pojo.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,6 +38,8 @@ public class OrderService {
                         rs.getString("TableID"), rs.getInt("Payment"));
                 orders.add(o);
             }
+            s.close();
+            c.close();
         }
         return orders;
     }
@@ -68,6 +66,9 @@ public class OrderService {
             preparedStatement.executeUpdate();
 
             connection.commit();
+
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -88,6 +89,8 @@ public class OrderService {
                         rs.getBigDecimal("Total"), rs.getString("EmployeeID"),
                         rs.getString("TableID"), rs.getInt("Payment"));
             }
+            s.close();
+            c.close();
         }
         return null;
     }

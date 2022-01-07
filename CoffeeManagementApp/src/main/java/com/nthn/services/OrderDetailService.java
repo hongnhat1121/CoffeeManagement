@@ -23,6 +23,7 @@ import java.util.logging.Logger;
  * @author HONGNHAT
  */
 public class OrderDetailService {
+
     /**
      *
      * @return @throws SQLException
@@ -39,6 +40,8 @@ public class OrderDetailService {
                         Role.valueOf(rs.getString("Role")));
                 accounts.add(a);
             }
+            s.close();
+            c.close();
         }
         return accounts;
     }
@@ -64,6 +67,9 @@ public class OrderDetailService {
             preparedStatement.executeUpdate();
 
             connection.commit();
+
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -85,6 +91,8 @@ public class OrderDetailService {
                         Active.valueOf(rs.getString("Active")),
                         Role.valueOf(rs.getString("Role")));
             }
+            s.close();
+            c.close();
         }
         return null;
     }
