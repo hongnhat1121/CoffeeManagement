@@ -36,4 +36,6 @@ public class StringChecker {
     public static boolean isAlpla(String string) {
         return !containNumeric(string) && !containSpecialLetter(string);
     }
+    
+    
 }

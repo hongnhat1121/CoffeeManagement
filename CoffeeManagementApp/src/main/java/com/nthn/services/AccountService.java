@@ -103,7 +103,7 @@ public class AccountService {
      * @return
      * @throws SQLException
      */
-    public Account getAccountByUsername(String text) throws SQLException {
+    public static Account getAccountByUsername(String text) throws SQLException {
         try (Connection c = JdbcUtils.getConnection()) {
             PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username = ?");
             ps.setString(1, text);
