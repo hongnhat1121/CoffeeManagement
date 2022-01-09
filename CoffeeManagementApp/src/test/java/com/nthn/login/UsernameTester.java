@@ -21,31 +21,33 @@ import org.junit.jupiter.params.provider.ValueSource;
  */
 public class UsernameTester {
 
+    private final LoginChecker checker = new LoginChecker();
+
     //Test username rỗng
     @ParameterizedTest
     @ValueSource(strings = {"", "\t", "\n"})
-    public void testEmpty(String input) {
+    public void testUsernameEmpty(String input) {
         Assertions.assertEquals(input.trim().isEmpty(), true);
     }
 
     //Test username khác rỗng
     @ParameterizedTest
     @ValueSource(strings = {"coffee", "management", "app "})
-    public void testNotEmpty(String input) {
+    public void testUsernameNotEmpty(String input) {
         Assertions.assertEquals(input.trim().isEmpty(), false);
     }
 
     //Test username không chứa khoảng trắng
     @ParameterizedTest
     @ValueSource(strings = {"coffee", "management"})
-    public void testNotSpace(String input) {
+    public void testUsernameNotSpace(String input) {
         Assertions.assertEquals(input.contains(" "), false);
     }
 
     //Test username chứa khoảng trắng
     @ParameterizedTest
     @ValueSource(strings = {"coff   ee ", "manag ement "})
-    public void testSpace(String input) {
+    public void testUsernameSpace(String input) {
         Assertions.assertEquals(input.contains(" "), true);
     }
 
@@ -54,28 +56,28 @@ public class UsernameTester {
     //regex \W : bất kỳ ký tự nào không phải chữ cái và chữ số
     @ParameterizedTest(name = "{index} => input={0}, expected={1}")
     @CsvSource({"coffee!, true", "coffee@, true", "coffee2022, false", "coffee_2020, false"})
-    public void testSpecialLetter(String input, String expected) {
+    public void testUsernameSpecialLetter(String input, String expected) {
         Assertions.assertEquals(input.matches(".*\\W.*"), Boolean.valueOf(expected));
     }
 
     //Test độ dài username không vượt quá 20 ký tự
     @ParameterizedTest(name = "{index} => input={0}, expected={1}")
     @CsvSource({"username, true", "password, true", "coffeemanagementapp_2022, false"})
-    public void testLength(String input, String expected) {
+    public void testUsernameLength(String input, String expected) {
         Assertions.assertEquals(input.length() <= 20, Boolean.valueOf(expected));
     }
 
     //Test username đã tồn tại
     @ParameterizedTest
-    @ValueSource(strings = {"user", "admin", "User1"})
-    public void testExist(String input) throws SQLException {
-        Assertions.assertTrue(LoginChecker.isExistAccount(input));
+    @ValueSource(strings = {"user1"})
+    public void testUsernameExist(String input) throws SQLException {
+        Assertions.assertTrue(checker.isExistAccount(input));
     }
 
     //Test username không tồn tại
     @ParameterizedTest
     @ValueSource(strings = {"username"})
-    public void testNotExist(String input) {
+    public void testUsernameNotExist(String input) {
         Account account = null;
         AccountService accountService = new AccountService();
         try {
@@ -87,16 +89,17 @@ public class UsernameTester {
     }
 
     //Test username hợp lệ
-    @ParameterizedTest
-    @ValueSource(strings = {"coffee", "coffee_2022"})
-    public void testValid(String input) {
-        Assertions.assertEquals(LoginChecker.isValidUsername(input), true);
+    @ParameterizedTest(name = "{index} => input={0}")
+    @ValueSource(strings = {"user1"})
+    public void testUsernameValid(String input) throws SQLException {
+        Assertions.assertEquals(checker.isValidUsername(input), true);
     }
 
     //Test username không hợp lệ
     @ParameterizedTest
     @ValueSource(strings = {"coff ee", "coffeemanagementapp_2022", "coffee*2022", "coffee  2022"})
-    public void testInvalid(String input) {
-        Assertions.assertEquals(LoginChecker.isValidUsername(input), false);
+    public void testUsernameInvalid(String input) throws SQLException {
+       Assertions.assertEquals(checker.isValidUsername(input), false);
     }
+
 }

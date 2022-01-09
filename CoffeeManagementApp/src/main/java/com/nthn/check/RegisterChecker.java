@@ -4,7 +4,11 @@
  */
 package com.nthn.check;
 
+import com.nthn.configs.Utils;
+import com.nthn.pojo.Account;
+import com.nthn.pojo.Employee;
 import com.nthn.services.AccountService;
+import com.nthn.services.EmployeeService;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.logging.Level;
@@ -16,48 +20,68 @@ import java.util.logging.Logger;
  */
 public class RegisterChecker {
 
-    //Họ tên, CMND/CCCD, số điện thoại không được bỏ trống
+    //Họ tên không bỏ trống, chỉ chứa ký tự chữ cái
+    public boolean isValidFullname(String string) {
+        return !string.isEmpty() && !StringChecker.containNumeric(string);
+    }
+
     //Tuổi lớn hơn 18;
-    public static boolean isValidBirthDate(LocalDate localDate) {
+    public boolean isValidBirthDate(LocalDate localDate) {
         LocalDate now = LocalDate.now();
-        now.minusYears(18); //now=now-18years
+        now.minusYears(18);
         return localDate.compareTo(now) < 0;
+
     }
 
     //CMND/CCCD có đủ 9 số hoặc 12 chữ số
-    public static boolean isValidIdentityCard(String string) {
+    public boolean isValidIdentityCard(String string) {
         return StringChecker.isAlnum(string, 9) || StringChecker.isAlnum(string, 12);
     }
 
     //Số điện thoại có đủ 10 chữ số
-    public static boolean isValidPhoneNumber(String string) {
+    public boolean isValidPhoneNumber(String string) {
         return StringChecker.isAlnum(string, 10);
     }
 
     //Kiểm tra thông tin tài khoản muốn đăng ký
-    public static boolean isValidInfo(String fullname, LocalDate birthDate,
+    public boolean isValidInfo(String fullname, LocalDate birthDate,
             String identityCard, String phoneNumber) {
-        return !fullname.isEmpty() && !identityCard.isEmpty() && !phoneNumber.isEmpty() && isValidBirthDate(birthDate) && isValidIdentityCard(identityCard) && isValidPhoneNumber(phoneNumber);
+        return !fullname.isEmpty() && !identityCard.isEmpty() && !phoneNumber.isEmpty()
+                && isValidBirthDate(birthDate) && isValidIdentityCard(identityCard)
+                && isValidPhoneNumber(phoneNumber);
     }
 
     //Kiểm tra username có hợp lệ không? Quy định: không quá 20 ký tự, không có ký tự đặc biệt, skhông có khoảng trắng. Tên đăng nhập không trùng.
-    public static boolean isValidUsername(String string) {
+    public boolean isValidUsername(String string) {
+
         try {
-            if (!string.isEmpty() && string.length() <= 20 && string.contains(" ") && AccountService.getAccountByUsername(string) == null) {
-                return true;
-            }
+            AccountService accountService = new AccountService();
+            return !string.isEmpty() && string.length() <= 20 && !string.contains(" ")
+                    && accountService.getAccountByUsername(string) == null;
         } catch (SQLException ex) {
             Logger.getLogger(RegisterChecker.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+
     }
 
     //Kiểm tra password có hợp lệ không? Quy định: có ít nhất 6 ký tự, có chữ hoa, có chữ thường, có số, không trùng tên đăng nhập
-    public static boolean isValidPassword(String username, String password) {
-        return !password.isEmpty() && password.length() >= 6 && password.contains(" ")
+    public boolean isValidPassword(String username, String password) {
+        return !password.isEmpty() && (password.length() >= 6) && !password.contains(" ")
                 && StringChecker.containUpper(password)
                 && StringChecker.containLower(password)
                 && StringChecker.containNumeric(password)
-                && password.equalsIgnoreCase(username);
+                && !password.equals(username);
+    }
+
+    //Kiểm tra confirm password
+    public boolean isValidConfirm(String confirm, String password) {
+        return confirm.equals(password);
+    }
+
+    //Kiểm tra đăng ký tài khoản thành công không?
+    public boolean isSuccessRegister(Employee employee, Account account) throws SQLException {
+        EmployeeService employeeService = new EmployeeService();
+        return employeeService.checkEmployee(employee.getEmployeeID(), account.getAccountID());
     }
 }

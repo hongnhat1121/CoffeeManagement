@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" styleClass="h6" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nthn.coffeemanagementapp.TableController">
+    <children>
+        <ImageView fitHeight="600.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../../../coffee-beans-with-props-making-coffee.jpg" />
+            </image>
+        </ImageView>
+        <VBox layoutX="14.0" prefHeight="600.0" prefWidth="800.0">
+            <children>
+                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="900.0" styleClass="h1" text="COFFEE MANAGEMENT APP" textAlignment="CENTER" textFill="RED">
+                    <effect>
+                        <DropShadow height="25.0" radius="12.0" spread="0.25" width="25.0" />
+                    </effect>
+                </Label>
+            <HBox prefHeight="26.0" prefWidth="295.0">
+               <children>
+                        <TextField fx:id="txtKeyword" prefHeight="30.0" prefWidth="477.0" promptText="Tìm kiếm bàn theo sức chứa..." />
+                  <RadioButton fx:id="rbAll" contentDisplay="CENTER" mnemonicParsing="false" onAction="#rbHandler" prefHeight="200.0" prefWidth="150.0" selected="true" text="Tất cả" textFill="WHITE">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="Status" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="rbEmpty" contentDisplay="CENTER" mnemonicParsing="false" onAction="#rbHandler" prefHeight="200.0" prefWidth="150.0" text="Còn trống" textFill="WHITE" toggleGroup="$Status" />
+                  <RadioButton fx:id="rbFull" contentDisplay="CENTER" mnemonicParsing="false" onAction="#rbHandler" prefHeight="49.0" prefWidth="150.0" text="Đã đặt" textFill="WHITE" toggleGroup="$Status" />
+               </children>
+            </HBox>
+                <TableView fx:id="viewTable" fixedCellSize="0.0">
+                    <columns>
+                        <TableColumn fx:id="tableIDCol" prefWidth="233.60000038146973" text="ID" />
+                        <TableColumn fx:id="tableNameCol" minWidth="4.0" prefWidth="186.39996337890625" text="Tên bàn" />
+                  <TableColumn fx:id="capacityCol" prefWidth="247.20004272460938" text="Sức chứa" />
+                  <TableColumn fx:id="statusCol" prefWidth="135.199951171875" text="Trạng thái" />
+                    </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+                </TableView>
+            </children>
+        </VBox>
+    </children>
+</Pane>

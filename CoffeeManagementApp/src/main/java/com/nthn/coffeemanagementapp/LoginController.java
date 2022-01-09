@@ -61,7 +61,8 @@ public class LoginController implements Initializable {
             return;
         }
 
-        if (LoginChecker.isSuccessLogin(username, password)) {
+        LoginChecker checker=new LoginChecker();
+        if (checker.isSuccessLogin(username, password)) {
             loadPrimaryController();
         } else {
             Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Login failed!");

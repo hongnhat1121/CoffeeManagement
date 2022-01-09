@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.nthn.testcontroller;
+package com.nthn.login;
 
 import com.nthn.check.LoginChecker;
 import com.nthn.pojo.Account;
@@ -21,10 +21,8 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 public class LoginTester {
 
-//    @BeforeAll
-//    public void beforeAll(){
-//        
-//    }
+    private final LoginChecker checker = new LoginChecker();
+
     @Test
     public void testGetAccountByInvalidID() {
         try {
@@ -50,26 +48,18 @@ public class LoginTester {
         }
     }
 
-    //Test username hợp lệ
+    //Test đăng nhập thành công
     @ParameterizedTest(name = "{index} => username={0}, password={1}")
-    @CsvSource({"user, 1121", "admin, 1121", "user1, User2022"})
+    @CsvSource({"user1, User2022"})
     public void testLoginSuccess(String username, String password) throws SQLException {
-        try {
-            Assertions.assertTrue(LoginChecker.isSuccessLogin(username, password));
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Assertions.assertTrue(checker.isSuccessLogin(username, password));
     }
 
     //Test đăng nhập không thành công
     @ParameterizedTest(name = "{index} => username={0}, password={1}")
     @CsvSource({"usernam=e, ?username2022", "username, username2022", "UserName, USERNAME2022", "username, username"})
-    public void testLoginFailed(String username, String password) {
-        try {
-            Assertions.assertFalse(LoginChecker.isSuccessLogin(username, password));
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void testLoginFailed(String username, String password) throws SQLException {
+        Assertions.assertFalse(checker.isSuccessLogin(username, password));
     }
 
 }

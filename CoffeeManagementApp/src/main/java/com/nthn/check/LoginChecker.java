@@ -18,34 +18,38 @@ import org.apache.commons.codec.digest.DigestUtils;
  */
 public class LoginChecker {
 
-    public static boolean isExistAccount(String username) {
-        Account account = new Account();
+    public boolean isExistAccount(String username) {
+        Account account = null;
         AccountService accountService = new AccountService();
         try {
             account = accountService.getAccountByUsername(username);
         } catch (SQLException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoginChecker.class.getName()).log(Level.SEVERE, null, ex);
         }
         return account != null;
     }
 
-    public static boolean isValidUsername(String username) {
-        return !username.isEmpty() && !username.contains(" ") && username.length() <= 20
-                && !username.matches(".*\\W.*") && isExistAccount(username);
+    public boolean isValidUsername(String username) throws SQLException {
+        return !username.matches(".*\\W.*") && username.length() <= 20
+                && !username.isEmpty() && !username.contains(" ")
+                && isExistAccount(username);
     }
 
-    public static boolean isValidPassword(String password, String username) {
+    public boolean isValidPassword(String password, String username) {
         return !password.trim().isEmpty() && password.length() >= 6
                 && password.matches(".*[a-z].*") && password.matches(".*[A-Z].*")
                 && password.matches(".*[0-9].*") && !password.matches(".*\\W.*")
                 && !password.equalsIgnoreCase(username);
-       
     }
 
-    public static boolean isSuccessLogin(String username, String password) throws SQLException {
+    public boolean isSuccessLogin(String username, String password) {
         AccountService accountService = new AccountService();
         Account account = null;
-        account = accountService.getAccountByUsername(username);
+        try {
+            account = accountService.getAccountByUsername(username);
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginChecker.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (account != null) {
             return account.getPassword().equals(DigestUtils.sha256Hex(password));
         } else {

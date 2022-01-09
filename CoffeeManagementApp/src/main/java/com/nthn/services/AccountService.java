@@ -32,16 +32,16 @@ public class AccountService {
     public List<Account> getAccounts() throws SQLException {
         List<Account> accounts = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
-            Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM accounts");
-            while (rs.next()) {
-                Account a = new Account(rs.getString("AccountID"),
-                        rs.getString("Username"), rs.getString("Password"),
-                        Active.valueOf(rs.getString("Active")),
-                        Role.valueOf(rs.getString("Role")));
-                accounts.add(a);
+            try (Statement s = c.createStatement()) {
+                ResultSet rs = s.executeQuery("SELECT * FROM accounts");
+                while (rs.next()) {
+                    Account a = new Account(rs.getString("AccountID"),
+                            rs.getString("Username"), rs.getString("Password"),
+                            Active.valueOf(rs.getString("Active")),
+                            Role.valueOf(rs.getString("Role")));
+                    accounts.add(a);
+                }
             }
-            s.close();
             c.close();
         }
         return accounts;
@@ -68,6 +68,7 @@ public class AccountService {
             preparedStatement.executeUpdate();
 
             connection.commit();
+            
             preparedStatement.close();
             connection.close();
         } catch (SQLException ex) {
@@ -103,7 +104,7 @@ public class AccountService {
      * @return
      * @throws SQLException
      */
-    public static Account getAccountByUsername(String text) throws SQLException {
+    public Account getAccountByUsername(String text) throws SQLException {
         try (Connection c = JdbcUtils.getConnection()) {
             PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username = ?");
             ps.setString(1, text);
