@@ -31,36 +31,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
  *
  * @author PC
  */
-public class ProductController implements Initializable {
-    @FXML private TextField txtProduct;
-    @FXML private ComboBox cbProduct;
-    @FXML private TableView<Product> tbProduct;
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        
-        this.loadTableViewProduct();
-            
-        try {
-            this.loadComboBoxDataProduct();
-            this.loadTableDataProduct(null);
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            
-        this.txtProduct.textProperty().addListener((evt) -> {
-            try {
-                this.loadTableDataProduct(this.txtProduct.getText());
-            } catch (SQLException ex) {
-                Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-    }    
+public class ProductController {
     
-    private void loadTableViewProduct() {
+    public void loadTableViewProduct(TableView<Product> tbvProduct) {
         TableColumn colProductName = new TableColumn("Product name");
         colProductName.setCellValueFactory(new PropertyValueFactory("ProductName"));
         colProductName.setPrefWidth(300);
@@ -69,17 +42,20 @@ public class ProductController implements Initializable {
         colUnitPrice.setCellValueFactory(new PropertyValueFactory("UnitPrice"));
         colUnitPrice.setPrefWidth(200);
         
-        this.tbProduct.getColumns().addAll(colProductName, colUnitPrice);            
+        tbvProduct.getColumns().addAll(colProductName, colUnitPrice);            
     }
     
-    private void loadTableDataProduct(String kw) throws SQLException {      
+    public void loadTableDataProduct(String kw, TableView tbvProduct, ComboBox cbProduct) throws SQLException {      
         ProductService ps = new ProductService();
-        this.tbProduct.setItems(FXCollections.observableList(ps.getProductsByName(kw)));        
+        if(cbProduct.getSelectionModel().getSelectedItem().toString().equals("ProductName"))
+            tbvProduct.setItems(FXCollections.observableList(ps.getProductsByName(kw)));    
+        else
+            tbvProduct.setItems(FXCollections.observableList(ps.getProductsByName(kw)));    
     }
     
-    private void loadComboBoxDataProduct() throws SQLException {
+    public void loadComboBoxDataProduct(ComboBox cbProduct) throws SQLException {
         ProductService ps = new ProductService();
-        this.cbProduct.setItems(FXCollections.observableList(ps.getColumnsName())); 
-        this.cbProduct.getSelectionModel().select(0);
+        cbProduct.setItems(FXCollections.observableList(ps.getColumnsName())); 
+        cbProduct.getSelectionModel().select(0);
     }
 }
