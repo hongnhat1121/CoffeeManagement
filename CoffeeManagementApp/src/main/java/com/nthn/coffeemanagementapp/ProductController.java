@@ -45,12 +45,12 @@ public class ProductController {
         tbvProduct.getColumns().addAll(colProductName, colUnitPrice);            
     }
     
-    public void loadTableDataProduct(String kw, TableView tbvProduct, ComboBox cbProduct) throws SQLException {      
+    public void loadTableDataProduct(String kw, TableView<Product> tbvProduct, ComboBox cbProduct) throws SQLException {      
         ProductService ps = new ProductService();
         if(cbProduct.getSelectionModel().getSelectedItem().toString().equals("ProductName"))
             tbvProduct.setItems(FXCollections.observableList(ps.getProductsByName(kw)));    
         else
-            tbvProduct.setItems(FXCollections.observableList(ps.getProductsByName(kw)));    
+            tbvProduct.setItems(FXCollections.observableList(ps.getProductsByUnitPrice(kw)));    
     }
     
     public void loadComboBoxDataProduct(ComboBox cbProduct) throws SQLException {

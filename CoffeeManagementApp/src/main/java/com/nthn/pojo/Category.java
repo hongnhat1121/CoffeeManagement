@@ -8,16 +8,24 @@ package com.nthn.pojo;
  *
  * @author HONGNHAT
  */
-public class Category {
-    private int categoryID;
-    private String categoryName;
+public enum Category {
+    DRINK(1,"Thức uống"), FOOD(2,"Thức ăn");
+    private final int categoryID;
+    private final String categoryName;
 
-    public Category() {
-    }
-
-    public Category(int categoryID, String categoryName) {
+    private Category(int categoryID, String categoryName) {
         this.categoryID = categoryID;
         this.categoryName = categoryName;
+    }
+    
+    public static Category getByContent(String text) {
+        switch (text) {
+            case "Thức uống":
+                return DRINK;
+            case "Thức ăn":
+                return FOOD;
+        }
+        return null;
     }
 
     @Override
@@ -25,19 +33,11 @@ public class Category {
         return this.categoryName; 
     }
     
-
     /**
      * @return the categoryID
      */
     public int getCategoryID() {
         return categoryID;
-    }
-
-    /**
-     * @param categoryID the categoryID to set
-     */
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
     }
 
     /**
@@ -47,12 +47,4 @@ public class Category {
         return categoryName;
     }
 
-    /**
-     * @param categoryName the categoryName to set
-     */
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-    
-    
 }

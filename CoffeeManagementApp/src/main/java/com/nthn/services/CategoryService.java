@@ -22,23 +22,6 @@ import java.util.logging.Logger;
  * @author HONGNHAT
  */
 public class CategoryService {
-
-    public List<Category> getCategories() throws SQLException {
-        List<Category> categories = new ArrayList<>();
-
-        try (Connection c = JdbcUtils.getConnection()) {
-            Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM categories");
-
-            while (rs.next()) {
-                Category category = new Category(rs.getInt("CategoryID"), rs.getString("CategoryName"));
-                categories.add(category);
-            }
-        }
-
-        return categories;
-    }
-
     public void addCategory(Category category) {
 
         try {

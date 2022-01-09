@@ -15,48 +15,32 @@ import java.util.logging.Logger;
  */
 public class Product {
     
-    private int productID;
+    private String productID;
     private String productName;
     private long unitPrice;
-    private int categoryId;
+    private Category category;
     
     public Product() {
     }
     
-    public Product(int productID, String productName, long unitPrice, int categoryId) {
+    public Product(String productID, String productName, long unitPrice, Category category) {
         this.productID = productID;
         this.productName = productName;
         this.unitPrice = unitPrice;
-        this.categoryId = categoryId;
-    }
-    
-    public void viewDetail() throws SQLException {
-        System.out.println("Tên sản phẩm: " + this.getProductName());
-        System.out.println("Đơn giá: " + this.getUnitPrice());
-        System.out.println("Danh mục: " + new CategoryService().getCatagory(categoryId));
-    }
-    
-    @Override
-    public String toString() {
-        try {
-            return String.format("%s\t%s", this.getProductName(), new CategoryService().getCatagory(categoryId));
-        } catch (SQLException ex) {
-            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        this.category = category;
     }
 
     /**
      * @return the productID
      */
-    public int getProductID() {
+    public String getProductID() {
         return productID;
     }
 
     /**
      * @param productID the productID to set
      */
-    public void setProductID(int productID) {
+    public void setProductID(String productID) {
         this.productID = productID;
     }
 
@@ -91,15 +75,15 @@ public class Product {
     /**
      * @return the categoryId
      */
-    public int getCategoryId() {
-        return categoryId;
+    public Category getCategory() {
+        return category;
     }
 
     /**
-     * @param categoryId the categoryId to set
+     * @param category
      */
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryId(Category category) {
+        this.category = category;
     }
     
 }

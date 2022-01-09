@@ -31,19 +31,21 @@ public class MainController implements Initializable {
     private ComboBox cbProduct;
     @FXML
     private TableView<Product> tbvProduct;
-    @FXML
-    private TextField tfTable;
-    @FXML
-    private ComboBox<?> cbCapacity;
-    @FXML
-    private ComboBox<?> cbStatus;
-    @FXML
-    private TableView<?> tbvTable;
+//    @FXML
+//    private TextField tfTable;
+//    @FXML
+//    private ComboBox<?> cbCapacity;
+//    @FXML
+//    private ComboBox<?> cbStatus;
+//    @FXML
+//    private TableView<?> tbvTable;
     
     
-    private ProductController pc = new ProductController();
+    private final ProductController pc = new ProductController();
     /**
      * Initializes the controller class.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {

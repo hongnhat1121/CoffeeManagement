@@ -7,6 +7,7 @@ package com.nthn.services;
 
 import com.nthn.pojo.Product;
 import com.nthn.configs.JdbcUtils;
+import com.nthn.pojo.Category;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,8 +29,8 @@ public class ProductService {
             ResultSet rs = stm.executeQuery("SELECT * FROM products");
 
             while (rs.next()) {
-                Product p = new Product(rs.getInt("ProductId"),
-                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
+                Product p = new Product(rs.getString("ProductId"),
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"), Category.valueOf(rs.getString("Category")));
                 results.add(p);
             }
         }
@@ -42,8 +43,8 @@ public class ProductService {
             ResultSet rs = stm.executeQuery("SELECT * FROM products WHERE ProductID=" + id);
             
             while (rs.next()) {
-                Product p = new Product(rs.getInt("ProductId"),
-                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
+                Product p = new Product(rs.getString("ProductId"),
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"), Category.valueOf(rs.getString("Category")));
                 return p;
             }
         }
@@ -55,12 +56,12 @@ public class ProductService {
             connection.setAutoCommit(false);
 
             PreparedStatement preparedStatement = connection.prepareStatement(""
-                    + "INSERT INTO products(ProductID, ProductName, UnitPrice, CategoryID) "
+                    + "INSERT INTO products(ProductID, ProductName, UnitPrice, Category) "
                     + "VALUES(?, ?, ?, ?)");
-            preparedStatement.setInt(1, p.getProductID());
+            preparedStatement.setString(1, p.getProductID());
             preparedStatement.setString(2, p.getProductName());
             preparedStatement.setLong(3, p.getUnitPrice());
-            preparedStatement.setInt(4, p.getCategoryId());
+            preparedStatement.setObject(4, p.getCategory());
 
             preparedStatement.executeUpdate();
 
@@ -83,8 +84,8 @@ public class ProductService {
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
-                Product p = new Product(rs.getInt("ProductId"),
-                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
+                Product p = new Product(rs.getString("ProductId"),
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"), Category.valueOf(rs.getString("Category")));
                 results.add(p);
             }
         }
@@ -109,34 +110,29 @@ public class ProductService {
     }
 
 //
-//    public List<Product> getProductsByUnitPrice(Long productPrice) throws SQLException {
-//
-//        List<Product> results = new ArrayList<>();
-//        try (Connection conn = JdbcUtils.getConnection()) {
-//            String sql = "SELECT * FROM products";
-//            if (productPrice != null && !productPrice.isEmpty()) {
-//
-//                if (productPrice != null) {
-//                    sql += "WHERE UnitPrice like concat('%', ?, '%')";
-//                }
-//            }
-//
-//            PreparedStatement stm = conn.prepareStatement(sql);
-//            if (productPrice != null && !productPrice.isEmpty()) {
-//                stm.setString(1, productPrice);
-//            }
-//            if (productPrice != null) {
-//                stm.setLong(1, productPrice);
-//            }
-//            ResultSet rs = stm.executeQuery();
-//
-//            while (rs.next()) {
-//                Product p = new Product(rs.getInt("ProductId"),
-//                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
-//                results.add(p);
-//            }
-//        }
-//        return results;
-//    }
+    public List<Product> getProductsByUnitPrice(String productPrice) throws SQLException {
+
+        List<Product> results = new ArrayList<>();
+        try (Connection conn = JdbcUtils.getConnection()) {
+            String sql = "SELECT * FROM products";
+            if (productPrice != null && !productPrice.isEmpty()) {
+                    sql += "WHERE UnitPrice like concat('%', ?, '%')";
+            }
+
+            PreparedStatement stm = conn.prepareStatement(sql);
+            if (productPrice != null && !productPrice.isEmpty()) {
+                stm.setString(1, productPrice);
+            }
+       
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                Product p = new Product(rs.getString("ProductId"),
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"), Category.valueOf(rs.getString("Category")));
+                results.add(p);
+            }
+        }
+        return results;
+    }
 
 }
