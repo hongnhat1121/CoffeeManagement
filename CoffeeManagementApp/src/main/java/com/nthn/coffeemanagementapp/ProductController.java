@@ -19,6 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -30,51 +31,36 @@ import javafx.scene.control.cell.PropertyValueFactory;
  *
  * @author PC
  */
-public class ProductController implements Initializable {
-    @FXML private TextField txtProduct;
-    @FXML private Button btnSubmit;
-    @FXML private TableView<Product> tbProduct;
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        
-        this.loadTableViewProduct();
-        
-        ProductService ps = new ProductService();
-        List<Product> products = new ArrayList<>();
-        try {
-            products = ps.getProducts();
-            this.loadTableDataProduct(null);
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            
-        this.txtProduct.textProperty().addListener((evt) -> {
-            try {
-                this.loadTableDataProduct(this.txtProduct.getText());
-            } catch (SQLException ex) {
-                Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-    }    
-    
-    private void loadTableViewProduct() {
-        TableColumn colProductName = new TableColumn("Product name");
+public class ProductController {
+    public void loadTableViewProduct(TableView tbvProduct) {
+        TableColumn colProductName = new TableColumn("Tên sản phẩm");
         colProductName.setCellValueFactory(new PropertyValueFactory("ProductName"));
-        colProductName.setPrefWidth(400);
+        colProductName.setPrefWidth(200);
         
-        TableColumn colUnitPrice = new TableColumn("Unit price");
-        colProductName.setCellValueFactory(new PropertyValueFactory("UnitPrice"));
-        colProductName.setPrefWidth(400);
+        TableColumn colUnitPrice = new TableColumn("Giá tiền");
+        colUnitPrice.setCellValueFactory(new PropertyValueFactory("UnitPrice"));
+        colUnitPrice.setPrefWidth(200);
         
-        this.tbProduct.getColumns().addAll(colProductName, colUnitPrice);            
+        TableColumn colCategory = new TableColumn("Thể loại");
+        colCategory.setCellValueFactory(new PropertyValueFactory("Category"));
+        colCategory.setPrefWidth(200);
+        
+        tbvProduct.getColumns().addAll(colProductName, colUnitPrice, colCategory);            
     }
     
-    private void loadTableDataProduct(String kw) throws SQLException {      
+    public void loadTableDataProduct(String kw, TableView tbvProduct, ComboBox cbProduct) throws SQLException {      
         ProductService ps = new ProductService();
-        this.tbProduct.setItems(FXCollections.observableList(ps.getProductsByName(kw)));        
+        if(cbProduct.getSelectionModel().getSelectedIndex() == 0)
+            tbvProduct.setItems(FXCollections.observableList(ps.getProductsByName(kw)));    
+        else
+            tbvProduct.setItems(FXCollections.observableList(ps.getProductsByUnitPrice(kw)));         
+    }
+    
+    public void loadComboBoxDataProduct(ComboBox cbProduct) throws SQLException {
+        List<String> s = new ArrayList<>();
+        s.add("Tên sản phẩm");
+        s.add("Giá tiền");
+        cbProduct.setItems(FXCollections.observableList(s)); 
+        cbProduct.getSelectionModel().select(0);
     }
 }

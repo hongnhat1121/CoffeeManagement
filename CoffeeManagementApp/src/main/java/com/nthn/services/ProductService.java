@@ -58,19 +58,18 @@ public class ProductService {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(""
+            try (PreparedStatement preparedStatement = connection.prepareStatement(""
                     + "INSERT INTO products(ProductID, ProductName, UnitPrice, Category) "
-                    + "VALUES(?, ?, ?, ?)");
-            preparedStatement.setString(1, p.getProductID());
-            preparedStatement.setString(2, p.getProductName());
-            preparedStatement.setLong(3, p.getUnitPrice());
-            preparedStatement.setString(4, p.getCategory().name());
-
-            preparedStatement.executeUpdate();
-
-            connection.commit();
-
-            preparedStatement.close();
+                    + "VALUES(?, ?, ?, ?)")) {
+                preparedStatement.setString(1, p.getProductID());
+                preparedStatement.setString(2, p.getProductName());
+                preparedStatement.setLong(3, p.getUnitPrice());
+                preparedStatement.setString(4, p.getCategory().name());
+                
+                preparedStatement.executeUpdate();
+                
+                connection.commit();
+            }
             connection.close();
         }
     }
@@ -80,7 +79,7 @@ public class ProductService {
         try (Connection conn = JdbcUtils.getConnection()) {
             String sql = "SELECT * FROM products";
             if (productName != null && !productName.isEmpty()) {
-                sql += "WHERE ProductName like concat('%', ?, '%')";
+                sql += " WHERE ProductName like concat('%', ?, '%')";
             }
 
             PreparedStatement stm = conn.prepareStatement(sql);
@@ -96,39 +95,33 @@ public class ProductService {
                         Category.getByContent(rs.getString("Category")));
                 results.add(p);
             }
-            stm.close();
-            conn.close();
         }
         return results;
     }
-//
-//    public List<Product> getProductsByUnitPrice(Long productPrice) throws SQLException {
-//
-//        List<Product> results = new ArrayList<>();
-//        try (Connection conn = JdbcUtils.getConnection()) {
-//            String sql = "SELECT * FROM products";
-//            if (productPrice != null && !productPrice.isEmpty()) {
-//
-//                if (productPrice != null) {
-//                    sql += "WHERE UnitPrice like concat('%', ?, '%')";
-//                }
-//            }
-//
-//            PreparedStatement stm = conn.prepareStatement(sql);
-//            if (productPrice != null && !productPrice.isEmpty()) {
-//                stm.setString(1, productPrice);
-//            }
-//            if (productPrice != null) {
-//                stm.setLong(1, productPrice);
-//            }
-//            ResultSet rs = stm.executeQuery();
-//
-//            while (rs.next()) {
-//                Product p = new Product(rs.getInt("ProductId"),
-//                        rs.getString("ProductName"), rs.getLong("UnitPrice"), rs.getInt("CategoryId"));
-//                results.add(p);
-//            }
-//        }
-//        return results;
-//    }
+
+    public List<Product> getProductsByUnitPrice(String productPrice) throws SQLException {
+
+        List<Product> results = new ArrayList<>();
+        try (Connection conn = JdbcUtils.getConnection()) {
+            String sql = "SELECT * FROM products";
+            if (productPrice != null && !productPrice.isEmpty()) {
+                    sql += " WHERE UnitPrice like concat('%', ?, '%')";
+            }
+
+            try (PreparedStatement stm = conn.prepareStatement(sql)) {
+                if (productPrice != null && !productPrice.isEmpty()) {
+                    stm.setString(1, productPrice);
+                }
+                
+                ResultSet rs = stm.executeQuery();
+                
+                while (rs.next()) {
+                    Product p = new Product(rs.getString("ProductId"),
+                            rs.getString("ProductName"), rs.getLong("UnitPrice"), Category.getByContent(rs.getString("Category")));
+                    results.add(p);
+                }
+            }
+        }
+        return results;
+    }
 }

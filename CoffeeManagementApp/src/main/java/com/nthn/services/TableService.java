@@ -5,6 +5,8 @@
 package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
+import com.nthn.pojo.Category;
+import com.nthn.pojo.Product;
 import com.nthn.pojo.Status;
 import com.nthn.pojo.Table;
 import java.sql.Connection;
@@ -57,87 +59,127 @@ public class TableService {
                         rs.getString("TableName"), rs.getInt("Capacity"),
                         Status.getByContent(rs.getString("Status")));
             }
-            s.close();
-            c.close();
         }
         return null;
     }
 
-    public List<Table> getTables() {
-        List<Table> tables = new ArrayList<>();
-
-        try (Connection c = JdbcUtils.getConnection()) {
-            try (Statement s = c.createStatement()) {
-                ResultSet rs = s.executeQuery("SELECT * FROM tables");
-                while (rs.next()) {
-                    Table t = new Table(rs.getString("TableID"),
-                            rs.getString("TableName"), rs.getInt("Capacity"),
-                            Status.valueOf(rs.getString("Status")));
-                    tables.add(t);
-                }
+    
+    public List<Table> getTablesByName(String TableName) throws SQLException {
+        List<Table> results = new ArrayList<>();
+        try (Connection conn = JdbcUtils.getConnection()) {
+            String sql = "SELECT * FROM tables";
+            if (TableName != null && !TableName.isEmpty()) {
+                sql += " WHERE TableName like concat('%', ?, '%')";
             }
-            c.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(TableService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return tables;
-    }
 
-    public List<Table> getTables(String status, int capacity) {
-        List<Table> tables = new ArrayList<>();
-        try (Connection c = JdbcUtils.getConnection()) {
-            try (PreparedStatement ps = c.prepareStatement("SELECT * FROM tables WHERE Status = ? AND Capacity >= ?")) {
-                ps.setObject(1, Status.getByContent(status));
-                ps.setInt(2, capacity);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    Table table = new Table(rs.getString("TableID"), rs.getString("TableName"), rs.getInt("Capacity"), Status.EMPTY);
-                    tables.add(table);
-                }
+            PreparedStatement stm = conn.prepareStatement(sql);
+            if (TableName != null && !TableName.isEmpty()) {
+                stm.setString(1, TableName);
             }
-            c.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(TableService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return tables;
-    }
+            
+            ResultSet rs = stm.executeQuery();
 
-    public List<Table> getTables(String status) {
-        List<Table> tables = new ArrayList<>();
-        try (Connection c = JdbcUtils.getConnection()) {
-
-            try (PreparedStatement ps = c.prepareStatement("SELECT * FROM tables WHERE Status = ?")) {
-                ps.setObject(1, Status.getByContent(status).name());
-
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    Table table = new Table(rs.getString("TableID"), rs.getString("TableName"), rs.getInt("Capacity"), Status.EMPTY);
-                    tables.add(table);
-                }
-            }
-            c.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(TableService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return tables;
-    }
-
-    public List<Table> getTables(int capacity) throws SQLException {
-        List<Table> tables = new ArrayList<>();
-        try (Connection c = JdbcUtils.getConnection()) {
-
-            PreparedStatement ps = c.prepareStatement("SELECT * FROM tables WHERE Capacity <= ?");
-            ps.setInt(1, capacity);
-
-            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Table table = new Table(rs.getString("TableID"), rs.getString("TableName"), rs.getInt("Capacity"), Status.EMPTY);
-                tables.add(table);
+                Table p = new Table(rs.getString("TableID"),
+                        rs.getString("TableName"), rs.getInt("Capacity"),
+                        Status.getByContent(rs.getString("Status")));
+                results.add(p);
             }
-            ps.close();
-            c.close();
         }
-        return tables;
+        return results;
+    }
+    
+    public List<Table> getTablesByCapacity(String Capacity) throws SQLException {
+        List<Table> results = new ArrayList<>();
+        try (Connection conn = JdbcUtils.getConnection()) {
+            String sql = "SELECT * FROM tables";
+            if (Capacity != null && !Capacity.isEmpty()) {
+                sql += " WHERE Capacity like concat('%', ?, '%')";
+            }
+
+            PreparedStatement stm = conn.prepareStatement(sql);
+            if (Capacity != null && !Capacity.isEmpty()) {
+                stm.setString(1, Capacity);
+            }
+            
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                Table p = new Table(rs.getString("TableID"),
+                        rs.getString("TableName"), rs.getInt("Capacity"),
+                        Status.getByContent(rs.getString("Status")));
+                results.add(p);
+            }
+        }
+        return results;
+    }
+    
+    public List<Table> getTablesByStatus(String Status1) throws SQLException {
+        List<Table> results = new ArrayList<>();
+        String statusContent = Status.getByContent(Status1).name();
+     
+        try (Connection conn = JdbcUtils.getConnection()) {
+            String sql = "SELECT * FROM tables";
+            if (Status1 != null && !Status1.isEmpty()) {
+                sql += " WHERE Status like concat('%', ?, '%')";
+            }
+
+            PreparedStatement stm = conn.prepareStatement(sql);
+            if (Status1 != null && !Status1.isEmpty()) {
+                stm.setString(1, statusContent);
+            }
+            
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                Table p = new Table(rs.getString("TableID"),
+                        rs.getString("TableName"), rs.getInt("Capacity"),
+                        Status.getByContent(rs.getString("Status")));
+                results.add(p);
+            }
+        }
+        return results;
+    }
+    
+     public List<Table> getTablesByAll(String Capacity, String Status1) throws SQLException {
+        List<Table> results = new ArrayList<>();
+        String statusContent = Status.getByContent(Status1).name();
+        
+        try (Connection conn = JdbcUtils.getConnection()) {
+            String sql = "SELECT * FROM tables WHERE";
+            
+            if (Status1 != null && !Status1.isEmpty())
+                sql += " Capacity like concat('%', ?, '%')";
+          
+            if(Capacity != null && !Capacity.isEmpty()) {
+                if(Status1 != null && !Status1.isEmpty())
+                    sql += " AND";
+                sql += " Status like concat('%', ?, '%')";
+            }
+            
+            System.out.print(sql);
+            PreparedStatement stm = conn.prepareStatement(sql);
+            
+            if (Status1 != null && !Status1.isEmpty())
+                stm.setString(1, Capacity);
+          
+            if(Capacity != null && !Capacity.isEmpty()) {
+                if(Status1 != null && !Status1.isEmpty())
+                    stm.setString(2, statusContent);
+                else
+                    stm.setString(1, statusContent);
+            }
+            
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                Table p = new Table(rs.getString("TableID"),
+                        rs.getString("TableName"), rs.getInt("Capacity"),
+                        Status.getByContent(rs.getString("Status")));
+                results.add(p);
+            }
+        }
+        return results;
     }
 
 }
