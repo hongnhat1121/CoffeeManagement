@@ -14,7 +14,6 @@ import java.util.logging.Logger;
  *
  * @author HONGNHAT
  */
-@SuppressWarnings("static-access")
 public class JdbcUtils {
 
     private static Connection connection;

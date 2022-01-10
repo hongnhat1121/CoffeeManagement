@@ -5,13 +5,8 @@
 package com.nthn.login;
 
 import com.nthn.check.LoginChecker;
-import com.nthn.pojo.Account;
-import com.nthn.services.AccountService;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -23,30 +18,7 @@ public class LoginTester {
 
     private final LoginChecker checker = new LoginChecker();
 
-    @Test
-    public void testGetAccountByInvalidID() {
-        try {
-            AccountService accountService = new AccountService();
-            Account a = accountService.getAccountByID("1");
-
-            Assertions.assertNull(a);
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Test
-    public void testGetAccountByValidID() {
-        try {
-            AccountService accountService = new AccountService();
-            Account a = accountService.getAccountByID("c6672ebe-6b57-42d4-8c8d-a4a2f3a19c11");
-
-            Assertions.assertEquals("admin", a.getUsername());
-            Assertions.assertEquals("c6672ebe-6b57-42d4-8c8d-a4a2f3a19c11", a.getAccountID());
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    
 
     //Test đăng nhập thành công
     @ParameterizedTest(name = "{index} => username={0}, password={1}")

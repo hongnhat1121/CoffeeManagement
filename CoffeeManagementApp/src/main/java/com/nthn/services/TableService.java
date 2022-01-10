@@ -30,21 +30,20 @@ public class TableService {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO tables(TableID, TableName, Capacity, Status) "
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO "
+                    + "tables(TableID, TableName, Capacity, Status) "
                     + "VALUES(?, ?, ?, ?)");
 
-            preparedStatement.setString(1, table.getTableID());
-            preparedStatement.setString(2, table.getTableName());
-            preparedStatement.setInt(3, table.getCapacity());
-            preparedStatement.setString(4, table.getStatus().name());
+            ps.setString(1, table.getTableID());
+            ps.setString(2, table.getTableName());
+            ps.setInt(3, table.getCapacity());
+            ps.setString(4, table.getStatus().name());
 
-            preparedStatement.executeUpdate();
+            ps.executeUpdate();
 
             connection.commit();
 
-            preparedStatement.close();
-            connection.close();
+            ps.close();
         } catch (SQLException ex) {
             Logger.getLogger(TableService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -57,7 +56,7 @@ public class TableService {
             while (rs.next()) {
                 return new Table(rs.getString("TableID"),
                         rs.getString("TableName"), rs.getInt("Capacity"),
-                        Status.getByContent(rs.getString("Status")));
+                        Status.valueOf(rs.getString("Status")));
             }
         }
         return null;
@@ -85,6 +84,7 @@ public class TableService {
                         Status.getByContent(rs.getString("Status")));
                 results.add(p);
             }
+
         }
         return results;
     }
@@ -171,7 +171,7 @@ public class TableService {
             }
             
             ResultSet rs = stm.executeQuery();
-
+     
             while (rs.next()) {
                 Table p = new Table(rs.getString("TableID"),
                         rs.getString("TableName"), rs.getInt("Capacity"),
@@ -181,5 +181,4 @@ public class TableService {
         }
         return results;
     }
-
 }
