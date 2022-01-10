@@ -4,10 +4,14 @@
  */
 package com.nthn.search;
 
+import com.nthn.check.StringChecker;
 import com.nthn.pojo.Status;
 import com.nthn.pojo.Table;
 import com.nthn.services.TableService;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -19,30 +23,29 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class SearchTableTester {
 
     private TableService service = new TableService();
+    private StringChecker checker;
 
     @ParameterizedTest
-    @ValueSource(ints = {10, 1, 2, 3})
-    public void testSearchTableByCapacityValid(int input) {
-        Assertions.assertTrue(input > 0);
+    @ValueSource(strings = {"10", "1", "2", "3"})
+    public void testSearchTableByCapacityValid(String input) throws SQLException {
+        Assertions.assertTrue(StringChecker.isAlnum(input, input.length()) && !input.equals("0"));
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {-10, 0, -1, -2})
-    public void testSearchTableByCapacityInvalid(int input) {
-        Assertions.assertTrue(input <= 0);
+    @ValueSource(strings = {"-10", "0", "-1", "-2"})
+    public void testSearchTableByCapacityInvalid(String input) throws SQLException {
+        Assertions.assertTrue(!StringChecker.isAlnum(input, input.length())|| input.equals("0"));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"Còn trống", "Đã đặt"})
-    public void testSearchTableByStatusValid(String input) {
-        List<Table> tables = service.getTables(input);
+    public void testSearchTableByStatusValid(String input) throws SQLException {
         Assertions.assertNotNull(Status.getByContent(input));
-        Assertions.assertNotNull(tables);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"Không", "Đặt rồi"})
-    public void testSearchTableByStatusInvalid(String input) {
-        Assertions.assertNull(Status.getByContent(input));
+    public void testSearchTableByStatusInvalid(String input) throws SQLException {
+        Assertions.assertTrue(Status.getByContent(input) == null);
     }
 }
