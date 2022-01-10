@@ -7,6 +7,7 @@ package com.nthn.services;
 import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.Account;
 import com.nthn.pojo.Active;
+import com.nthn.pojo.Employee;
 import com.nthn.pojo.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -74,6 +75,41 @@ public class AccountService {
             Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void updateAccount(Account account) throws SQLException {
+        try ( Connection connection = JdbcUtils.getConnection()) {
+            connection.setAutoCommit(false);
+            PreparedStatement ps1 = connection.prepareStatement("INSERT INTO accounts(AccountID, Username, Password, Active, Role) "
+                    + "VALUES(?,?,?,?,?)");
+            ps1.setString(1, account.getAccountID());
+            ps1.setString(2, account.getUsername());
+            ps1.setString(3, DigestUtils.sha256Hex(account.getPassword()));
+            ps1.setString(4, account.getActive().name());
+            ps1.setString(5, account.getRole().name());
+
+            ps1.executeUpdate();
+
+            connection.commit();
+            ps1.close();
+        }
+    }
+    
+    public void deleteAccount(String account) throws SQLException {
+        try (Connection connection = JdbcUtils.getConnection()) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                    "DELETE FROM accounts" +
+                    "WHERE AccountID = ?")) {
+                preparedStatement.setString(1, account);
+                
+                preparedStatement.executeUpdate();
+                
+                connection.commit();
+            }
+        }
+    }
+    
 
     /**
      *

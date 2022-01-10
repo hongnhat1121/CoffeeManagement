@@ -57,20 +57,13 @@ public class TableController {
     
     public void loadTableDateTable1(TableView tbvTable, ComboBox cbCapacity, ComboBox cbStatus) throws SQLException {
         TableService ts = new TableService();
+        String capacity = null;
+        if(cbCapacity.getSelectionModel().getSelectedItem() != null)
+            capacity  = cbCapacity.getSelectionModel().getSelectedItem().toString();    
         
-        String capacity = cbCapacity.getSelectionModel().getSelectedItem().toString();      
         String status = cbStatus.getSelectionModel().getSelectedItem().toString();
         
         tbvTable.setItems(FXCollections.observableList(ts.getTablesByAll(capacity, status)));  
-    }
-    
-    public void loadTableDateTable2(TableView tbvTable, ComboBox cbCapacity, ComboBox cbStatus) throws SQLException {
-        TableService ts = new TableService();
-        
-        String capacity = cbCapacity.getSelectionModel().getSelectedItem().toString();      
-        String status = cbStatus.getSelectionModel().getSelectedItem().toString();
-        
-        tbvTable.setItems(FXCollections.observableList(ts.getTablesByAll(capacity, status)));
     }
     
     public void loadComboBoxDataCapacity(ComboBox cbCapacity) throws SQLException {

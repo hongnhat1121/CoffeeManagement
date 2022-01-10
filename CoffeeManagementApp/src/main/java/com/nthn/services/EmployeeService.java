@@ -8,6 +8,7 @@ import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.Account;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Gender;
+import com.nthn.pojo.Product;
 import com.nthn.pojo.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -50,6 +51,7 @@ public class EmployeeService {
     public void addAccount(Employee employee, Account account) {
 
         try (Connection connection = JdbcUtils.getConnection()) {
+            AccountService as = new AccountService();
             connection.setAutoCommit(false);
             PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO employees(EmployeeID, FullName, BirthDate, "
@@ -64,22 +66,13 @@ public class EmployeeService {
             ps.setString(7, employee.getAddress());
             ps.setObject(8, employee.getHireDate());
             ps.setString(9, employee.getAccountID());
-            PreparedStatement ps1 = connection.prepareStatement("INSERT INTO accounts(AccountID, Username, Password, Active, Role) "
-                    + "VALUES(?,?,?,?,?)");
-            ps1.setString(1, account.getAccountID());
-            ps1.setString(2, account.getUsername());
-            ps1.setString(3, DigestUtils.sha256Hex(account.getPassword()));
-            ps1.setString(4, account.getActive().name());
-            ps1.setString(5, account.getRole().name());
-
-            ps1.executeUpdate();
+            
+            as.addAccount(account);
             ps.executeUpdate();
 
             connection.commit();
 
             ps.close();
-            ps1.close();
-            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -111,6 +104,50 @@ public class EmployeeService {
             connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void updateEmployee(Employee employee, Account account) throws SQLException {
+        try ( Connection connection = JdbcUtils.getConnection()) {
+            AccountService as = new AccountService();
+            connection.setAutoCommit(false);
+            PreparedStatement ps = connection.prepareStatement(
+                    "UPDATE employees "
+                    + "WHERE EmployeeID = ?, FullName = ?, BirthDate = ?, Gender = ?, IdentityCard = ?, Phone = ?, Address = ?, "
+                    + "HireDate, AccountID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            ps.setString(1, employee.getEmployeeID());
+            ps.setString(2, employee.getFullName());
+            ps.setObject(3, employee.getBirthDate());
+            ps.setString(4, employee.getGender().name());
+            ps.setString(5, employee.getIdentityCard());
+            ps.setString(6, employee.getPhone());
+            ps.setString(7, employee.getAddress());
+            ps.setObject(8, employee.getHireDate());
+            ps.setString(9, employee.getAccountID());
+            
+            as.addAccount(account);
+            ps.executeUpdate();
+
+            connection.commit();
+
+            ps.close();
+        }
+    }
+    
+    public void deleteEmployee(String employee, String account) throws SQLException {
+        try (Connection connection = JdbcUtils.getConnection()) {
+            connection.setAutoCommit(false);
+            AccountService as = new AccountService();
+            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                    "DELETE FROM employees " +
+                    "WHERE EmployeeID = ?")) {
+                preparedStatement.setString(1, employee);
+                
+                as.deleteAccount(account);
+                preparedStatement.executeUpdate();
+                
+                connection.commit();
+            }
         }
     }
 
