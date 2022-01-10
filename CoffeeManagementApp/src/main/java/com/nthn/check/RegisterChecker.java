@@ -52,16 +52,10 @@ public class RegisterChecker {
     }
 
     //Kiểm tra username có hợp lệ không? Quy định: không quá 20 ký tự, không có ký tự đặc biệt, skhông có khoảng trắng. Tên đăng nhập không trùng.
-    public boolean isValidUsername(String string) {
-
-        try {
-            AccountService accountService = new AccountService();
-            return !string.isEmpty() && string.length() <= 20 && !string.contains(" ")
-                    && accountService.getAccountByUsername(string) == null;
-        } catch (SQLException ex) {
-            Logger.getLogger(RegisterChecker.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
+    public boolean isValidUsername(String string) throws SQLException {
+        AccountService accountService = new AccountService();
+        return !string.isEmpty() && string.length() <= 20 && !string.contains(" ")
+                && accountService.getAccountByUsername(string) == null;
 
     }
 

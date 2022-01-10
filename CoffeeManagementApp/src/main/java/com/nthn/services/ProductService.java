@@ -40,20 +40,22 @@ public class ProductService {
         return results;
     }
 
-//    public Product getProduct(int id) throws SQLException {
-//        try (Connection conn = JdbcUtils.getConnection()) {
-//            Statement stm = conn.createStatement();
-//            ResultSet rs = stm.executeQuery("SELECT * FROM products WHERE ProductID=" + id);
-//
-//            while (rs.next()) {
-//                Product p = new Product(rs.getString("ProductID"),
-//                        rs.getString("ProductName"), rs.getLong("UnitPrice"),
-//                        Category.getByContent(rs.getString("Category")));
-//                return p;
-//            }
-//        }
-//        return null;
-//    }
+    public Product getProduct(String id) throws SQLException {
+        try (Connection conn = JdbcUtils.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM products WHERE ProductID = ?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Product p = new Product(rs.getString("ProductID"),
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"),
+                        Category.getByContent(rs.getString("Category")));
+                return p;
+            }
+        }
+        return null;
+    }
+
     public void addProduct(Product p) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
@@ -87,7 +89,7 @@ public class ProductService {
             if (productName != null && !productName.isEmpty()) {
                 stm.setString(1, productName);
             }
-            
+
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {

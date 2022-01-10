@@ -55,22 +55,21 @@ public class AccountService {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(""
-                    + "INSERT INTO accounts(AccountID, Username, Password, Active, Role) "
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO "
+                    + "accounts(AccountID, Username, Password, Active, Role) "
                     + "VALUES(?,?,?,?,?)");
 
-            preparedStatement.setString(1, account.getAccountID());
-            preparedStatement.setString(2, account.getUsername());
-            preparedStatement.setString(3, DigestUtils.sha256Hex(account.getPassword()));
-            preparedStatement.setString(4, account.getActive().name());
-            preparedStatement.setString(5, account.getRole().name());
+            ps.setString(1, account.getAccountID());
+            ps.setString(2, account.getUsername());
+            ps.setString(3, DigestUtils.sha256Hex(account.getPassword()));
+            ps.setString(4, account.getActive().name());
+            ps.setString(5, account.getRole().name());
 
-            preparedStatement.executeUpdate();
+            ps.executeUpdate();
 
             connection.commit();
-            
-            preparedStatement.close();
-            connection.close();
+
+            ps.close();
         } catch (SQLException ex) {
             Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -92,8 +91,6 @@ public class AccountService {
                         Active.valueOf(rs.getString("Active")),
                         Role.valueOf(rs.getString("Role")));
             }
-            s.close();
-            c.close();
         }
         return null;
     }

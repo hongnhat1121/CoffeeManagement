@@ -14,7 +14,6 @@ import java.util.logging.Logger;
  *
  * @author HONGNHAT
  */
-@SuppressWarnings("static-access")
 public class JdbcUtils {
 
     private static Connection connection;
@@ -22,13 +21,12 @@ public class JdbcUtils {
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/coffeemanagementdb", "root", "1121");
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(JdbcUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static Connection getConnection() {
-        return connection;
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:mysql://localhost/coffeemanagementdb", "root", "1121");
     }
 }

@@ -6,6 +6,7 @@ package com.nthn.search;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
@@ -21,32 +22,53 @@ public class SearchProductTester {
         Assertions.assertTrue(input.matches(".*^[a-zA-Z].*"));
     }
 
-    @ParameterizedTest(name = "{index} => input={0}")
+    @ParameterizedTest
     @ValueSource(strings = {"345", "(*_="})
     public void testSearchProductByNameInvalid(String input) {
         Assertions.assertFalse(input.matches(".*^[a-zA-Z].*"));
     }
 
-    @ParameterizedTest(name = "{index} => input={0}")
+    @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n", "     ", ""})
     public void testSearchProductByNameEmpty(String input) {
         Assertions.assertTrue(input.isBlank());
     }
 
-    @ParameterizedTest(name = "{index} => fromPrice={0}, toPrice={1}")
-    @ValueSource(ints = {10000, 20000})
+    @ParameterizedTest
+    @ValueSource(strings = {"Cafe sữa", "Capuchino"})
+    public void testSearchProductByNameNotEmpty(String input) {
+        Assertions.assertFalse(input.isBlank());
+    }
+
+    //Nhập giá hợp lệ: chỉ nhập ký tự số
+    @ParameterizedTest
+    @ValueSource(strings = {"10", "15", "1"})
+    public void testSearchProductByPriceIsAlnum(String input) {
+        String regex = "\\d{" + input.length() + "}";
+        Assertions.assertTrue(input.matches(regex));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"-1", "không", "một"})
+    public void testSearchProductByPriceNotAlnum(String input) {
+        String regex = "\\d{" + input.length() + "}";
+        Assertions.assertFalse(input.matches(regex));
+    }
+
+    //Khoảng giá hợp lệ: giá > 0, giá tối thiểu < giá tối đa
+    @ParameterizedTest
+    @CsvSource({"1, 10", "13, 14"})
     public void testSearchProductByPriceRangeValid(int fromPrice, int toPrice) {
-        boolean flag = false;
-        if (fromPrice > 0 && fromPrice < toPrice) {
-            flag = true;
-        }
+        boolean flag = fromPrice > 0 && fromPrice < toPrice;
         Assertions.assertTrue(flag);
     }
 
-    @ParameterizedTest(name = "{index} => fromPrice={0}, toPrice={1}")
-    @ValueSource(ints = {})
-    public void testSearchProductByPriceRangeInvalid(int input) {
-        Assertions.assertTrue(true);
+    //Khoảng giá không hợp lệ
+    @ParameterizedTest
+    @CsvSource({"-1, 10", "0, 14", "-1, 0"})
+    public void testSearchProductByPriceRangeInvalid(int fromPrice, int toPrice) {
+        boolean flag = fromPrice > 0 && fromPrice < toPrice;
+        Assertions.assertFalse(flag);
     }
 
 }
