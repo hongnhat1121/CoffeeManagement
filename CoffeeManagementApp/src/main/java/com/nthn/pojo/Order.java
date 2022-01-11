@@ -10,6 +10,7 @@ import com.nthn.services.TableService;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 /**
  *
@@ -18,7 +19,7 @@ import java.sql.SQLException;
 public class Order {
 
     private String orderID;
-    private Date orderDate;
+    private LocalDate orderDate;
     private BigDecimal total;
     private String employeeID;
     private String tableID;
@@ -27,7 +28,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(String orderID, Date orderDate, BigDecimal total, String employeeID, String tableID, int payment) {
+    public Order(String orderID, LocalDate orderDate, BigDecimal total, String employeeID, String tableID, int payment) {
         this.orderID = orderID;
         this.orderDate = orderDate;
         this.total = total;
@@ -35,6 +36,8 @@ public class Order {
         this.tableID = tableID;
         this.payment = payment;
     }
+
+    
 
 //
 //    //Tính toán hoá đơn
@@ -66,19 +69,6 @@ public class Order {
         this.orderID = orderID;
     }
 
-    /**
-     * @return the orderDate
-     */
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    /**
-     * @param orderDate the orderDate to set
-     */
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
 
     /**
      * @return the payment
@@ -134,6 +124,20 @@ public class Order {
      */
     public void setTableID(String tableID) {
         this.tableID = tableID;
+    }
+
+    /**
+     * @return the orderDate
+     */
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    /**
+     * @param orderDate the orderDate to set
+     */
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
     }
 
 }

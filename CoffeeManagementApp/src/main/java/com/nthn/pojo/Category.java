@@ -10,7 +10,7 @@ package com.nthn.pojo;
  */
 public enum Category {
     FOOD("Thức ăn"), DRINK("Đồ uống");
-    private String content;
+    private final String content;
 
     private Category(String content) {
         this.content = content;

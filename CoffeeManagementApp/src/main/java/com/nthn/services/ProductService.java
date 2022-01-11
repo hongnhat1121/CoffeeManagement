@@ -15,19 +15,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author PC
  */
 public class ProductService {
-
+    
     public List<Product> getProducts() throws SQLException {
         List<Product> results = new ArrayList<>();
         try (Connection conn = JdbcUtils.getConnection()) {
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery("SELECT * FROM products");
-
+            
             while (rs.next()) {
                 Product p = new Product(rs.getString("ProductID"),
                         rs.getString("ProductName"), rs.getLong("UnitPrice"),
@@ -39,13 +41,13 @@ public class ProductService {
         }
         return results;
     }
-
+    
     public Product getProduct(String id) throws SQLException {
         try (Connection conn = JdbcUtils.getConnection()) {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM products WHERE ProductID = ?");
             ps.setString(1, id);
             ResultSet rs = ps.executeQuery();
-
+            
             if (rs.next()) {
                 Product p = new Product(rs.getString("ProductID"),
                         rs.getString("ProductName"), rs.getLong("UnitPrice"),
@@ -55,11 +57,11 @@ public class ProductService {
         }
         return null;
     }
-
+    
     public void addProduct(Product p) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
-
+            
             try (PreparedStatement preparedStatement = connection.prepareStatement(""
                     + "INSERT INTO products(ProductID, ProductName, UnitPrice, Category) "
                     + "VALUES(?, ?, ?, ?)")) {
@@ -75,7 +77,7 @@ public class ProductService {
             connection.close();
         }
     }
-
+    
     public List<Product> getProductsByName(String productName) throws SQLException {
         List<Product> results = new ArrayList<>();
         try (Connection conn = JdbcUtils.getConnection()) {
@@ -83,14 +85,14 @@ public class ProductService {
             if (productName != null && !productName.isEmpty()) {
                 sql += " WHERE ProductName like concat('%', ?, '%')";
             }
-
+            
             PreparedStatement stm = conn.prepareStatement(sql);
             if (productName != null && !productName.isEmpty()) {
                 stm.setString(1, productName);
             }
-
+            
             ResultSet rs = stm.executeQuery();
-
+            
             while (rs.next()) {
                 Product p = new Product(rs.getString("ProductID"),
                         rs.getString("ProductName"), rs.getLong("UnitPrice"),
@@ -100,16 +102,16 @@ public class ProductService {
         }
         return results;
     }
-
+    
     public List<Product> getProductsByUnitPrice(String productPrice) throws SQLException {
-
+        
         List<Product> results = new ArrayList<>();
         try (Connection conn = JdbcUtils.getConnection()) {
             String sql = "SELECT * FROM products";
             if (productPrice != null && !productPrice.isEmpty()) {
-                    sql += " WHERE UnitPrice like concat('%', ?, '%')";
+                sql += " WHERE UnitPrice like concat('%', ?, '%')";
             }
-
+            
             try (PreparedStatement stm = conn.prepareStatement(sql)) {
                 if (productPrice != null && !productPrice.isEmpty()) {
                     stm.setString(1, productPrice);
@@ -125,5 +127,44 @@ public class ProductService {
             }
         }
         return results;
+    }
+    
+    public List<Product> getProductsByCategory(String category) {
+        try (Connection c = JdbcUtils.getConnection()) {
+            List<Product> products = new ArrayList<>();
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM products WHERE Category=?");
+            ps.setObject(1, Category.getByContent(category).name());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product p = new Product(rs.getString("ProductID"),
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"),
+                        Category.getByContent(category));
+                products.add(p);
+            }
+            return products;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public List<Product> getProducts(String category, String name) {
+        try (Connection c = JdbcUtils.getConnection()) {
+            List<Product> products = new ArrayList<>();
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM products WHERE Category=? AND ProductName like ?");
+            ps.setObject(1, Category.getByContent(category).name());
+            ps.setString(2, name);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product p = new Product(rs.getString("ProductID"),
+                        rs.getString("ProductName"), rs.getLong("UnitPrice"),
+                        Category.getByContent(category));
+                products.add(p);
+            }
+            return products;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

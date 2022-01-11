@@ -5,9 +5,7 @@
 package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
-import com.nthn.pojo.Account;
-import com.nthn.pojo.Active;
-import com.nthn.pojo.Role;
+import com.nthn.pojo.OrderDetail;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,73 +24,118 @@ public class OrderDetailService {
 
     /**
      *
-     * @return @throws SQLException
+     * @param orderDetail
+     * @return
      */
-    public List<Account> getAccounts() throws SQLException {
-        List<Account> accounts = new ArrayList<>();
-        try (Connection c = JdbcUtils.getConnection()) {
-            Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM accounts");
-            while (rs.next()) {
-                Account a = new Account(rs.getString("AccountID"),
-                        rs.getString("Username"), rs.getString("Password"),
-                        Active.valueOf(rs.getString("Active")),
-                        Role.valueOf(rs.getString("Role")));
-                accounts.add(a);
-            }
-            s.close();
-            c.close();
-        }
-        return accounts;
-    }
-
-    /**
-     *
-     * @param account
-     */
-    public void addAccount(Account account) {
+    public boolean addOrderDetail(OrderDetail orderDetail) {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(""
-                    + "INSERT INTO accounts(AccountID, Username, Password, Active, Role) "
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO "
+                    + "orderdetails(OrderID, ProductID, Quantity, UnitPrice, Note) "
                     + "VALUES(?,?,?,?,?)");
 
-            preparedStatement.setString(1, account.getAccountID());
-            preparedStatement.setString(2, account.getUsername());
-            preparedStatement.setString(3, account.getPassword());
-            preparedStatement.setString(4, account.getActive().name());
-            preparedStatement.setString(5, account.getRole().name());
+            ps.setString(1, orderDetail.getOrderID());
+            ps.setString(2, orderDetail.getProductID());
+            ps.setInt(3, orderDetail.getQuantity());
+            ps.setLong(4, orderDetail.getUnitPrice());
+            ps.setString(5, orderDetail.getNote());
 
-            preparedStatement.executeUpdate();
-
+            ps.executeUpdate();
             connection.commit();
 
-            preparedStatement.close();
-            connection.close();
+            ps.close();
+
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return false;
+    }
+
+    
+    
+    /**
+     *
+     * @return
+     */
+    public List<OrderDetail> getOrderDetails() {
+        try (Connection c = JdbcUtils.getConnection()) {
+            List<OrderDetail> orderDetails = new ArrayList<>();
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery("SELECT OrderID, ProductID, products.ProductName,"
+                    + " Quantity, UnitPrice, Note FROM orderdetails, products "
+                    + "WHERE orderdetails.ProductID=products.ProductID");
+            while (rs.next()) {
+                OrderDetail od = new OrderDetail(rs.getString("OrderID"),
+                        rs.getString("ProductID"),rs.getString("ProductName"), rs.getInt("Quantity"),
+                        rs.getLong("UnitPrice"), rs.getString("Note"));
+                orderDetails.add(od);
+            }
+            s.close();
+            return orderDetails;
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDetailService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     /**
      *
-     * @param id
+     * @param orderID
      * @return
-     * @throws SQLException
      */
-    public Account getAccount(int id) throws SQLException {
+    public List<OrderDetail> getOrderDetailsByOrderID(String orderID) {
         try (Connection c = JdbcUtils.getConnection()) {
-            Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM accounts WHERE AccountID=" + id);
+            List<OrderDetail> orderDetails = new ArrayList<>();
+
+            PreparedStatement ps = c.prepareStatement("SELECT ProductID,"
+                    + " products.ProductName, Quantity, UnitPrice, Note "
+                    + "FROM orderdetails, products "
+                    + "WHERE orderdetails.ProductID=products.ProductID AND OrderID=?");
+            ps.setString(1, orderID);
+
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                return new Account(rs.getString("AccountID"),
-                        rs.getString("Username"), rs.getString("Password"),
-                        Active.valueOf(rs.getString("Active")),
-                        Role.valueOf(rs.getString("Role")));
+                OrderDetail od = new OrderDetail(orderID,
+                        rs.getString("ProductID"), rs.getString("ProductName"), 
+                        rs.getInt("Quantity"), rs.getLong("UnitPrice"), rs.getString("Note"));
+                orderDetails.add(od);
             }
-            s.close();
-            c.close();
+
+            return orderDetails;
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDetailService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param productID
+     * @return
+     */
+    public List<OrderDetail> getOrderDetailsByProductID(String productID) {
+        try (Connection c = JdbcUtils.getConnection()) {
+            List<OrderDetail> orderDetails = new ArrayList<>();
+
+            PreparedStatement ps = c.prepareStatement("SELECT OrderID, "
+                    + " products.ProductName, Quantity, UnitPrice, Note "
+                    + "FROM orderdetails, products "
+                    + "WHERE orderdetails.ProductID=products.ProductID AND ProductID=?");
+            ps.setString(1, productID);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                OrderDetail od = new OrderDetail(rs.getString("OrderID"),
+                        productID, rs.getString("ProductName"), rs.getInt("Quantity"),
+                        rs.getLong("UnitPrice"), rs.getString("Note"));
+                orderDetails.add(od);
+            }
+
+            return orderDetails;
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDetailService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

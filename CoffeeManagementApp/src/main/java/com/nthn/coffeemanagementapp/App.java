@@ -40,7 +40,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Order.fxml"));
         Scene scene = new Scene(root, 900, 600);
 
         stage.setOnHiding((t) -> {

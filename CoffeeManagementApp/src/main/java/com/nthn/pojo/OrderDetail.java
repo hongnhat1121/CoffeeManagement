@@ -4,7 +4,6 @@
  */
 package com.nthn.pojo;
 
-import com.nthn.services.ProductService;
 import java.sql.SQLException;
 
 /**
@@ -13,8 +12,9 @@ import java.sql.SQLException;
  */
 public class OrderDetail {
 
-    private int orderID;
-    private int productID;
+    private String orderID;
+    private String productID;
+    private String productName;
     private int quantity;
     private long unitPrice;
     private String note;
@@ -22,20 +22,19 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(int orderID, int productID, int quantity, long unitPrice, String note) {
+    public OrderDetail(String orderID, String productID, String productName, int quantity, long unitPrice, String note) {
         this.orderID = orderID;
         this.productID = productID;
+        this.productName = productName;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.note = note;
     }
 
-    public void changeProduct(int id) {
-        this.setProductID(id);
-    }
+    
 
     public void changeQuantity(int number) {
-        this.setQuantity(number);
+        this.setQuantity(getQuantity()+number);
     }
 
     public void changeNote(String text) {
@@ -43,15 +42,43 @@ public class OrderDetail {
     }
 
     public void viewDetail() throws SQLException {
-        System.out.println(this.productID);
-        System.out.println("Số lượng: " + this.quantity);
-        System.out.println("Đơn giá: " + this.unitPrice);
-        System.out.println("Ghi chú: " + this.note);
+        System.out.println(this.getProductID());
+        System.out.println("Số lượng: " + this.getQuantity());
+        System.out.println("Đơn giá: " + this.getUnitPrice());
+        System.out.println("Ghi chú: " + this.getNote());
     }
 
     @Override
     public String toString() {
-        return String.format("%s\t%s\t%s", this.quantity, this.unitPrice, this.note);
+        return String.format("%s\t%s\t%s", this.getQuantity(), this.getUnitPrice(), this.getNote());
+    }
+
+    /**
+     * @return the orderID
+     */
+    public String getOrderID() {
+        return orderID;
+    }
+
+    /**
+     * @param orderID the orderID to set
+     */
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
+    }
+
+    /**
+     * @return the productID
+     */
+    public String getProductID() {
+        return productID;
+    }
+
+    /**
+     * @param productID the productID to set
+     */
+    public void setProductID(String productID) {
+        this.productID = productID;
     }
 
     /**
@@ -71,7 +98,7 @@ public class OrderDetail {
     /**
      * @return the unitPrice
      */
-    public float getUnitPrice() {
+    public long getUnitPrice() {
         return unitPrice;
     }
 
@@ -97,30 +124,17 @@ public class OrderDetail {
     }
 
     /**
-     * @return the orderID
+     * @return the productName
      */
-    public int getOrderID() {
-        return orderID;
+    public String getProductName() {
+        return productName;
     }
 
     /**
-     * @param orderID the orderID to set
+     * @param productName the productName to set
      */
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
-    /**
-     * @return the productID
-     */
-    public int getProductID() {
-        return productID;
-    }
-
-    /**
-     * @param productID the productID to set
-     */
-    public void setProductID(int productID) {
-        this.productID = productID;
-    }
 }

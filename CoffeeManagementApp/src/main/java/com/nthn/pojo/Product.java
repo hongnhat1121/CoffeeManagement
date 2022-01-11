@@ -35,7 +35,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return String.format("%s\t%s", this.getProductName(), this.getCategory());
+        return String.format("%d\t%s", this.getUnitPrice(),this.getProductName());
     }
 
     /**
