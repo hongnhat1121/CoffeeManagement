@@ -8,6 +8,7 @@ package com.nthn.coffeemanagementapp;
 import com.nthn.pojo.Product;
 import com.nthn.pojo.Status;
 import com.nthn.pojo.Table;
+import com.nthn.services.TableService;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -49,6 +50,8 @@ public class MainController implements Initializable {
     private final ProductController pc = new ProductController();
     
     private final TableController tc = new TableController();
+    
+    private final TableService  ts = new TableService();
     @FXML
     private Button btnReset;
 
@@ -60,8 +63,7 @@ public class MainController implements Initializable {
         // TODO
         this.pc.loadTableViewProduct(tbvProduct);
         this.tc.loadTableViewTable(tbvTable);
-        System.out.print(Status.getByContent("Còn trống").name());
-            
+        
         try {
             this.pc.loadComboBoxDataProduct(cbProduct);
             this.tc.loadComboBoxDataCapacity(cbCapacity);

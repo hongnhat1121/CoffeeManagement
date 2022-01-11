@@ -74,7 +74,42 @@ public class ProductService {
                 
                 connection.commit();
             }
-            connection.close();
+        }
+    }
+    
+    public void updateProduct(Product p) throws SQLException {
+        try (Connection connection = JdbcUtils.getConnection()) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                    "UPDATE products " +
+                    "SET ProductName = ?, UnitPrice = ?, Category = ?" +
+                    "WHERE ProductID = ?")) {
+                preparedStatement.setString(4, p.getProductID());
+                preparedStatement.setString(1, p.getProductName());
+                preparedStatement.setLong(2, p.getUnitPrice());
+                preparedStatement.setString(3, p.getCategory().name());
+                
+                preparedStatement.executeUpdate();
+                
+                connection.commit();
+            }
+        }
+    }
+    
+    public void deleteProduct(String p) throws SQLException {
+        try (Connection connection = JdbcUtils.getConnection()) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                    "DELETE FROM products " +
+                    "WHERE ProductID = ?")) {
+                preparedStatement.setString(1, p);
+                
+                preparedStatement.executeUpdate();
+                
+                connection.commit();
+            }
         }
     }
     

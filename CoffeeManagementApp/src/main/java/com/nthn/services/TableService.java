@@ -61,6 +61,42 @@ public class TableService {
         }
         return null;
     }
+    
+    public void updateTable(Table t) throws SQLException {
+        try (Connection connection = JdbcUtils.getConnection()) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                    "UPDATE tables " +
+                    "SET TableName = ?, Capacity = ?, Status = ?" +
+                    "WHERE TableID = ?")) {
+                preparedStatement.setString(4, t.getTableID());
+                preparedStatement.setString(1, t.getTableName());
+                preparedStatement.setInt(2, t.getCapacity());
+                preparedStatement.setString(3, t.getStatus().name());
+                
+                preparedStatement.executeUpdate();
+                
+                connection.commit();
+            }
+        }
+    }
+    
+    public void deleteTable(String t) throws SQLException {
+        try (Connection connection = JdbcUtils.getConnection()) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                    "DELETE FROM tables " +
+                    "WHERE TableID = ?")) {
+                preparedStatement.setString(1, t);
+                
+                preparedStatement.executeUpdate();
+                
+                connection.commit();
+            }
+        }
+    }
 
     
     public List<Table> getTablesByName(String TableName) throws SQLException {
@@ -148,23 +184,22 @@ public class TableService {
         try (Connection conn = JdbcUtils.getConnection()) {
             String sql = "SELECT * FROM tables WHERE";
             
-            if (Status1 != null && !Status1.isEmpty())
+            if (Capacity != null && !Capacity.isEmpty())
                 sql += " Capacity like concat('%', ?, '%')";
           
-            if(Capacity != null && !Capacity.isEmpty()) {
-                if(Status1 != null && !Status1.isEmpty())
+            if (Status1 != null && !Status1.isEmpty()) {
+                if(Capacity != null && !Capacity.isEmpty())
                     sql += " AND";
                 sql += " Status like concat('%', ?, '%')";
             }
             
-            System.out.print(sql);
             PreparedStatement stm = conn.prepareStatement(sql);
             
-            if (Status1 != null && !Status1.isEmpty())
+            if (Capacity != null && !Capacity.isEmpty())
                 stm.setString(1, Capacity);
           
-            if(Capacity != null && !Capacity.isEmpty()) {
-                if(Status1 != null && !Status1.isEmpty())
+            if (Status1 != null && !Status1.isEmpty()) {
+                if(Capacity != null && !Capacity.isEmpty())
                     stm.setString(2, statusContent);
                 else
                     stm.setString(1, statusContent);
