@@ -8,7 +8,6 @@ import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.Account;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Gender;
-import com.nthn.pojo.Product;
 import com.nthn.pojo.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -66,7 +64,7 @@ public class EmployeeService {
             ps.setString(7, employee.getAddress());
             ps.setObject(8, employee.getHireDate());
             ps.setString(9, employee.getAccountID());
-            
+
             as.addAccount(account);
             ps.executeUpdate();
 
@@ -106,9 +104,9 @@ public class EmployeeService {
             Logger.getLogger(EmployeeService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void updateEmployee(Employee employee, Account account) throws SQLException {
-        try ( Connection connection = JdbcUtils.getConnection()) {
+        try (Connection connection = JdbcUtils.getConnection()) {
             AccountService as = new AccountService();
             connection.setAutoCommit(false);
             PreparedStatement ps = connection.prepareStatement(
@@ -124,7 +122,7 @@ public class EmployeeService {
             ps.setString(7, employee.getAddress());
             ps.setObject(8, employee.getHireDate());
             ps.setString(9, employee.getAccountID());
-            
+
             as.addAccount(account);
             ps.executeUpdate();
 
@@ -133,19 +131,19 @@ public class EmployeeService {
             ps.close();
         }
     }
-    
+
     public void deleteEmployee(String employee, String account) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
             AccountService as = new AccountService();
             try (PreparedStatement preparedStatement = connection.prepareStatement(
-                    "DELETE FROM employees " +
-                    "WHERE EmployeeID = ?")) {
+                    "DELETE FROM employees "
+                    + "WHERE EmployeeID = ?")) {
                 preparedStatement.setString(1, employee);
-                
+
                 as.deleteAccount(account);
                 preparedStatement.executeUpdate();
-                
+
                 connection.commit();
             }
         }
@@ -166,6 +164,25 @@ public class EmployeeService {
             }
             s.close();
             c.close();
+        }
+        return null;
+    }
+
+    public Employee getEmployeeByAccountID(String id) {
+        try (Connection c = JdbcUtils.getConnection()) {
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery("SELECT * FROM employees WHERE AccountID=" + id);
+            while (rs.next()) {
+                return new Employee(rs.getString("EmployeeID"),
+                        rs.getObject("HireDate", LocalDate.class), rs.getString("FullName"),
+                        rs.getObject("BirthDate", LocalDate.class),
+                        Gender.valueOf(rs.getString("Gender")),
+                        rs.getString("IdentityCard"), rs.getString("Address"),
+                        rs.getString("Phone"), rs.getString("AccountID"));
+            }
+            s.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

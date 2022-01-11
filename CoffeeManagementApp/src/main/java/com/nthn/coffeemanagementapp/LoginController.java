@@ -7,11 +7,16 @@ package com.nthn.coffeemanagementapp;
 import com.nthn.check.LoginChecker;
 import com.nthn.configs.Utils;
 import com.nthn.pojo.Account;
+import com.nthn.pojo.Employee;
+import com.nthn.pojo.Role;
 import com.nthn.services.AccountService;
+import com.nthn.services.EmployeeService;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -61,9 +66,14 @@ public class LoginController implements Initializable {
             return;
         }
 
-        LoginChecker checker=new LoginChecker();
+        LoginChecker checker = new LoginChecker();
         if (checker.isSuccessLogin(username, password)) {
-            loadPrimaryController();
+            this.account = new AccountService().getAccountByUsername(username);
+            if (account.getRole() == Role.ADMIN) {
+                loadOrderController();
+            } else {
+                loadPrimaryController();
+            }
         } else {
             Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Login failed!");
         }
@@ -74,8 +84,30 @@ public class LoginController implements Initializable {
         app.loaderController("Register.fxml", "Register");
     }
 
-    public void loadPrimaryController() throws IOException {
+    public void loadPrimaryController() {
         App app = new App();
-        app.loaderController("primary.fxml", "Coffee Management App");
+        try {
+            app.loaderController("Main.fxml", "Coffee Management App");
+        } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        MainController controller = new MainController();
+        controller.setAccount(account);
+    }
+
+    public void loadOrderController() {
+        App app = new App();
+        try {
+            app.loaderController("Order.fxml", "Coffee Management App - Order");
+        } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        EmployeeService employeeService = new EmployeeService();
+        Employee e;
+        e = employeeService.getEmployeeByAccountID(account.getAccountID());
+
+        OrderController controller = new OrderController();
+        controller.setEmployee(e);
     }
 }

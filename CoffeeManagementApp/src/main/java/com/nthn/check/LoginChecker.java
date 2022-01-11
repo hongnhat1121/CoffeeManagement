@@ -43,17 +43,19 @@ public class LoginChecker {
     }
 
     public boolean isSuccessLogin(String username, String password) {
-        AccountService accountService = new AccountService();
-        Account account = null;
         try {
+            AccountService accountService = new AccountService();
+            Account account = null;
             account = accountService.getAccountByUsername(username);
+            
+            if (account != null) {
+                return account.getPassword().equals(DigestUtils.sha256Hex(password));
+            } else {
+                return false;
+            }
         } catch (SQLException ex) {
             Logger.getLogger(LoginChecker.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (account != null) {
-            return account.getPassword().equals(DigestUtils.sha256Hex(password));
-        } else {
-            return false;
-        }
+        return false;
     }
 }

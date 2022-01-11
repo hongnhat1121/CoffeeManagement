@@ -5,6 +5,7 @@
 package com.nthn.coffeemanagementapp;
 
 import com.nthn.configs.Utils;
+import com.nthn.pojo.Account;
 import com.nthn.pojo.Category;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Order;
@@ -12,6 +13,7 @@ import com.nthn.pojo.OrderDetail;
 import com.nthn.pojo.Product;
 import com.nthn.pojo.Status;
 import com.nthn.pojo.Table;
+import com.nthn.services.EmployeeService;
 import com.nthn.services.OrderService;
 import com.nthn.services.ProductService;
 import com.nthn.services.TableService;
@@ -21,10 +23,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -40,13 +39,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javax.crypto.AEADBadTagException;
 
 /**
  * FXML Controller class
@@ -91,6 +86,7 @@ public class OrderController implements Initializable {
     private List<OrderDetail> orderDetails;
     private List<Product> listProduct;
     private Table table;
+    private Employee employee;
 
     /**
      * Initializes the controller class.
@@ -104,7 +100,10 @@ public class OrderController implements Initializable {
 
         order = new Order();
         order.setOrderID(Utils.randomID());
-        order.setEmployeeID("98885571-a5a3-4390-84c7-6be660f84f5f");
+
+        order.setEmployeeID(getEmployee().getEmployeeID());
+        
+        this.lblEmployee.setText(getEmployee().getFullName());
 
         orderDetails = new ArrayList<>();
         listProduct = new ArrayList<>();
@@ -134,7 +133,7 @@ public class OrderController implements Initializable {
         this.txtName.textProperty().addListener((ov, t, t1) -> {
             loadTableViewProduct(getProductListByName(this.cbCategory.getValue().getContent(), t1));
         });
-        
+
         this.tbvProduct.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Product> ov, Product t, Product t1) -> {
             listProduct.add(t1);
             OrderDetail detail = new OrderDetail(order.getOrderID(),
@@ -293,5 +292,21 @@ public class OrderController implements Initializable {
         List<Product> products = service.getProducts(category, name);
         return FXCollections.observableArrayList(products);
     }
+
+    /**
+     * @return the employee
+     */
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    /**
+     * @param employee the employee to set
+     */
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+   
 
 }

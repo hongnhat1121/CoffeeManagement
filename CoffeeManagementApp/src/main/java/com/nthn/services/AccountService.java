@@ -75,9 +75,9 @@ public class AccountService {
             Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void updateAccount(Account account) throws SQLException {
-        try ( Connection connection = JdbcUtils.getConnection()) {
+        try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
             PreparedStatement ps1 = connection.prepareStatement("INSERT INTO accounts(AccountID, Username, Password, Active, Role) "
                     + "VALUES(?,?,?,?,?)");
@@ -93,23 +93,22 @@ public class AccountService {
             ps1.close();
         }
     }
-    
+
     public void deleteAccount(String account) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(
-                    "DELETE FROM accounts" +
-                    "WHERE AccountID = ?")) {
+                    "DELETE FROM accounts"
+                    + "WHERE AccountID = ?")) {
                 preparedStatement.setString(1, account);
-                
+
                 preparedStatement.executeUpdate();
-                
+
                 connection.commit();
             }
         }
     }
-    
 
     /**
      *
@@ -121,7 +120,7 @@ public class AccountService {
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM accounts WHERE AccountID=" + id);
-            while (rs.next()) {
+            if (rs.next()) {
                 return new Account(rs.getString("AccountID"),
                         rs.getString("Username"), rs.getString("Password"),
                         Active.valueOf(rs.getString("Active")),
@@ -142,14 +141,12 @@ public class AccountService {
             PreparedStatement ps = c.prepareStatement("SELECT * FROM accounts WHERE Username = ?");
             ps.setString(1, text);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
                 return new Account(rs.getString("AccountID"),
                         rs.getString("Username"), rs.getString("Password"),
                         Active.valueOf(rs.getString("Active")),
                         Role.valueOf(rs.getString("Role")));
             }
-            ps.close();
-            c.close();
         }
         return null;
     }

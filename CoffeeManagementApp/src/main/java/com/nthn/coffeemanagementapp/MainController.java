@@ -5,6 +5,7 @@
  */
 package com.nthn.coffeemanagementapp;
 
+import com.nthn.pojo.Account;
 import com.nthn.pojo.Product;
 import com.nthn.pojo.Status;
 import com.nthn.pojo.Table;
@@ -46,6 +47,7 @@ public class MainController implements Initializable {
     @FXML
     private TableView<Table> tbvTable;
     
+    private Account account;
     
     private final ProductController pc = new ProductController();
     
@@ -115,5 +117,21 @@ public class MainController implements Initializable {
         this.tc.loadComboBoxDataStatus(cbStatus);
         this.tc.loadTableDataTable(null, tbvTable);
     }
+
+    /**
+     * @return the account
+     */
+    public Account getAccount() {
+        return account;
+    }
+
+    /**
+     * @param account the account to set
+     */
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+    
+   
     
 }
