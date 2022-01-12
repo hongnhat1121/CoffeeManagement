@@ -23,7 +23,7 @@
                 <Image url="@../../../coffee-beans-with-props-making-coffee.jpg" />
             </image>
         </ImageView>
-        <VBox alignment="CENTER" layoutX="24.0" layoutY="11.0">
+        <VBox alignment="TOP_CENTER" layoutX="24.0" layoutY="11.0" prefHeight="523.0" prefWidth="427.0">
             <children>
                 <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="46.0" prefWidth="427.0" styleClass="h1" text="CREATE AN ACCOUNT" textAlignment="CENTER" textFill="RED">
                     <effect>
@@ -32,129 +32,67 @@
                 </Label>
             <HBox alignment="CENTER" opacity="0.75" prefWidth="400.0" styleClass="h6">
                <children>
-                  <ImageView fitHeight="25.0" fitWidth="150.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../user-solid.png" />
-                     </image>
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                  </ImageView>
-                  <TextField fx:id="txtFullname" prefHeight="28.0" prefWidth="423.0" promptText="Full name *" />
+                  <Label prefHeight="28.0" prefWidth="200.0" styleClass="h6" text="Họ tên *" textFill="#fdff00" />
+                  <TextField fx:id="txtFullname" prefHeight="28.0" prefWidth="400.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" opacity="0.75" prefWidth="400.0" styleClass="h6">
                <children>
-                  <RadioButton fx:id="rbMale" mnemonicParsing="false" prefHeight="22.0" prefWidth="100.0" selected="true" text="Male" textFill="WHITE">
+                  <Label prefHeight="28.0" prefWidth="200.0" styleClass="h6" text="Giới tính" textFill="#fdff00" />
+                  <RadioButton fx:id="rbMale" mnemonicParsing="false" prefHeight="22.0" prefWidth="175.0" selected="true" text="Male" textFill="WHITE">
                      <toggleGroup>
                         <ToggleGroup fx:id="gender" />
                      </toggleGroup></RadioButton>
-                  <RadioButton fx:id="rbFemale" mnemonicParsing="false" prefHeight="22.0" prefWidth="100.0" text="Female" textFill="WHITE" toggleGroup="$gender" />
-                  <RadioButton fx:id="rbOther" mnemonicParsing="false" prefWidth="100.0" text="Other" textFill="WHITE" toggleGroup="$gender" />
+                  <RadioButton fx:id="rbFemale" mnemonicParsing="false" prefHeight="22.0" prefWidth="175.0" text="Female" textFill="WHITE" toggleGroup="$gender" />
+                  <RadioButton fx:id="rbOther" mnemonicParsing="false" prefWidth="175.0" text="Other" textFill="WHITE" toggleGroup="$gender" />
                </children>
             </HBox>
             <HBox alignment="CENTER" opacity="0.75" prefWidth="400.0" styleClass="h6">
                <children>
-                  <ImageView fitHeight="25.0" fitWidth="43.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../calendar-alt-solid.png" />
-                     </image>
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                  </ImageView>
-                  <DatePicker fx:id="dpBirthDate" prefHeight="28.0" prefWidth="391.0" promptText="Birth date *" />
+                  <Label prefHeight="28.0" prefWidth="200.0" styleClass="h6" text="Ngày sinh *" textFill="#fdff00" />
+                  <DatePicker fx:id="dpBirthDate" prefHeight="28.0" prefWidth="400.0" promptText="dd/MM/yyyy" />
                </children>
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="364.0" opacity="0.75" prefWidth="400.0" styleClass="h6">
                <children>
-                  <ImageView fitHeight="19.0" fitWidth="60.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../id-card-solid.png" />
-                     </image>
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                  </ImageView>
-                  <TextField fx:id="txtIdentityCard" prefHeight="28.0" prefWidth="394.0" promptText="Identity card *" />
+                  <Label prefHeight="28.0" prefWidth="200.0" styleClass="h6" text="CMND/CCCD *" textFill="#fdff00" />
+                  <TextField fx:id="txtIdentityCard" prefHeight="28.0" prefWidth="400.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="420.0" opacity="0.75" prefWidth="400.0" styleClass="h6">
                <children>
-                  <ImageView fitHeight="25.0" fitWidth="54.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../phone-solid.png" />
-                     </image>
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                  </ImageView>
-                  <TextField fx:id="txtPhone" prefHeight="28.0" prefWidth="388.0" promptText="Phone number *" />
+                  <Label prefHeight="28.0" prefWidth="200.0" styleClass="h6" text="Số điện thoại *" textFill="#fdff00" />
+                  <TextField fx:id="txtPhone" prefHeight="28.0" prefWidth="400.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="470.0" opacity="0.75" prefWidth="400.0" styleClass="h6">
                <children>
-                  <ImageView fitHeight="25.0" fitWidth="35.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../map-marker-alt-solid.png" />
-                     </image>
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                  </ImageView>
-                  <TextField fx:id="txtAddress" prefHeight="28.0" prefWidth="418.0" promptText="Address" />
+                  <Label prefHeight="28.0" prefWidth="200.0" styleClass="h6" text="Địa chỉ" textFill="#fdff00" />
+                  <TextField fx:id="txtAddress" prefHeight="28.0" prefWidth="400.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="220.0" opacity="0.75" prefWidth="400.0" styleClass="h6">
                <children>
-                  <ImageView fitHeight="25.0" fitWidth="150.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../calendar-alt-solid.png" />
-                     </image>
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                  </ImageView>
-                  <DatePicker fx:id="dpHireDate" prefHeight="28.0" prefWidth="406.0" promptText="Hire date *" />
+                  <Label prefHeight="28.0" prefWidth="200.0" styleClass="h6" text="Ngày vào làm *" textFill="#fdff00" />
+                  <DatePicker fx:id="dpHireDate" prefHeight="28.0" prefWidth="400.0" promptText="dd/MM/yyyy" />
                </children>
             </HBox>
                 <HBox alignment="CENTER" opacity="0.75" prefWidth="400.0" styleClass="h6">
                     <children>
-                        <ImageView fitHeight="25.0" fitWidth="150.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../../../user-solid.png" />
-                            </image>
-                            <effect>
-                                <DropShadow />
-                            </effect>
-                        </ImageView>
-                        <TextField fx:id="txtUsername" prefHeight="28.0" prefWidth="389.0" promptText="Username *" />
+                  <Label prefHeight="28.0" prefWidth="222.0" styleClass="h6" text="Tên đăng nhập *" textFill="#fdff00" />
+                        <TextField fx:id="txtUsername" prefHeight="28.0" prefWidth="400.0" />
                     </children>
                 </HBox>
                 <HBox alignment="CENTER" layoutX="10.0" layoutY="76.0" opacity="0.75" prefWidth="400.0" styleClass="h6">
                     <children>
-                        <ImageView fitHeight="25.0" fitWidth="150.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../../../lock-solid.png" />
-                            </image>
-                            <effect>
-                                <DropShadow />
-                            </effect>
-                        </ImageView>
-                        <PasswordField fx:id="txtPassword" prefHeight="28.0" prefWidth="398.0" promptText="Password *" />
+                  <Label prefHeight="28.0" prefWidth="200.0" styleClass="h6" text="Mật khẩu *" textFill="#fdff00" />
+                        <PasswordField fx:id="txtPassword" prefHeight="28.0" prefWidth="378.0" />
                     </children>
                 </HBox>
                 <HBox alignment="CENTER" layoutX="10.0" layoutY="126.0" opacity="0.75" prefWidth="400.0" styleClass="h6">
                     <children>
-                        <ImageView fitHeight="25.0" fitWidth="150.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../../../lock-solid.png" />
-                            </image>
-                            <effect>
-                                <DropShadow />
-                            </effect>
-                        </ImageView>
-                        <PasswordField fx:id="txtConfirm" prefHeight="28.0" prefWidth="389.0" promptText="Confirm password *" />
+                  <Label prefHeight="28.0" prefWidth="200.0" styleClass="h6" text="Xác nhận *" textFill="#fdff00" />
+                        <PasswordField fx:id="txtConfirm" prefHeight="28.0" prefWidth="379.0" />
                     </children>
                 </HBox>
             <HBox alignment="CENTER_RIGHT" opacity="0.75" prefHeight="20.0" prefWidth="427.0" styleClass="h6">
