@@ -7,21 +7,18 @@ package com.nthn.coffeemanagementapp;
 import com.nthn.check.LoginChecker;
 import com.nthn.configs.Utils;
 import com.nthn.pojo.Account;
-import com.nthn.pojo.Employee;
 import com.nthn.pojo.Role;
 import com.nthn.services.AccountService;
-import com.nthn.services.EmployeeService;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -40,6 +37,8 @@ public class LoginController implements Initializable {
     private Button btnLogin;
     @FXML
     private Button btnSwitchRegister;
+    @FXML
+    private Label lblError;
 
     private Account account;
 
@@ -52,30 +51,54 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.btnLogin.getStyleClass().setAll("btn", "btn-success");
+
+        this.txtUsername.textProperty().addListener((ov, t, t1) -> {
+            if (t1.isEmpty()) {
+                this.lblError.setText("Vui lòng nhập username!");
+            } else if (t1.contains(" ")) {
+                this.lblError.setText("Username chứa khoảng trắng.");
+            } else if (t1.matches(".*\\W.*")) {
+                this.lblError.setText("Username chứa ký tự đặc biệt.");
+            } else if (t1.length() > 20) {
+                this.lblError.setText("Username vượt quá 20 ký tự.");
+            } else {
+                this.lblError.setText("");
+            }
+        });
+
+        this.txtPassword.textProperty().addListener((ov, t, t1) -> {
+            if (t1.isEmpty()) {
+                this.lblError.setText("Vui lòng nhập password!");
+            } else if (t1.matches(".*\\W.*")) {
+                this.lblError.setText("Password chứa ký tự đặc biệt.");
+            } else if (t1.length() < 6) {
+                this.lblError.setText("Password phải chứa ít nhất 6 ký tự.");
+            } else {
+                this.lblError.setText("");
+            }
+        });
     }
 
-    public void loginHandler(ActionEvent event) throws SQLException, IOException {
-        String username = this.txtUsername.getText();
-        String password = this.txtPassword.getText();
-        if (this.txtUsername.getText().isEmpty() || username.contains(" ") || username.matches(".*\\W.*") || username.length() > 20) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter username!");
-            return;
-        }
-        if (this.txtPassword.getText().isEmpty()) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter password!");
-            return;
-        }
-
-        LoginChecker checker = new LoginChecker();
-        if (checker.isSuccessLogin(username, password)) {
-            this.account = new AccountService().getAccountByUsername(username);
-            if (account.getRole() == Role.ADMIN) {
-                loadOrderController();
-            } else {
-                loadPrimaryController();
-            }
+    public void loginHandler(ActionEvent event) throws IOException, SQLException {
+        if (this.txtUsername.getText().isEmpty() && this.txtPassword.getText().isEmpty()) {
+            this.lblError.setText("Vui lòng nhập username và password.");
         } else {
-            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Login failed!");
+            String username = this.txtUsername.getText();
+            String password = this.txtPassword.getText();
+            
+            LoginChecker checker = new LoginChecker();
+            
+            if (checker.isSuccessLogin(username, password)) {
+                this.account = new AccountService().getAccountByUsername(username);
+                
+                if (account.getRole() == Role.ADMIN) {
+                    loadPrimaryController();
+                } else if (account.getRole() == Role.USER) {
+                    loadOrderController();
+                }
+            } else {
+                Utils.showAlert(Alert.AlertType.ERROR, "Đăng nhập thất bại!", "Username hoặc password sai.");
+            }
         }
     }
 
@@ -84,30 +107,13 @@ public class LoginController implements Initializable {
         app.loaderController("Register.fxml", "Register");
     }
 
-    public void loadPrimaryController() {
+    public void loadPrimaryController() throws IOException {
         App app = new App();
-        try {
-            app.loaderController("Main.fxml", "Coffee Management App");
-        } catch (IOException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        MainController controller = new MainController();
-        controller.setAccount(account);
+        app.loaderController("Main.fxml", "Coffee Management App");
     }
 
-    public void loadOrderController() {
+    public void loadOrderController() throws IOException {
         App app = new App();
-        try {
-            app.loaderController("Order.fxml", "Coffee Management App - Order");
-        } catch (IOException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        EmployeeService employeeService = new EmployeeService();
-        Employee e;
-        e = employeeService.getEmployeeByAccountID(account.getAccountID());
-
-        OrderController controller = new OrderController();
-        controller.setEmployee(e);
+        app.loaderController("Order.fxml", "Coffee Management App - Order");
     }
 }

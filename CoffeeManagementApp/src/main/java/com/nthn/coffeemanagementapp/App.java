@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
@@ -66,7 +67,10 @@ public class App extends Application {
         });
         stage.setTitle(title);
         stage.setScene(scene);
+        
+        stage.initModality(Modality.APPLICATION_MODAL);
+        
         stage.show();
     }
-
+   
 }

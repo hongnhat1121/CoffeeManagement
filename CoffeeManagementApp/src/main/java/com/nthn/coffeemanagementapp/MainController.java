@@ -5,6 +5,7 @@
  */
 package com.nthn.coffeemanagementapp;
 
+import com.nthn.configs.Utils;
 import com.nthn.pojo.Account;
 import com.nthn.pojo.Product;
 import com.nthn.pojo.Status;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
@@ -46,14 +48,14 @@ public class MainController implements Initializable {
     private ComboBox cbStatus;
     @FXML
     private TableView<Table> tbvTable;
-    
+
     private Account account;
-    
+
     private final ProductController pc = new ProductController();
-    
+
     private final TableController tc = new TableController();
-    
-    private final TableService  ts = new TableService();
+
+    private final TableService ts = new TableService();
     @FXML
     private Button btnReset;
 
@@ -65,7 +67,7 @@ public class MainController implements Initializable {
         // TODO
         this.pc.loadTableViewProduct(tbvProduct);
         this.tc.loadTableViewTable(tbvTable);
-        
+
         try {
             this.pc.loadComboBoxDataProduct(cbProduct);
             this.tc.loadComboBoxDataCapacity(cbCapacity);
@@ -75,7 +77,7 @@ public class MainController implements Initializable {
         } catch (SQLException ex) {
             Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
+
         this.tfProduct.textProperty().addListener((evt) -> {
             try {
                 this.pc.loadTableDataProduct(this.tfProduct.getText(), tbvProduct, cbProduct);
@@ -83,15 +85,15 @@ public class MainController implements Initializable {
                 Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
-         this.tfTable.textProperty().addListener((evt) -> {
+
+        this.tfTable.textProperty().addListener((evt) -> {
             try {
                 this.tc.loadTableDataTable(this.tfTable.getText(), tbvTable);
             } catch (SQLException ex) {
                 Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-         
+
         this.cbCapacity.getSelectionModel().selectedItemProperty().addListener((evt) -> {
             try {
                 this.tc.loadTableDateTable1(tbvTable, cbCapacity, cbStatus);
@@ -99,7 +101,7 @@ public class MainController implements Initializable {
                 Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+
         this.cbStatus.getSelectionModel().selectedItemProperty().addListener((evt) -> {
             try {
                 this.tc.loadTableDateTable1(tbvTable, cbCapacity, cbStatus);
@@ -107,7 +109,7 @@ public class MainController implements Initializable {
                 Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-    }    
+    }
 
     @FXML
     private void ResetComboBox(ActionEvent event) throws SQLException {
@@ -131,7 +133,5 @@ public class MainController implements Initializable {
     public void setAccount(Account account) {
         this.account = account;
     }
-    
-   
-    
+
 }

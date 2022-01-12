@@ -5,7 +5,6 @@
 package com.nthn.coffeemanagementapp;
 
 import com.nthn.configs.Utils;
-import com.nthn.pojo.Account;
 import com.nthn.pojo.Category;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Order;
@@ -13,7 +12,7 @@ import com.nthn.pojo.OrderDetail;
 import com.nthn.pojo.Product;
 import com.nthn.pojo.Status;
 import com.nthn.pojo.Table;
-import com.nthn.services.EmployeeService;
+import com.nthn.services.OrderDetailService;
 import com.nthn.services.OrderService;
 import com.nthn.services.ProductService;
 import com.nthn.services.TableService;
@@ -22,8 +21,12 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -96,24 +99,7 @@ public class OrderController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-
-        order = new Order();
-        order.setOrderID(Utils.randomID());
-
-        order.setEmployeeID(getEmployee().getEmployeeID());
-        
-        this.lblEmployee.setText(getEmployee().getFullName());
-
-        orderDetails = new ArrayList<>();
-        listProduct = new ArrayList<>();
-
-        this.btnCancel.getStyleClass().setAll("btn", "btn-danger");
-        this.btnOK.getStyleClass().setAll("btn", "btn-success");
-
-//        order=new Order(Utils.randomID(), LocalDate.now(),  , employee.getEmployeeID(), tableID, 0);
-        this.lblOrderDate.setText("Ngày đặt: " + Utils.converter.toString(LocalDate.now()));
-
+        init();
         initTableViewOrder();
         initComboBoxCategory();
         initTableViewTable();
@@ -129,12 +115,16 @@ public class OrderController implements Initializable {
         this.cbCategory.getSelectionModel().selectedItemProperty().addListener((ov, t, t1) -> {
             loadTableViewProduct(getProductList(t1.getContent()));
         });
-
+        this.tbvTable.getSelectionModel().selectedItemProperty().addListener(
+                (ObservableValue<? extends Table> ov, Table t, Table t1) -> {
+                    lblTable.setText("Bàn đặt: " + t1.getTableName());
+                    table = t1;
+                });
         this.txtName.textProperty().addListener((ov, t, t1) -> {
             loadTableViewProduct(getProductListByName(this.cbCategory.getValue().getContent(), t1));
         });
 
-        this.tbvProduct.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Product> ov, Product t, Product t1) -> {
+        this.tbvProduct.getSelectionModel().selectedItemProperty().addListener((ov, t, t1) -> {
             listProduct.add(t1);
             OrderDetail detail = new OrderDetail(order.getOrderID(),
                     t1.getProductID(), t1.getProductName(), 1,
@@ -155,21 +145,49 @@ public class OrderController implements Initializable {
     }
 
     public void orderHandler(ActionEvent event) {
-        order = new Order(order.getOrderID(), LocalDate.now(), BigDecimal.valueOf(calculate()),
-                order.getEmployeeID(), table.getTableID(), 0);
+        if (this.table == null && this.tbvOrder.getItems().isEmpty()) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Order Error!", "Chưa có thông tin bàn và món!");
+        } else if (this.tbvOrder.getItems().isEmpty()) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Order Error!", "Chưa chọn món!");
+        } else if (this.table == null) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Order Error!", "Chưa chọn bàn");
+        } else {
+            order = new Order(order.getOrderID(), LocalDate.now(), BigDecimal.valueOf(calculate()),
+                    order.getEmployeeID(), table.getTableID(), 0);
 
-        OrderService orderService = new OrderService();
-        if (orderService.addOrder(order)) {
-            Utils.showAlert(Alert.AlertType.INFORMATION, "Order Successfull!", "Menu bạn đặt đã lưu");
+            OrderService orderService = new OrderService();
+            if (orderService.addOrder(order)) {
+                orderDetails.forEach((t) -> {
+                    OrderDetailService detailService = new OrderDetailService();
+                    detailService.addOrderDetail(t);
+                });
+
+                Utils.showAlert(Alert.AlertType.INFORMATION, "Order Successfull!", "Menu bạn đặt đã lưu");
+                
+            }
+            init();
         }
-
     }
 
     public void cancelHandler(ActionEvent event) {
+        init();
+    }
+
+    private void init() {
+        this.orderDetails = new ArrayList<>();
+        this.listProduct = new ArrayList<>();
         this.table = null;
+        this.order = new Order();
+        this.order.setOrderID(Utils.randomID());
+        this.order.setEmployeeID("54cf6d95-fdff-4477-8237-805d07e90217");
+
+        this.btnCancel.getStyleClass().setAll("btn", "btn-danger");
+        this.btnOK.getStyleClass().setAll("btn", "btn-success");
+        this.lblOrderDate.setText("Ngày đặt: " + Utils.converter.toString(LocalDate.now()));
         this.tbvOrder.getItems().removeAll(orderDetails);
-        this.orderDetails.clear();
-        this.lblTotal.setText("Tổng: ");
+        this.lblTotal.setText("Tổng:...");
+        this.lblTable.setText("Bàn đặt: ...");
+        this.lblEmployee.setText("Nhân viên:...");
     }
 
     private long calculate() {
@@ -235,11 +253,6 @@ public class OrderController implements Initializable {
     private void loadTableViewTable(ObservableList<Table> list) {
         this.tbvTable.setItems(list);
 
-        this.tbvTable.getSelectionModel().selectedItemProperty().addListener(
-                (ObservableValue<? extends Table> ov, Table t, Table t1) -> {
-                    lblTable.setText("Bàn đặt: " + t1.getTableName());
-                    table = t1;
-                });
     }
 
     private void loadTableViewProduct(ObservableList<Product> list) {
@@ -291,22 +304,15 @@ public class OrderController implements Initializable {
         ProductService service = new ProductService();
         List<Product> products = service.getProducts(category, name);
         return FXCollections.observableArrayList(products);
+//
+//        ObservableList<Product> list = getProductList(category);
+//        ObservableList<Product> result = null;
+//        list.forEach((t) -> {
+//            if (t.getProductName().contains(name)) {
+//                result.add(t);
+//            }
+//        });
+//        return FXCollections.observableArrayList(result);
     }
-
-    /**
-     * @return the employee
-     */
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    /**
-     * @param employee the employee to set
-     */
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-   
 
 }
