@@ -172,7 +172,7 @@ public class EmployeeService {
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM employees WHERE AccountID=" + id);
-            while (rs.next()) {
+            if (rs.next()) {
                 return new Employee(rs.getString("EmployeeID"),
                         rs.getObject("HireDate", LocalDate.class), rs.getString("FullName"),
                         rs.getObject("BirthDate", LocalDate.class),
@@ -180,7 +180,6 @@ public class EmployeeService {
                         rs.getString("IdentityCard"), rs.getString("Address"),
                         rs.getString("Phone"), rs.getString("AccountID"));
             }
-            s.close();
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeService.class.getName()).log(Level.SEVERE, null, ex);
         }
