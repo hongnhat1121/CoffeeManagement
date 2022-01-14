@@ -199,7 +199,7 @@ public class ProductService {
             return products;
         } catch (SQLException ex) {
             Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
         return null;
     }
 }

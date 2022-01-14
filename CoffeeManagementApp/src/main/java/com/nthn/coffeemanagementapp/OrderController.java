@@ -21,12 +21,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -115,11 +111,13 @@ public class OrderController implements Initializable {
         this.cbCategory.getSelectionModel().selectedItemProperty().addListener((ov, t, t1) -> {
             loadTableViewProduct(getProductList(t1.getContent()));
         });
+
         this.tbvTable.getSelectionModel().selectedItemProperty().addListener(
                 (ObservableValue<? extends Table> ov, Table t, Table t1) -> {
                     lblTable.setText("Bàn đặt: " + t1.getTableName());
                     table = t1;
                 });
+
         this.txtName.textProperty().addListener((ov, t, t1) -> {
             loadTableViewProduct(getProductListByName(this.cbCategory.getValue().getContent(), t1));
         });
@@ -132,19 +130,9 @@ public class OrderController implements Initializable {
             orderDetails.add(detail);
             loadTableViewOrder();
         });
-
-//        this.tbvOrder.getSelectionModel().selectedItemProperty().addListener((ov, t, t1) -> {
-//            TextInputDialog dialog = new TextInputDialog();
-//            dialog.setHeaderText("Nhập số lượng: ");
-//            Optional<String> optional = dialog.showAndWait();
-//            if (optional.isPresent()) {
-//                t1.changeQuantity(Integer.parseInt(optional.get()));
-//            }
-//            loadTableViewOrder();
-//        });
     }
 
-    public void orderHandler(ActionEvent event) {
+    public void orderHandler(ActionEvent event) throws SQLException {
         if (this.table == null && this.tbvOrder.getItems().isEmpty()) {
             Utils.showAlert(Alert.AlertType.ERROR, "Order Error!", "Chưa có thông tin bàn và món!");
         } else if (this.tbvOrder.getItems().isEmpty()) {
@@ -162,8 +150,13 @@ public class OrderController implements Initializable {
                     detailService.addOrderDetail(t);
                 });
 
+                //Cập nhật trạng thái bàn đặt
+                TableService service = new TableService();
+                this.table.setStatus(Status.FULL);
+                service.updateTable(table);
+                loadTableViewTable(getTableList());
+
                 Utils.showAlert(Alert.AlertType.INFORMATION, "Order Successfull!", "Menu bạn đặt đã lưu");
-                
             }
             init();
         }
@@ -174,8 +167,8 @@ public class OrderController implements Initializable {
     }
 
     private void init() {
-        this.orderDetails = new ArrayList<>();
         this.listProduct = new ArrayList<>();
+        this.orderDetails = new ArrayList<>();
         this.table = null;
         this.order = new Order();
         this.order.setOrderID(Utils.randomID());
@@ -184,7 +177,8 @@ public class OrderController implements Initializable {
         this.btnCancel.getStyleClass().setAll("btn", "btn-danger");
         this.btnOK.getStyleClass().setAll("btn", "btn-success");
         this.lblOrderDate.setText("Ngày đặt: " + Utils.converter.toString(LocalDate.now()));
-        this.tbvOrder.getItems().removeAll(orderDetails);
+        this.tbvOrder.getItems().clear();
+
         this.lblTotal.setText("Tổng:...");
         this.lblTable.setText("Bàn đặt: ...");
         this.lblEmployee.setText("Nhân viên:...");

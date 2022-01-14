@@ -30,12 +30,12 @@ public class Product {
     public void viewDetail() throws SQLException {
         System.out.println("Tên sản phẩm: " + this.getProductName());
         System.out.println("Đơn giá: " + this.getUnitPrice());
-        System.out.println("Danh mục: " + this.getCategory());
+        System.out.println("Danh mục: " + this.getCategory().getContent());
     }
 
     @Override
     public String toString() {
-        return String.format("%d\t%s", this.getUnitPrice(),this.getProductName());
+        return String.format("%d\t%s", this.getUnitPrice(), this.getProductName());
     }
 
     /**

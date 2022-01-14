@@ -5,10 +5,13 @@
 package com.nthn.coffeemanagementapp;
 
 import com.nthn.pojo.Status;
+import com.nthn.pojo.Table;
 import com.nthn.services.TableService;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -21,52 +24,67 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @author HONGNHAT
  */
 public class TableController {
+
+    public List<Table> tables;
+
     public void loadTableViewTable(TableView tbvTable) {
         TableColumn colTableName = new TableColumn("Tên bàn");
         colTableName.setCellValueFactory(new PropertyValueFactory("TableName"));
         colTableName.setPrefWidth(200);
-        
+
         TableColumn colCapacity = new TableColumn("Sức chứa");
         colCapacity.setCellValueFactory(new PropertyValueFactory("Capacity"));
         colCapacity.setPrefWidth(200);
-        
-        TableColumn colStatus = new TableColumn("Trạng thái");
-        colCapacity.setCellValueFactory(new PropertyValueFactory("Capacity"));
-        colCapacity.setPrefWidth(200);
-        
-        tbvTable.getColumns().addAll(colTableName, colCapacity);            
+//
+//        TableColumn colStatus = new TableColumn("Trạng thái");
+//        colCapacity.setCellValueFactory(new PropertyValueFactory("Capacity"));
+//        colCapacity.setPrefWidth(200);
+
+        tbvTable.getColumns().addAll(colTableName, colCapacity);
     }
-    
-    public void loadTableDataTable(String kw, TableView tbvTable ) throws SQLException {      
+
+    public void loadTableDataTable(String kw, TableView tbvTable) throws SQLException {
         TableService ts = new TableService();
-        tbvTable.setItems(FXCollections.observableList(ts.getTablesByName(kw))); 
+        this.tables = ts.getTablesByName(kw);
+        tbvTable.setItems(FXCollections.observableList(tables));
     }
-    
+
     public void loadTableDateTable1(TableView tbvTable, ComboBox cbCapacity, ComboBox cbStatus) throws SQLException {
         TableService ts = new TableService();
         String capacity = null;
-        if(cbCapacity.getSelectionModel().getSelectedItem() != null)
-            capacity  = cbCapacity.getSelectionModel().getSelectedItem().toString();    
-        
+        if (cbCapacity.getSelectionModel().getSelectedItem() != null) {
+            capacity = cbCapacity.getSelectionModel().getSelectedItem().toString();
+        }
+
         String status = cbStatus.getSelectionModel().getSelectedItem().toString();
-        
-        tbvTable.setItems(FXCollections.observableList(ts.getTablesByAll(capacity, status)));  
+        this.tables = ts.getTablesByAll(capacity, status);
+        tbvTable.setItems(FXCollections.observableList(tables));
     }
-    
+
     public void loadComboBoxDataCapacity(ComboBox cbCapacity) throws SQLException {
         List<String> s = new ArrayList<>();
-        s.add("1");
-        s.add("2");
-        s.add("3");
-        s.add("4");
-        cbCapacity.setItems(FXCollections.observableList(s)); 
+
+        TableService ts = new TableService();
+        List<Table> list = ts.getTables();
+        
+        List<Integer> integers=new ArrayList<>();
+        list.forEach((t) -> {
+            integers.add(t.getCapacity());
+        });
+        
+        Set<Integer> set=new HashSet<>(integers);
+        integers.clear();
+        set.forEach((t) -> {
+            integers.add(t);
+        });
+        cbCapacity.setItems(FXCollections.observableList(integers));
     }
-    
-     public void loadComboBoxDataStatus(ComboBox cbStatus) throws SQLException {
+
+    public void loadComboBoxDataStatus(ComboBox cbStatus) throws SQLException {
         List<String> s = new ArrayList<>();
         s.add(Status.EMPTY.toString());
         s.add(Status.FULL.toString());
-        cbStatus.setItems(FXCollections.observableList(s)); 
+        cbStatus.setItems(FXCollections.observableList(s));
         cbStatus.getSelectionModel().select(0);
     }
 

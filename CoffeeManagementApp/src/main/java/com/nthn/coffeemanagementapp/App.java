@@ -20,9 +20,8 @@ import org.kordamp.bootstrapfx.BootstrapFX;
  */
 public class App extends Application {
 
-    @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Payment.fxml"));
         Scene scene = new Scene(root, 900, 600);
 
         stage.setOnHiding((t) -> {
@@ -43,7 +42,8 @@ public class App extends Application {
     }
 
     public static void main(String[] args) throws SQLException {
-        launch();
+       launch();
+//new EmployeeService().deleteEmployee("cc77cadd-96ce-4a61-beee-831474b4cd84", "2c577442-b501-406d-a48b-6fac14941b4c");
     }
 
     public void loaderController(String resource, String title) throws IOException {
@@ -67,10 +67,10 @@ public class App extends Application {
         });
         stage.setTitle(title);
         stage.setScene(scene);
-        
+
         stage.initModality(Modality.APPLICATION_MODAL);
-        
+
         stage.show();
     }
-   
+
 }

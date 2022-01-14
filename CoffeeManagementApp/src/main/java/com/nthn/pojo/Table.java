@@ -43,7 +43,7 @@ public class Table {
 
     @Override
     public String toString() {
-        return String.format("\t%s\t\t\t%d", this.getTableName(), this.getCapacity());
+        return this.getTableName();
     }
 
     /**

@@ -2,14 +2,19 @@ package com.nthn.administer;
 
 import com.nthn.configs.Utils;
 import com.nthn.pojo.Account;
+import com.nthn.pojo.Active;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Gender;
+import com.nthn.pojo.Role;
 import com.nthn.services.AccountService;
 import com.nthn.services.EmployeeService;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -38,19 +43,16 @@ public class EmployeeManagerTest {
         }
     }
 
-    @ParameterizedTest(name = "{index} => id={0}, name={1}, birthDate={2}, "
-            + "gender={3}, identityCard={4}, address={5}, phone={6}, hireDate={7}, accountID={8}")
-    @CsvSource({"c9491382-ree5-4920-ab42-c04fed63bc45, Nguyễn Văn A, 10/02/2003, Nam, 496848458, null, 0875934953, 11/01/2022, 8a110593-f475-49e9-ba06-379f0ed97ea9"})
-    public void testAddEmployeeSuccess(String id, String name, String birthDate,
-            String gender, String identityCard, String address, String phone,
-            String hireDate, String accountID) {
+    @Test
+    public void testAddEmployeeSuccess() {
+        Account account = new Account(Utils.randomID(), "user33", "PASSword33",
+                Active.AVAILABLE, Role.USER);
+        Employee employee = new Employee(Utils.randomID(), "Nguyễn Văn A", Gender.MALE,
+                LocalDate.of(2000, Month.MARCH, 2), "049585453433", "0696845856",
+                null, LocalDate.now(), account);
         try {
-            Employee employee = new Employee(id, Utils.converter.fromString(hireDate),
-                    name, Utils.converter.fromString(birthDate),
-                    Gender.getByContent(gender), identityCard, address, phone, accountID);
-            service.addEmployee(employee);
-
-            employee = service.getEmployeeByID(id);
+            service.addEmployee(employee, account);
+            employee = service.getEmployeeByID(employee.getEmployeeID());
 
             Assertions.assertNotNull(employee);
         } catch (SQLException ex) {
@@ -58,19 +60,17 @@ public class EmployeeManagerTest {
         }
     }
 
-    @ParameterizedTest(name = "{index} => id={0}, name={1}, birthDate={2}, "
-            + "gender={3}, identityCard={4}, address={5}, phone={6}, hireDate={7}, accountID={8}")
-    @CsvSource({"c9491382-ree5-4920-ab42-c04fed63bc45, Nguyễn Văn A, 10/02/2003, Nam, 496848458, null, 0875934953, 11/01/2022, 8a110593-f475-49e9-ba06-379f0ed97ea9"})
-    public void testAddEmployeeFailed(String id, String name, String birthDate,
-            String gender, String identityCard, String address, String phone,
-            String hireDate, String accountID) {
-        try {
-            Employee employee = new Employee(id, Utils.converter.fromString(hireDate),
-                    name, Utils.converter.fromString(birthDate),
-                    Gender.getByContent(gender), identityCard, address, phone, accountID);
-            service.addEmployee(employee);
+    @Test
+    public void testAddEmployeeFailed() {
+        Account account = new Account(Utils.randomID(), "username", "password",
+                Active.AVAILABLE, Role.USER);
+        Employee employee = new Employee(Utils.randomID(), "Nguyễn Văn A", Gender.MALE,
+                LocalDate.of(2000, Month.MARCH, 2), "049585453433", "0696845856",
+                null, LocalDate.now(), account);
 
-            employee = service.getEmployeeByID(id);
+        try {
+            service.addEmployee(employee, account);
+            employee = service.getEmployeeByID(employee.getEmployeeID());
 
             Assertions.assertNull(employee);
         } catch (SQLException ex) {
@@ -78,25 +78,19 @@ public class EmployeeManagerTest {
         }
     }
 
-    @ParameterizedTest(name = "{index} => id={0}, name={1}, birthDate={2}, "
-            + "gender={3}, identityCard={4}, address={5}, phone={6}, hireDate={7}, accountID={8}")
-    @CsvSource({"c9491382-ree5-4920-ab42-c04fed63bc45, Nguyễn Văn A, 10/02/2003, Nam, 496848458, null, 0875934953, 11/01/2022, 8a110593-f475-49e9-ba06-379f0ed97ea9"})
-    public void testUpdateEmployeeSuccess(String id, String name, String birthDate,
-            String gender, String identityCard, String address, String phone,
-            String hireDate, String accountID) {
+    @Test
+    public void testUpdateEmployeeSuccess() {
+
+        Account account = new Account(Utils.randomID(), "username", "password",
+                Active.AVAILABLE, Role.USER);
+        Employee employee = new Employee(Utils.randomID(), "Nguyễn Văn A", Gender.MALE,
+                LocalDate.of(2000, Month.MARCH, 2), "049585453433", "0696845856",
+                null, LocalDate.now(), account);
         try {
-            Employee employee = service.getEmployeeByID(id);
 
-            Employee employee1 = new Employee(id, Utils.converter.fromString(hireDate),
-                    name, Utils.converter.fromString(birthDate),
-                    Gender.getByContent(gender), identityCard, address, phone, accountID);
+            service.updateEmployee(employee, account);
 
-            AccountService as = new AccountService();
-            Account a = as.getAccountByID(accountID);
-
-            service.updateEmployee(employee, a);
-
-            employee1 = service.getEmployeeByID(id);
+            Employee employee1 = service.getEmployeeByID(employee.getEmployeeID());
 
             Assertions.assertNotEquals(employee, employee1);
         } catch (SQLException ex) {

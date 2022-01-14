@@ -11,6 +11,7 @@ import com.nthn.pojo.Active;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Gender;
 import com.nthn.pojo.Role;
+import com.nthn.services.AccountService;
 import com.nthn.services.EmployeeService;
 import java.io.IOException;
 import java.net.URL;
@@ -25,6 +26,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -68,6 +70,12 @@ public class RegisterController implements Initializable {
     @FXML
     private Button btnSwitchLogin;
 
+    @FXML
+    private Label lbError;
+
+    private final AccountService as = new AccountService();
+    private final EmployeeService es = new EmployeeService();
+
     /**
      * Initializes the controller class.
      *
@@ -76,8 +84,6 @@ public class RegisterController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        RegisterChecker checker = new RegisterChecker();
-
         this.btnRegister.getStyleClass().setAll("btn", "btn-success");
 
         this.dpBirthDate.setConverter(Utils.converter);
@@ -87,74 +93,93 @@ public class RegisterController implements Initializable {
         this.dpHireDate.setValue(LocalDate.now());
 
         this.txtFullname.textProperty().addListener((ov, t, t1) -> {
-            Tooltip tooltip = new Tooltip();
-            if (!checker.isValidFullname(t1)) {
-                tooltip.setText("Error! Full name contains only [a-z] or [A-Z].");
-                Tooltip.install(this.txtFullname, tooltip);
+            if (t1.isBlank()) {
+                this.lbError.setText("Họ tên không được trống.");
+            } else if (t1.matches(".*\\d.*")) {
+                this.lbError.setText("Họ tên chứa số.");
+            } else if (t1.matches(".*\\W.*")) {
+                this.lbError.setText("Họ tên chứa ký tự đặc biệt.");
             } else {
-                Tooltip.uninstall(this.txtFullname, tooltip);
+                this.lbError.setText("");
             }
         });
 
         this.txtIdentityCard.textProperty().addListener((ov, t, t1) -> {
-            Tooltip tooltip = new Tooltip();
-            if (!checker.isValidIdentityCard(t1)) {
-                tooltip.setText("Error! Identity card contains only [0-9].");
-                Tooltip.install(this.txtIdentityCard, tooltip);
+            if (t1.isBlank()) {
+                this.lbError.setText("CMND/CCCD không được bỏ trống.");
+            } else if (t1.matches(".*[a-zA-Z].*")) {
+                this.lbError.setText("CMND/CCCD chứa ký tự chữ cái.");
+            } else if (t1.matches(".*\\W.*")) {
+                this.lbError.setText("CMND/CCCD chứa ký tự đặc biệt.");
+            } else if (!t1.matches("\\d{9}") && !t1.matches("\\d{12}")) {
+                this.lbError.setText("CMND/CCCD phải chứa 9 hoặc 12 chữ số.");
             } else {
-                Tooltip.uninstall(this.txtIdentityCard, tooltip);
+                this.lbError.setText("");
             }
         });
 
         this.txtPhone.textProperty().addListener((ov, t, t1) -> {
-            Tooltip tooltip = new Tooltip();
-            if (!checker.isValidPhoneNumber(t1)) {
-                tooltip.setText("Error! Phone number contains only [0-9].");
-                Tooltip.install(this.txtPhone, tooltip);
+            if (t1.isBlank()) {
+                this.lbError.setText("Số điện thoại không được bỏ trống.");
+            } else if (!t1.matches("\\d{9}")) {
+                this.lbError.setText("Số điện thoại phải chứa 9 chữ số.");
+            } else if (t1.matches(".*[a-zA-Z].*")) {
+                this.lbError.setText("Số điện thoại chứa ký tự chữ cái.");
+            } else if (t1.matches(".*\\W.*")) {
+                this.lbError.setText("Số điện thoại chứa ký tự đặc biệt.");
             } else {
-                Tooltip.uninstall(this.txtPhone, tooltip);
+                this.lbError.setText("");
             }
-        });
+        }
+        );
 
         this.txtUsername.textProperty().addListener((ov, t, t1) -> {
-            Tooltip tooltip = new Tooltip();
-            try {
-                if (!checker.isValidUsername(t1)) {
-                    tooltip.setText("Username already exist or wrong username.");
-                    Tooltip.install(this.txtUsername, tooltip);
-                } else {
-                    Tooltip.uninstall(this.txtUsername, tooltip);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(RegisterController.class.getName()).log(Level.SEVERE, null, ex);
+            if (t1.isBlank()) {
+                this.lbError.setText("Tên đăng nhập không được bỏ trống.");
+            } else if (t1.length() > 20) {
+                this.lbError.setText("Tên đăng nhập vượt quá 20 ký tự.");
+            } else if (t1.contains(" ")) {
+                this.lbError.setText("Tên đăng nhập chứa khoảng trắng.");
+            } else if (t1.matches(".*\\W.*")) {
+                this.lbError.setText("Tên đăng nhập chứa ký tự đặc biệt.");
+            } else {
+                this.lbError.setText("");
             }
         });
 
         this.txtPassword.textProperty().addListener((ov, t, t1) -> {
-            Tooltip tooltip = new Tooltip();
-            if (!checker.isValidPassword(this.txtUsername.getText(), t1)) {
-                tooltip.setText("Password must contain at least 1 uppercase, 1 lowercase, digits, no special characters.");
-                Tooltip.install(this.txtPassword, tooltip);
+            if (t1.isBlank()) {
+                this.lbError.setText("Mật khẩu không được bỏ trống.");
+            } else if (t1.length() < 6) {
+                this.lbError.setText("Mật khẩu ít hơn 6 ký tự.");
+            } else if (t1.contains(" ")) {
+                this.lbError.setText("Mật khẩu chứa khoảng trắng.");
+            } else if (t1.matches(".*\\W.*")) {
+                this.lbError.setText("Mật khẩu chứa ký tự đặc biệt.");
+            } else if (!t1.matches(".*[a-z].*")) {
+                this.lbError.setText("Mật khẩu phải có ít nhất 1 ký tự chữ thường.");
+            } else if (!t1.matches(".*[A-Z].*")) {
+                this.lbError.setText("Mật khẩu phải có ít nhất 1 ký tự chữ hoa.");
+            } else if (!t1.matches(".*[0-9].*")) {
+                this.lbError.setText("Mật khẩu phải có ít nhất 1 chữ số.");
             } else {
-                Tooltip.uninstall(this.txtPassword, tooltip);
+                this.lbError.setText("");
             }
         });
 
         this.txtConfirm.textProperty().addListener((ov, t, t1) -> {
-            Tooltip tooltip = new Tooltip();
-            if (!checker.isValidConfirm(t1, this.txtPassword.getText())) {
-                tooltip.setText("Error! Confirm password doesn't match password.");
-                Tooltip.install(this.txtConfirm, tooltip);
-            } else {
-                Tooltip.uninstall(this.txtConfirm, tooltip);
+            if (t1.equals(this.txtPassword.getText())) {
+                this.lbError.setText("Mật khẩu không khớp.");
             }
         });
 
     }
 
-    public void registerHandler(ActionEvent event) {
-        EmployeeService employeeService = new EmployeeService();
-        RegisterChecker checker = new RegisterChecker();
+    public void registerHandler(ActionEvent event) throws SQLException {
+        if (as.getAccountByUsername(this.txtUsername.getText()) != null) {
+            this.lbError.setText("Tên đăng nhập đã tồn tại.");
+            return;
+        }
 
         String fullname = this.txtFullname.getText();
         Gender gender = Gender.MALE;
@@ -173,58 +198,19 @@ public class RegisterController implements Initializable {
         String password = this.txtPassword.getText();
         String confirm = this.txtConfirm.getText();
 
-        //Kiểm tra họ và tên
-        if (!checker.isValidFullname(fullname)) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter fullname!");
-            return;
-        }
-
-        //Kiểm tra ngày sinh >= ngày hiện tại - 18 năm
-        if (!checker.isValidBirthDate(birthDate)) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please re-choose birthday!");
-            return;
-        }
-
-        //Kiểm tra CMND/CCCD
-        if (!checker.isValidIdentityCard(identityCard)) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter identity card!");
-            return;
-        }
-
-        //Kiểm tra số điện thoại
-        if (!checker.isValidPhoneNumber(phone)) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Please enter phone number!");
-            return;
-        }
-
-        //Kiểm tra tên đăng nhập
-        if (username.isEmpty() || username.length() > 20 || username.matches(".*\\W.*")) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter username!");
-            return;
-        }
-
-        //Kiểm tra mật khẩu
-        if (!checker.isValidPassword(username, password)) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter password!");
-            return;
-        }
-
-        //Kiểm tra mật khẩu nhập lại
-        if (!checker.isValidConfirm(confirm, password)) {
-            Utils.showAlert(Alert.AlertType.ERROR, "Login Error!", "Please enter confirm password!");
-            return;
-        }
-
         //Lưu thông tin
-        Account account = new Account(Utils.randomID(), username, password, Active.AVAILABLE, Role.USER);
-        Employee employee = new Employee(Utils.randomID(), hireDate, fullname, birthDate, gender, identityCard, address, phone, account.getAccountID());
+        Account account = new Account(Utils.randomID(), username, password,
+                Active.AVAILABLE, Role.USER);
+        Employee employee = new Employee(Utils.randomID(), fullname, gender,
+                birthDate, identityCard, phone, address, hireDate, account);
 
-        employeeService.addAccount(employee, account);
+        es.addEmployee(employee, account);
 
         //Kiểm tra kết quả lưu
         try {
-            if (!checker.isSuccessRegister(employee, account)) {
-                Utils.showAlert(Alert.AlertType.INFORMATION, "Registration successfull!", "Welcome to Coffee Management App");
+            if (!new RegisterChecker().isSuccessRegister(employee, account)) {
+                Utils.showAlert(Alert.AlertType.INFORMATION,
+                        "Registration successfull!", "Welcome to Coffee Management App");
             }
         } catch (SQLException ex) {
             Logger.getLogger(RegisterController.class.getName()).log(Level.SEVERE, null, ex);
@@ -233,10 +219,10 @@ public class RegisterController implements Initializable {
 
     public void loginHandler(ActionEvent event) throws IOException {
         App app = new App();
-        app.loaderController("Login.fxml", "Login");
+        app.loaderController("Login.fxml", "Coffee Management App - Login");
     }
 
-    public LocalDate getLocalDate(DatePicker datePicker) {
+    private LocalDate getLocalDate(DatePicker datePicker) {
         TextField textField = datePicker.getEditor();
         String date = textField.getText();
         LocalDate result = Utils.converter.fromString(date);

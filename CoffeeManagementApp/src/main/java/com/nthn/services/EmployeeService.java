@@ -6,9 +6,10 @@ package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.Account;
+import com.nthn.pojo.Active;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Gender;
-import com.nthn.pojo.User;
+import com.nthn.pojo.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,35 +27,39 @@ import java.util.logging.Logger;
  */
 public class EmployeeService {
 
+    private final AccountService as = new AccountService();
+
     public List<Employee> getEmployees() throws SQLException {
         List<Employee> employees = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM employees");
+            ResultSet rs = s.executeQuery("SELECT * FROM employees, accounts "
+                    + "WHERE employees.AccountID=accounts.AccountID");
             while (rs.next()) {
-                User e = new Employee(rs.getString("EmployeeID"),
-                        rs.getObject("HireDate", LocalDate.class), rs.getString("FullName"),
+                Account account = new Account(rs.getString("AccountID"),
+                        rs.getString("Username"), rs.getString("Password"),
+                        rs.getObject("Active", Active.class),
+                        rs.getObject("Role", Role.class));
+                Employee employee = new Employee(rs.getString("EmployeeID"),
+                        rs.getString("FullName"), rs.getObject("Gender", Gender.class),
                         rs.getObject("BirthDate", LocalDate.class),
-                        Gender.valueOf(rs.getString("Gender")),
-                        rs.getString("IdentityCard"), rs.getString("Address"),
-                        rs.getString("Phone"), rs.getString("AccountID"));
-                employees.add((Employee) e);
+                        rs.getString("IdentityCard"), rs.getString("Phone"),
+                        rs.getString("Address"), rs.getObject("HireDate", LocalDate.class), account);
+                employees.add(employee);
             }
-            s.close();
-            c.close();
         }
         return employees;
     }
 
-    public void addAccount(Employee employee, Account account) {
-
+    public boolean addEmployee(Employee employee, Account account) {
         try (Connection connection = JdbcUtils.getConnection()) {
-            AccountService as = new AccountService();
             connection.setAutoCommit(false);
+
             PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO employees(EmployeeID, FullName, BirthDate, "
                     + "Gender, IdentityCard, Phone, Address, "
                     + "HireDate, AccountID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
             ps.setString(1, employee.getEmployeeID());
             ps.setString(2, employee.getFullName());
             ps.setObject(3, employee.getBirthDate());
@@ -63,51 +68,21 @@ public class EmployeeService {
             ps.setString(6, employee.getPhone());
             ps.setString(7, employee.getAddress());
             ps.setObject(8, employee.getHireDate());
-            ps.setString(9, employee.getAccountID());
+            ps.setString(9, account.getAccountID());
 
             as.addAccount(account);
             ps.executeUpdate();
 
             connection.commit();
-
-            ps.close();
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeService.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void addEmployee(Employee e) {
-
-        try (Connection connection = JdbcUtils.getConnection()) {
-            connection.setAutoCommit(false);
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO employees(EmployeeID, FullName, BirthDate, "
-                    + "Gender, IdentityCard, Phone, Address, "
-                    + "HireDate, AccountID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement.setString(1, e.getEmployeeID());
-            preparedStatement.setString(2, e.getFullName());
-            preparedStatement.setObject(3, e.getBirthDate());
-            preparedStatement.setString(4, e.getGender().name());
-            preparedStatement.setString(5, e.getIdentityCard());
-            preparedStatement.setString(6, e.getPhone());
-            preparedStatement.setString(7, e.getAddress());
-            preparedStatement.setObject(8, e.getHireDate());
-            preparedStatement.setString(9, e.getAccountID());
-
-            preparedStatement.executeUpdate();
-
-            connection.commit();
-
-            preparedStatement.close();
-            connection.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(EmployeeService.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        return false;
     }
 
     public void updateEmployee(Employee employee, Account account) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
-            AccountService as = new AccountService();
             connection.setAutoCommit(false);
             PreparedStatement ps = connection.prepareStatement(
                     "UPDATE employees "
@@ -121,7 +96,7 @@ public class EmployeeService {
             ps.setString(6, employee.getPhone());
             ps.setString(7, employee.getAddress());
             ps.setObject(8, employee.getHireDate());
-            ps.setString(9, employee.getAccountID());
+            ps.setString(9, account.getAccountID());
 
             as.addAccount(account);
             ps.executeUpdate();
@@ -132,38 +107,33 @@ public class EmployeeService {
         }
     }
 
-    public void deleteEmployee(String employee, String account) throws SQLException {
+    public void deleteEmployee(String employeeID, String accountID) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
-            AccountService as = new AccountService();
-            try (PreparedStatement preparedStatement = connection.prepareStatement(
-                    "DELETE FROM employees "
-                    + "WHERE EmployeeID = ?")) {
-                preparedStatement.setString(1, employee);
 
-                as.deleteAccount(account);
-                preparedStatement.executeUpdate();
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM employees WHERE EmployeeID=?");
+            ps.setString(1, employeeID);
 
-                connection.commit();
-            }
+            PreparedStatement ps1 = connection.prepareStatement("DELETE FROM accounts WHERE AccountID=?");
+            ps1.setString(1, accountID);
+
+            ps.execute();
+            ps1.execute();
         }
     }
 
     public Employee getEmployeeByID(String id) throws SQLException {
-
         try (Connection c = JdbcUtils.getConnection()) {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM employees WHERE EmployeeID=" + id);
-            while (rs.next()) {
+            if (rs.next()) {
+                Account account = as.getAccountByID(rs.getString("AccountID"));
                 return new Employee(rs.getString("EmployeeID"),
-                        rs.getObject("HireDate", LocalDate.class), rs.getString("FullName"),
+                        rs.getString("FullName"), rs.getObject("Gender", Gender.class),
                         rs.getObject("BirthDate", LocalDate.class),
-                        Gender.valueOf(rs.getString("Gender")),
-                        rs.getString("IdentityCard"), rs.getString("Address"),
-                        rs.getString("Phone"), rs.getString("AccountID"));
+                        rs.getString("IdentityCard"), rs.getString("Phone"),
+                        rs.getString("Address"), rs.getObject("HireDate", LocalDate.class), account);
             }
-            s.close();
-            c.close();
         }
         return null;
     }
@@ -173,12 +143,12 @@ public class EmployeeService {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM employees WHERE AccountID=" + id);
             if (rs.next()) {
+                Account account = as.getAccountByID(rs.getString("AccountID"));
                 return new Employee(rs.getString("EmployeeID"),
-                        rs.getObject("HireDate", LocalDate.class), rs.getString("FullName"),
+                        rs.getString("FullName"), rs.getObject("Gender", Gender.class),
                         rs.getObject("BirthDate", LocalDate.class),
-                        Gender.valueOf(rs.getString("Gender")),
-                        rs.getString("IdentityCard"), rs.getString("Address"),
-                        rs.getString("Phone"), rs.getString("AccountID"));
+                        rs.getString("IdentityCard"), rs.getString("Phone"),
+                        rs.getString("Address"), rs.getObject("HireDate", LocalDate.class), account);
             }
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeService.class.getName()).log(Level.SEVERE, null, ex);
@@ -196,8 +166,6 @@ public class EmployeeService {
             if (rs.next()) {
                 return true;
             }
-            ps.close();
-            c.close();
         }
         return false;
     }

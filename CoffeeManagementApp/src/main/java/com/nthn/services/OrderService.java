@@ -109,8 +109,10 @@ public class OrderService {
      */
     public Order getOrderByID(String id) throws SQLException {
         try (Connection c = JdbcUtils.getConnection()) {
-            Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM orders WHERE OrderID=" + id);
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM orders WHERE OrderID=?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
                 return new Order(rs.getString("OrderID"), rs.getObject("OrderDate", LocalDate.class),
                         rs.getBigDecimal("Total"), rs.getString("EmployeeID"),
@@ -118,5 +120,61 @@ public class OrderService {
             }
         }
         return null;
+    }
+
+    //Lấy danh sách hóa đơn chưa thanh toán
+    public List<Order> getOrdersNotPay() {
+        List<Order> orders = new ArrayList<>();
+
+        try (Connection c = JdbcUtils.getConnection()) {
+
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM orders WHERE Payment=?");
+            ps.setInt(1, 0);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order o = new Order(rs.getString("OrderID"), rs.getObject("OrderDate", LocalDate.class),
+                        rs.getBigDecimal("Total"), rs.getString("EmployeeID"),
+                        rs.getString("TableID"), 0);
+                orders.add(o);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orders;
+    }
+    
+     public List<Order> getOrdersNotPay(String tableID) {
+        List<Order> orders = new ArrayList<>();
+
+        try (Connection c = JdbcUtils.getConnection()) {
+
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM orders WHERE Payment=? AND TableID=?");
+            ps.setInt(1, 0);
+            ps.setString(2, tableID);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order o = new Order(rs.getString("OrderID"), rs.getObject("OrderDate", LocalDate.class),
+                        rs.getBigDecimal("Total"), rs.getString("EmployeeID"),
+                        rs.getString("TableID"), 0);
+                orders.add(o);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orders;
+    }
+
+    public void updateOrder(Order order) throws SQLException {
+        try (Connection c = JdbcUtils.getConnection()) {
+            PreparedStatement ps = c.prepareStatement("UPDATE orders SET Payment=? WHERE OrderID=?");
+            ps.setInt(1, 1);
+            ps.setString(2, order.getOrderID());
+
+            ps.executeUpdate();
+        }
     }
 }

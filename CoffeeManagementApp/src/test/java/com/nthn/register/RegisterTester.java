@@ -93,12 +93,19 @@ public class RegisterTester {
             Logger.getLogger(RegisterTester.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-//
-    private Account account = new Account(Utils.randomID(), "username", "password", Active.AVAILABLE, Role.USER);
-    private Employee employee = new Employee(Utils.randomID(), LocalDate.MIN, "", LocalDate.MIN, Gender.OTHER, "identityCard", "identityCard", "identityCard", account.getAccountID());
 
-    @ParameterizedTest
-    public void testRegisterSuccess(Employee employee, Account account) throws SQLException {
-        Assertions.assertTrue(new RegisterChecker().isSuccessRegister(employee, account));
+    @Test
+    public void testRegisterSuccess() throws SQLException {
+
+        Account account = new Account(Utils.randomID(), "username", "PAssword20",
+                Active.AVAILABLE, Role.USER);
+        Employee employee = new Employee(Utils.randomID(), "Nguyễn Văn A", Gender.MALE,
+                LocalDate.of(2000, Month.MARCH, 2), "049585453433", "0696845856",
+                null, LocalDate.now(), account);
+
+        EmployeeService es = new EmployeeService();
+        es.addEmployee(employee, account);
+        
+        Assertions.assertTrue(es.checkEmployee(employee.getEmployeeID(), account.getAccountID()));
     }
 }

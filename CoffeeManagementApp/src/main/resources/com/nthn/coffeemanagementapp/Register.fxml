@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
@@ -23,13 +24,14 @@
                 <Image url="@../../../coffee-beans-with-props-making-coffee.jpg" />
             </image>
         </ImageView>
-        <VBox alignment="TOP_CENTER" layoutX="24.0" layoutY="11.0" prefHeight="523.0" prefWidth="427.0">
+        <VBox layoutX="24.0" layoutY="11.0" prefHeight="569.0" prefWidth="427.0">
             <children>
-                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="46.0" prefWidth="427.0" styleClass="h1" text="CREATE AN ACCOUNT" textAlignment="CENTER" textFill="RED">
+                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="72.0" prefWidth="427.0" styleClass="h1" text="CREATE AN ACCOUNT" textAlignment="CENTER" textFill="RED">
                     <effect>
                         <DropShadow height="25.0" radius="12.0" spread="0.25" width="25.0" />
                     </effect>
                 </Label>
+            <Label prefHeight="35.0" prefWidth="355.0" styleClass="h6" textFill="RED" />
             <HBox alignment="CENTER" opacity="0.75" prefWidth="400.0" styleClass="h6">
                <children>
                   <Label prefHeight="28.0" prefWidth="200.0" styleClass="h6" text="Họ tên *" textFill="#fdff00" />
@@ -82,6 +84,9 @@
                   <Label prefHeight="28.0" prefWidth="222.0" styleClass="h6" text="Tên đăng nhập *" textFill="#fdff00" />
                         <TextField fx:id="txtUsername" prefHeight="28.0" prefWidth="400.0" />
                     </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
                 </HBox>
                 <HBox alignment="CENTER" layoutX="10.0" layoutY="76.0" opacity="0.75" prefWidth="400.0" styleClass="h6">
                     <children>

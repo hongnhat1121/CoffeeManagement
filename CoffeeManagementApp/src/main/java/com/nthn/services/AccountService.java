@@ -103,7 +103,7 @@ public class AccountService {
                     + "WHERE AccountID = ?")) {
                 preparedStatement.setString(1, account);
 
-                preparedStatement.executeUpdate();
+                preparedStatement.execute();
 
                 connection.commit();
             }
