@@ -13,6 +13,7 @@ import com.nthn.pojo.Gender;
 import com.nthn.pojo.Role;
 import com.nthn.services.AccountService;
 import com.nthn.services.EmployeeService;
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -119,18 +121,18 @@ public class RegisterController implements Initializable {
         });
 
         this.txtPhone.textProperty().addListener((ov, t, t1) -> {
-            if (t1.isBlank()) {
-                this.lbError.setText("Số điện thoại không được bỏ trống.");
-            } else if (!t1.matches("\\d{9}")) {
-                this.lbError.setText("Số điện thoại phải chứa 9 chữ số.");
-            } else if (t1.matches(".*[a-zA-Z].*")) {
-                this.lbError.setText("Số điện thoại chứa ký tự chữ cái.");
-            } else if (t1.matches(".*\\W.*")) {
-                this.lbError.setText("Số điện thoại chứa ký tự đặc biệt.");
-            } else {
-                this.lbError.setText("");
-            }
-        }
+                    if (t1.isBlank()) {
+                        this.lbError.setText("Số điện thoại không được bỏ trống.");
+                    } else if (!t1.matches("\\d{9}")) {
+                        this.lbError.setText("Số điện thoại phải chứa 9 chữ số.");
+                    } else if (t1.matches(".*[a-zA-Z].*")) {
+                        this.lbError.setText("Số điện thoại chứa ký tự chữ cái.");
+                    } else if (t1.matches(".*\\W.*")) {
+                        this.lbError.setText("Số điện thoại chứa ký tự đặc biệt.");
+                    } else {
+                        this.lbError.setText("");
+                    }
+                }
         );
 
         this.txtUsername.textProperty().addListener((ov, t, t1) -> {
@@ -176,6 +178,31 @@ public class RegisterController implements Initializable {
     }
 
     public void registerHandler(ActionEvent event) throws SQLException {
+        if (txtFullname.getText().isBlank()) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Vui lòng nhập họ tên.");
+            return;
+        }
+        if (txtIdentityCard.getText().isBlank()) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Vui lòng nhập CMND/CCCD.");
+            return;
+        }
+        if (txtPhone.getText().isBlank()) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Vui lòng nhập số điện thoại.");
+            return;
+        }
+        if (txtUsername.getText().isBlank()) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Vui lòng nhập tên đăng nhập.");
+            return;
+        }
+        if (txtPassword.getText().isBlank()) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Vui lòng nhập mật khẩu.");
+            return;
+        }
+        if (txtConfirm.getText().isBlank()) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Register Error!", "Vui lòng nhập xác nhận mật khẩu.");
+            return;
+        }
+
         if (as.getAccountByUsername(this.txtUsername.getText()) != null) {
             this.lbError.setText("Tên đăng nhập đã tồn tại.");
             return;

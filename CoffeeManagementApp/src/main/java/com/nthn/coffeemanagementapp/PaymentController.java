@@ -73,8 +73,12 @@ public class PaymentController implements Initializable {
         loadTableViewOrderNotPay(getOrderListNotPay());
 
         this.cbTableFull.getSelectionModel().selectedItemProperty().addListener((ov, t, t1) -> {
-            loadTableViewOrderNotPay(getOrderListNotPay(t1));
+            loadTableViewOrderNotPay(getOrderListNotPay(t1.getTableID()));
         });
+
+        this.txtTableName.textProperty().addListener((observable, oldValue, newValue) ->
+        {loadTableViewOrderNotPay(getOrderListNotPay(newValue));}
+        );
     }
 
     public void btnPaymentHandler(ActionEvent event) {
@@ -89,6 +93,7 @@ public class PaymentController implements Initializable {
 
             Utils.showAlert(Alert.AlertType.INFORMATION, "Payment Success", "Hóa đơn của bàn " + table.getTableName() + " đã được thanh toán.");
 
+            loadComboBoxTable(getTableListIsFull());
             loadTableViewOrderNotPay(getOrderListNotPay());
         } catch (SQLException ex) {
             Logger.getLogger(PaymentController.class.getName()).log(Level.SEVERE, null, ex);
@@ -121,7 +126,7 @@ public class PaymentController implements Initializable {
         orderDateCol.setCellValueFactory((param) -> {
             return new SimpleObjectProperty<>(Utils.converter.toString(param.getValue().getOrderDate()));
         });
-        
+
         tableCol.setCellValueFactory((TableColumn.CellDataFeatures<Order, Table> param) -> {
             try {
                 return new SimpleObjectProperty<>(ts.getTable(param.getValue().getTableID()));
@@ -149,8 +154,8 @@ public class PaymentController implements Initializable {
         return FXCollections.observableArrayList(orders);
     }
 
-    private ObservableList<Order> getOrderListNotPay(Table table) {
-        orders = os.getOrdersNotPay(table.getTableID());
+    private ObservableList<Order> getOrderListNotPay(String tableID) {
+        orders = os.getOrdersNotPay(tableID);
         return FXCollections.observableArrayList(orders);
     }
 

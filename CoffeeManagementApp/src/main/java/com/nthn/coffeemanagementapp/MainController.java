@@ -6,12 +6,12 @@
 package com.nthn.coffeemanagementapp;
 
 import com.nthn.configs.Utils;
-import com.nthn.pojo.Category;
-import com.nthn.pojo.Product;
-import com.nthn.pojo.Status;
-import com.nthn.pojo.Table;
+import com.nthn.pojo.*;
+import com.nthn.services.EmployeeService;
 import com.nthn.services.ProductService;
 import com.nthn.services.TableService;
+
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -79,6 +80,11 @@ public class MainController implements Initializable {
     private Button btnDeleteTable;
 
     @FXML
+    private TableView<Employee> tbvEmployee;
+    @FXML
+    private  TextField txtUsername;
+
+    @FXML
     private DatePicker datePicker;
 
     private final ProductController pc = new ProductController();
@@ -89,12 +95,10 @@ public class MainController implements Initializable {
 
     private final ProductService ps = new ProductService();
 
-    
-    private EmployeeController ec=new EmployeeController();
 
-    
-    
-    
+    private final EmployeeController ec = new EmployeeController();
+    private final EmployeeService es = new EmployeeService();
+
     /**
      * Initializes the controller class.
      */
@@ -104,6 +108,7 @@ public class MainController implements Initializable {
 
         this.pc.loadTableViewProduct(tbvProduct);
         this.tc.loadTableViewTable(tbvTable);
+        this.ec.loadTableViewEmployee(tbvEmployee);
 
         try {
             this.pc.loadComboBoxDataProduct(cbProduct);
@@ -112,6 +117,8 @@ public class MainController implements Initializable {
             this.tc.loadComboBoxDataStatus(cbStatus);
             this.pc.loadTableDataProduct(null, tbvProduct, cbProduct);
             this.tc.loadTableDataTable(null, tbvTable);
+
+            this.ec.loadTableDataEmployee(tbvEmployee);
         } catch (SQLException ex) {
             Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -147,6 +154,10 @@ public class MainController implements Initializable {
             } catch (SQLException ex) {
                 Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
             }
+        });
+
+        this.txtUsername.textProperty().addListener((observable, oldValue, newValue) -> {
+            this.ec.loadTableDataEmployee(tbvEmployee,newValue);
         });
     }
 
@@ -354,6 +365,27 @@ public class MainController implements Initializable {
             this.tc.loadTableDataTable("", tbvTable);
         } else {
             Utils.showAlert(Alert.AlertType.INFORMATION, "Delete Table Failed", "Bàn " + table.getTableName() + " chưa xóa.");
+        }
+    }
+
+    public void btnAddEmployeeHandler(ActionEvent event) throws IOException {
+        App app = new App();
+        app.loaderController("Register.fxml", "Coffee Management App - Register");
+        this.ec.loadTableDataEmployee(tbvEmployee);
+    }
+
+
+    public void btnDeleteEmployeeHandler(ActionEvent event) {
+        Employee employee = this.tbvEmployee.getSelectionModel().getSelectedItem();
+        es.deleteEmployee(employee.getEmployeeID(), employee.getAccount().getAccountID());
+
+        if (es.getEmployeeByID(employee.getEmployeeID())== null) {
+            Utils.showAlert(Alert.AlertType.INFORMATION, "Delete Employee Success", "Nhân viên " + employee.getFullName()
+                    + " đã xóa.");
+            this.ec.loadTableDataEmployee(tbvEmployee);
+        } else {
+            Utils.showAlert(Alert.AlertType.INFORMATION, "Delete Employee Failed", "Nhân viên " + employee.getFullName()
+                    + " chưa xóa.");
         }
     }
 }

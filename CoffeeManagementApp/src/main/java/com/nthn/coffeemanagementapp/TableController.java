@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -28,17 +30,20 @@ public class TableController {
     public List<Table> tables;
 
     public void loadTableViewTable(TableView tbvTable) {
-        TableColumn colTableName = new TableColumn("Tên bàn");
+        TableColumn<Table, String> colTableName = new TableColumn<>("Tên bàn");
         colTableName.setCellValueFactory(new PropertyValueFactory("TableName"));
         colTableName.setPrefWidth(200);
 
-        TableColumn colCapacity = new TableColumn("Sức chứa");
+        TableColumn<Table, Integer> colCapacity = new TableColumn<>("Sức chứa");
         colCapacity.setCellValueFactory(new PropertyValueFactory("Capacity"));
         colCapacity.setPrefWidth(200);
 //
-//        TableColumn colStatus = new TableColumn("Trạng thái");
-//        colCapacity.setCellValueFactory(new PropertyValueFactory("Capacity"));
-//        colCapacity.setPrefWidth(200);
+//        TableColumn<Table, Status> colStatus = new TableColumn<>("Trạng thái");
+////        colStatus.setCellValueFactory(param -> {
+////            return new SimpleObjectProperty<>(param.getValue().getStatus());
+////        });
+//        colStatus.setCellValueFactory(new PropertyValueFactory<>("Status"));
+//        colStatus.setPrefWidth(200);
 
         tbvTable.getColumns().addAll(colTableName, colCapacity);
     }

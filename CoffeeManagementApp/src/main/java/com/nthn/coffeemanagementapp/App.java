@@ -1,6 +1,9 @@
 package com.nthn.coffeemanagementapp;
 
 import com.nthn.configs.JdbcUtils;
+import com.nthn.pojo.Account;
+import com.nthn.services.AccountService;
+import com.nthn.services.EmployeeService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -21,7 +24,7 @@ import org.kordamp.bootstrapfx.BootstrapFX;
 public class App extends Application {
 
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("Payment.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
         Scene scene = new Scene(root, 900, 600);
 
         stage.setOnHiding((t) -> {
@@ -43,6 +46,10 @@ public class App extends Application {
 
     public static void main(String[] args) throws SQLException {
        launch();
+//        Account account=new AccountService().getAccountByID("2c577442-b501-406d-a48b-6fac14941b4c");
+//        System.out.println(account.getUsername());
+//        EmployeeService service=new EmployeeService();
+//        System.out.println(service.getEmployees().get(1).getFullName());
 //new EmployeeService().deleteEmployee("cc77cadd-96ce-4a61-beee-831474b4cd84", "2c577442-b501-406d-a48b-6fac14941b4c");
     }
 

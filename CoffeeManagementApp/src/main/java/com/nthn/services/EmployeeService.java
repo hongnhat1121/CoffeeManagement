@@ -5,6 +5,7 @@
 package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
+import com.nthn.configs.Utils;
 import com.nthn.pojo.Account;
 import com.nthn.pojo.Active;
 import com.nthn.pojo.Employee;
@@ -38,13 +39,13 @@ public class EmployeeService {
             while (rs.next()) {
                 Account account = new Account(rs.getString("AccountID"),
                         rs.getString("Username"), rs.getString("Password"),
-                        rs.getObject("Active", Active.class),
-                        rs.getObject("Role", Role.class));
+                        Active.valueOf(rs.getString("Active")),
+                       Role.valueOf(rs.getString("Role")));
                 Employee employee = new Employee(rs.getString("EmployeeID"),
-                        rs.getString("FullName"), rs.getObject("Gender", Gender.class),
-                        rs.getObject("BirthDate", LocalDate.class),
-                        rs.getString("IdentityCard"), rs.getString("Phone"),
-                        rs.getString("Address"), rs.getObject("HireDate", LocalDate.class), account);
+                        rs.getString("FullName"), Gender.valueOf(rs.getString("Gender")),
+                        rs.getObject("BirthDate", LocalDate.class), rs.getString("IdentityCard"),
+                        rs.getString("Phone"), rs.getString("Address"),
+                        rs.getObject("HireDate", LocalDate.class), account);
                 employees.add(employee);
             }
         }
@@ -154,6 +155,28 @@ public class EmployeeService {
             Logger.getLogger(EmployeeService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public List<Employee> getEmployees(String username) throws SQLException {
+        List<Employee> employees=new ArrayList<>();
+        try (Connection c = JdbcUtils.getConnection()) {
+            PreparedStatement statement=c.prepareStatement("SELECT * FROM employees, account " +
+                    "WHERE employees.AccountID=accounts.AccountID AND Username like concat('%', ?, '%')");
+            statement.setString(1, username);
+            ResultSet rs= statement.executeQuery();
+            if (rs.next()) {
+                Account account = new Account(rs.getString("AccountID"), rs.getString("Username"),
+                        rs.getString("Password"), Active.valueOf(rs.getString("Active")),
+                        Role.valueOf(rs.getString("Role")));
+               Employee employee=new Employee(rs.getString("EmployeeID"),
+                        rs.getString("FullName"), rs.getObject("Gender", Gender.class),
+                        rs.getObject("BirthDate", LocalDate.class),
+                        rs.getString("IdentityCard"), rs.getString("Phone"),
+                        rs.getString("Address"), rs.getObject("HireDate", LocalDate.class), account);
+                employees.add(employee);
+            }
+        }
+        return employees;
     }
 
     //Kiểm tra thông tin tài khoản đã lưu vào CSDL chưa

@@ -42,7 +42,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return String.format("%s\t%s\t%s", this.username, this.active, this.role);
+        return this.getUsername();
     }
 
     /**

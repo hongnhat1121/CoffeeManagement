@@ -118,8 +118,9 @@ public class AccountService {
      */
     public Account getAccountByID(String id) throws SQLException {
         try (Connection c = JdbcUtils.getConnection()) {
-            Statement s = c.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM accounts WHERE AccountID=" + id);
+            PreparedStatement statement=c.prepareStatement("SELECT * FROM accounts WHERE AccountID=?");
+            statement.setString(1,id);
+            ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 return new Account(rs.getString("AccountID"),
                         rs.getString("Username"), rs.getString("Password"),

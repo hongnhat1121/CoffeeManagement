@@ -11,6 +11,10 @@ import com.nthn.services.ProductService;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -34,12 +38,14 @@ public class ProductController {
         TableColumn<Product, Integer> colUnitPrice = new TableColumn("Giá tiền");
         colUnitPrice.setCellValueFactory(new PropertyValueFactory("UnitPrice"));
         colUnitPrice.setPrefWidth(200);
+//
+//        TableColumn<Product, String> colCategory = new TableColumn("Danh mục");
+//        colCategory.setCellValueFactory(param -> {
+//            return new SimpleObjectProperty<>(param.getValue().getCategory().getContent());
+//        });
+//        colCategory.setPrefWidth(200);
 
-        TableColumn<Product, Category> colCategory = new TableColumn("Danh mục");
-        colCategory.setCellValueFactory(new PropertyValueFactory<>("Category"));
-        colCategory.setPrefWidth(200);
-
-        tbvProduct.getColumns().addAll(colProductName, colUnitPrice, colCategory);
+        tbvProduct.getColumns().addAll(colProductName, colUnitPrice);
     }
 
     public void loadTableDataProduct(String kw, TableView tbvProduct, ComboBox cbProduct) throws SQLException {

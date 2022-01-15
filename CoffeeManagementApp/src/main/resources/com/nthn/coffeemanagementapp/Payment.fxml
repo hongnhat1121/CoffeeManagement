@@ -29,7 +29,7 @@
             <HBox prefHeight="19.0" prefWidth="800.0">
                <children>
                   <Label prefHeight="29.0" prefWidth="122.0" styleClass="h6" text="Tìm kiếm theo bàn" textFill="WHITE" />
-                  <TextField prefHeight="30.0" prefWidth="282.0" promptText="Nhập tên bàn muốn tìm..." />
+                  <TextField fx:id="txtTableName" prefHeight="30.0" prefWidth="282.0" promptText="Nhập tên bàn muốn tìm..." />
                   <ComboBox fx:id="cbTableFull" prefHeight="30.0" prefWidth="186.0" promptText="Chọn bàn đã đặt" />
                </children></HBox>
             <TableView fx:id="tbvOrder" prefHeight="200.0" prefWidth="200.0">
