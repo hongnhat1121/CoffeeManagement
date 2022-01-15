@@ -14,11 +14,14 @@ import java.util.List;
 import java.util.Set;
 
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -27,30 +30,28 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class TableController {
 
-    public List<Table> tables;
-
     public void loadTableViewTable(TableView tbvTable) {
         TableColumn<Table, String> colTableName = new TableColumn<>("Tên bàn");
         colTableName.setCellValueFactory(new PropertyValueFactory("TableName"));
         colTableName.setPrefWidth(200);
 
-        TableColumn<Table, Integer> colCapacity = new TableColumn<>("Sức chứa");
+        TableColumn<Table, Integer> colCapacity = new TableColumn<>("Sức chứa (người)");
         colCapacity.setCellValueFactory(new PropertyValueFactory("Capacity"));
         colCapacity.setPrefWidth(200);
-//
-//        TableColumn<Table, Status> colStatus = new TableColumn<>("Trạng thái");
-////        colStatus.setCellValueFactory(param -> {
-////            return new SimpleObjectProperty<>(param.getValue().getStatus());
-////        });
-//        colStatus.setCellValueFactory(new PropertyValueFactory<>("Status"));
-//        colStatus.setPrefWidth(200);
 
-        tbvTable.getColumns().addAll(colTableName, colCapacity);
+        TableColumn<Table, String> colStatus = new TableColumn<>("Trạng thái");
+        colStatus.setCellValueFactory(new PropertyValueFactory<>("Status"));
+        colStatus.setPrefWidth(200);
+
+        tbvTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        colCapacity.setSortType(TableColumn.SortType.ASCENDING);
+
+        tbvTable.getColumns().addAll(colTableName, colCapacity, colStatus);
     }
 
     public void loadTableDataTable(String kw, TableView tbvTable) throws SQLException {
         TableService ts = new TableService();
-        this.tables = ts.getTablesByName(kw);
+        List<Table> tables = ts.getTablesByName(kw);
         tbvTable.setItems(FXCollections.observableList(tables));
     }
 
@@ -62,7 +63,7 @@ public class TableController {
         }
 
         String status = cbStatus.getSelectionModel().getSelectedItem().toString();
-        this.tables = ts.getTablesByAll(capacity, status);
+        List<Table> tables = ts.getTablesByAll(capacity, status);
         tbvTable.setItems(FXCollections.observableList(tables));
     }
 
@@ -72,23 +73,24 @@ public class TableController {
         TableService ts = new TableService();
         List<Table> list = ts.getTables();
         
-        List<Integer> integers=new ArrayList<>();
+        List<Integer> ints=new ArrayList<>();
         list.forEach((t) -> {
-            integers.add(t.getCapacity());
+            ints.add(t.getCapacity());
         });
         
-        Set<Integer> set=new HashSet<>(integers);
-        integers.clear();
+        Set<Integer> set=new HashSet<>(ints);
+        ints.clear();
         set.forEach((t) -> {
-            integers.add(t);
+            ints.add(t);
         });
-        cbCapacity.setItems(FXCollections.observableList(integers));
+        cbCapacity.setItems(FXCollections.observableList(ints));
     }
 
     public void loadComboBoxDataStatus(ComboBox cbStatus) throws SQLException {
         List<String> s = new ArrayList<>();
         s.add(Status.EMPTY.toString());
         s.add(Status.FULL.toString());
+
         cbStatus.setItems(FXCollections.observableList(s));
         cbStatus.getSelectionModel().select(0);
     }

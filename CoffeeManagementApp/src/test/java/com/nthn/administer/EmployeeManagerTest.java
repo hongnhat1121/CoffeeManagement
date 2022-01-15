@@ -50,14 +50,10 @@ public class EmployeeManagerTest {
         Employee employee = new Employee(Utils.randomID(), "Nguyễn Văn A", Gender.MALE,
                 LocalDate.of(2000, Month.MARCH, 2), "049585453433", "0696845856",
                 null, LocalDate.now(), account);
-        try {
-            service.addEmployee(employee, account);
-            employee = service.getEmployeeByID(employee.getEmployeeID());
+        service.addEmployee(employee, account);
+        employee = service.getEmployeeByID(employee.getEmployeeID());
 
-            Assertions.assertNotNull(employee);
-        } catch (SQLException ex) {
-            Logger.getLogger(TableManagerTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Assertions.assertNotNull(employee);
     }
 
     @Test
@@ -68,14 +64,10 @@ public class EmployeeManagerTest {
                 LocalDate.of(2000, Month.MARCH, 2), "049585453433", "0696845856",
                 null, LocalDate.now(), account);
 
-        try {
-            service.addEmployee(employee, account);
-            employee = service.getEmployeeByID(employee.getEmployeeID());
+        service.addEmployee(employee, account);
+        employee = service.getEmployeeByID(employee.getEmployeeID());
 
-            Assertions.assertNull(employee);
-        } catch (SQLException ex) {
-            Logger.getLogger(TableManagerTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Assertions.assertNull(employee);
     }
 
     @Test

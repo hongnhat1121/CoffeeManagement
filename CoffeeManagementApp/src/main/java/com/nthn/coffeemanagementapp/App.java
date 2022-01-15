@@ -2,16 +2,21 @@ package com.nthn.coffeemanagementapp;
 
 import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.Account;
+import com.nthn.pojo.Category;
+import com.nthn.pojo.Product;
 import com.nthn.services.AccountService;
 import com.nthn.services.EmployeeService;
+import com.nthn.services.ProductService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -24,7 +29,7 @@ import org.kordamp.bootstrapfx.BootstrapFX;
 public class App extends Application {
 
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
         Scene scene = new Scene(root, 900, 600);
 
         stage.setOnHiding((t) -> {
@@ -45,18 +50,18 @@ public class App extends Application {
     }
 
     public static void main(String[] args) throws SQLException {
-       launch();
-//        Account account=new AccountService().getAccountByID("2c577442-b501-406d-a48b-6fac14941b4c");
-//        System.out.println(account.getUsername());
-//        EmployeeService service=new EmployeeService();
-//        System.out.println(service.getEmployees().get(1).getFullName());
-//new EmployeeService().deleteEmployee("cc77cadd-96ce-4a61-beee-831474b4cd84", "2c577442-b501-406d-a48b-6fac14941b4c");
+        launch();
     }
 
-    public void loaderController(String resource, String title) throws IOException {
+    public void loaderController(String resource, String title) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
 
-        Parent root = loader.load();
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Scene scene = new Scene(root, 900, 600);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());

@@ -15,12 +15,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -31,21 +33,19 @@ public class ProductController {
 
     public void loadTableViewProduct(TableView tbvProduct) {
         tbvProduct.setEditable(true);
-        TableColumn<Product, String> colProductName = new TableColumn("Tên sản phẩm");
-        colProductName.setCellValueFactory(new PropertyValueFactory("ProductName"));
+        TableColumn<Product, String> colProductName = new TableColumn<>("Tên sản phẩm");
+        colProductName.setCellValueFactory(new PropertyValueFactory("productName"));
         colProductName.setPrefWidth(200);
 
-        TableColumn<Product, Integer> colUnitPrice = new TableColumn("Giá tiền");
-        colUnitPrice.setCellValueFactory(new PropertyValueFactory("UnitPrice"));
+        TableColumn<Product, Integer> colUnitPrice = new TableColumn<>("Giá tiền (VNĐ)");
+        colUnitPrice.setCellValueFactory(new PropertyValueFactory("unitPrice"));
         colUnitPrice.setPrefWidth(200);
-//
-//        TableColumn<Product, String> colCategory = new TableColumn("Danh mục");
-//        colCategory.setCellValueFactory(param -> {
-//            return new SimpleObjectProperty<>(param.getValue().getCategory().getContent());
-//        });
-//        colCategory.setPrefWidth(200);
 
-        tbvProduct.getColumns().addAll(colProductName, colUnitPrice);
+        TableColumn<Product, String> colCategory = new TableColumn<>("Danh mục");
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("Category"));
+        colCategory.setPrefWidth(200);
+
+        tbvProduct.getColumns().addAll(colProductName, colUnitPrice, colCategory);
     }
 
     public void loadTableDataProduct(String kw, TableView tbvProduct, ComboBox cbProduct) throws SQLException {

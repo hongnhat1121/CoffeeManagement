@@ -16,6 +16,7 @@ public enum Category {
         this.content = content;
     }
 
+
     public static Category getByContent(String text) {
         switch (text) {
             case "Thức ăn":
@@ -28,7 +29,7 @@ public enum Category {
 
     @Override
     public String toString() {
-        return this.content;
+        return this.getContent();
     }
 
     /**

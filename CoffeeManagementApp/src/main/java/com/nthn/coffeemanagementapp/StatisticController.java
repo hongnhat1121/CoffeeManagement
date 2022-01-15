@@ -4,50 +4,60 @@
  */
 package com.nthn.coffeemanagementapp;
 
-import com.nthn.services.ProductService;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import com.nthn.configs.Utils;
+import com.nthn.pojo.Order;
+import com.nthn.pojo.Table;
+import com.nthn.services.*;
+
+import java.time.LocalDate;
+
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
- *
  * @author HONGNHAT
  */
 public class StatisticController {
-     public void loadTableViewStatist(TableView tbvProduct) {
-        TableColumn colProductName = new TableColumn("Tên sản phẩm");
-        colProductName.setCellValueFactory(new PropertyValueFactory("ProductName"));
-        colProductName.setPrefWidth(200);
-        
-        TableColumn colUnitPrice = new TableColumn("Giá tiền");
-        colUnitPrice.setCellValueFactory(new PropertyValueFactory("UnitPrice"));
-        colUnitPrice.setPrefWidth(200);
-        
-        TableColumn colCategory = new TableColumn("Thể loại");
-        colCategory.setCellValueFactory(new PropertyValueFactory("Category"));
-        colCategory.setPrefWidth(200);
-        
-        tbvProduct.getColumns().addAll(colProductName, colUnitPrice, colCategory);            
+    private final TableService ts = new TableService();
+    private final OrderService os = new OrderService();
+
+    public void loadTableViewOrder(TableView<Order> tableView) {
+        TableColumn<Order, String> orderDateCol = new TableColumn<>("Ngày đặt");
+        TableColumn<Order, Table> tableCol = new TableColumn<>("Tên bàn");
+        TableColumn<Order, Long> totalCol = new TableColumn<>("Tổng tiền (VNĐ)");
+        TableColumn<Order, String> paymentCol = new TableColumn<>("Ghi chú");
+
+        orderDateCol.setCellValueFactory((param) -> {
+            return new SimpleObjectProperty<>(Utils.converter.toString(param.getValue().getOrderDate()));
+        });
+        tableCol.setCellValueFactory((TableColumn.CellDataFeatures<Order, Table> param) -> {
+            return new SimpleObjectProperty<>(ts.getTable(param.getValue().getTableID()));
+        });
+        totalCol.setCellValueFactory(new PropertyValueFactory<>("total"));
+        paymentCol.setCellValueFactory(param -> {
+            if (param.getValue().getPayment() == 0)
+                return new SimpleObjectProperty<>("Chưa thanh toán");
+            else return new SimpleObjectProperty<>("Đã thanh toán");
+        });
+
+        orderDateCol.setSortType(TableColumn.SortType.DESCENDING);
+        tableView.getColumns().addAll(orderDateCol, tableCol, totalCol, paymentCol);
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
-    
-    public void loadTableDataProduct(String kw, TableView tbvProduct, ComboBox cbProduct) throws SQLException {      
-        ProductService ps = new ProductService();
-        if(cbProduct.getSelectionModel().getSelectedIndex() == 0)
-            tbvProduct.setItems(FXCollections.observableList(ps.getProductsByName(kw)));    
-        else
-            tbvProduct.setItems(FXCollections.observableList(ps.getProductsByUnitPrice(kw)));         
+
+    public void loadTableDataOrder(TableView<Order> tableView) {
+        tableView.setItems(FXCollections.observableList(os.getOrders()));
     }
-    
-    public void loadComboBoxDataProduct(ComboBox cbProduct) throws SQLException {
-        List<String> s = new ArrayList<>();
-        s.add("Tên sản phẩm");
-        s.add("Giá tiền");
-        cbProduct.setItems(FXCollections.observableList(s)); 
-        cbProduct.getSelectionModel().select(0);
+
+    public void loadTableDataOrder(TableView<Order> tableView, String tableName) {
+        tableView.setItems(FXCollections.observableList(os.getOrders(tableName)));
     }
+
+    public void loadTableDataOrder(TableView<Order> tableView, LocalDate localDate) {
+        tableView.setItems(FXCollections.observableList(os.getOrders(localDate)));
+    }
+
+
 }

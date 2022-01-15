@@ -235,13 +235,14 @@ public class RegisterController implements Initializable {
 
         //Kiểm tra kết quả lưu
         try {
-            if (!new RegisterChecker().isSuccessRegister(employee, account)) {
-                Utils.showAlert(Alert.AlertType.INFORMATION,
-                        "Registration successfull!", "Welcome to Coffee Management App");
+            if (new RegisterChecker().isSuccessRegister(employee, account)) {
+                App app = new App();
+                app.loaderController("Main.fxml", "Coffee Management App - Main");
             }
         } catch (SQLException ex) {
             Logger.getLogger(RegisterController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     public void loginHandler(ActionEvent event) throws IOException {

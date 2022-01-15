@@ -40,14 +40,12 @@ public class TableService {
             ps.executeUpdate();
 
             connection.commit();
-
-            ps.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(TableService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    public Table getTable(String id) throws SQLException {
+    public Table getTable(String id) {
         try (Connection c = JdbcUtils.getConnection()) {
 
             PreparedStatement ps = c.prepareStatement("SELECT * FROM tables WHERE TableID = ?");
@@ -59,11 +57,13 @@ public class TableService {
                         rs.getString("TableName"), rs.getInt("Capacity"),
                         Status.valueOf(rs.getString("Status")));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
-    public void updateTable(Table t) throws SQLException {
+    public void updateTable(Table t) {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
 
@@ -79,7 +79,11 @@ public class TableService {
                 preparedStatement.executeUpdate();
 
                 connection.commit();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -117,7 +121,7 @@ public class TableService {
             while (rs.next()) {
                 Table p = new Table(rs.getString("TableID"),
                         rs.getString("TableName"), rs.getInt("Capacity"),
-                        Status.getByContent(rs.getString("Status")));
+                        Status.valueOf(rs.getString("Status")));
                 results.add(p);
             }
 
@@ -143,7 +147,7 @@ public class TableService {
             while (rs.next()) {
                 Table p = new Table(rs.getString("TableID"),
                         rs.getString("TableName"), rs.getInt("Capacity"),
-                        Status.getByContent(rs.getString("Status")));
+                        Status.valueOf(rs.getString("Status")));
                 results.add(p);
             }
         }
@@ -170,7 +174,7 @@ public class TableService {
             while (rs.next()) {
                 Table p = new Table(rs.getString("TableID"),
                         rs.getString("TableName"), rs.getInt("Capacity"),
-                        Status.getByContent(rs.getString("Status")));
+                        Status.valueOf(rs.getString("Status")));
                 results.add(p);
             }
         }
@@ -214,7 +218,7 @@ public class TableService {
             while (rs.next()) {
                 Table p = new Table(rs.getString("TableID"),
                         rs.getString("TableName"), rs.getInt("Capacity"),
-                        Status.getByContent(rs.getString("Status")));
+                        Status.valueOf(rs.getString("Status")));
                 results.add(p);
             }
         }
@@ -230,7 +234,7 @@ public class TableService {
             while (rs.next()) {
                 Table p = new Table(rs.getString("TableID"),
                         rs.getString("TableName"), rs.getInt("Capacity"),
-                        Status.getByContent(rs.getString("Status")));
+                        Status.valueOf(rs.getString("Status")));
                 results.add(p);
             }
         }

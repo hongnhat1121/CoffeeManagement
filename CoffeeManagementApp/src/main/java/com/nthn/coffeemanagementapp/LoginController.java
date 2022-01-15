@@ -5,22 +5,34 @@
 package com.nthn.coffeemanagementapp;
 
 import com.nthn.check.LoginChecker;
+import com.nthn.configs.JdbcUtils;
 import com.nthn.configs.Utils;
 import com.nthn.pojo.Account;
 import com.nthn.pojo.Role;
 import com.nthn.services.AccountService;
+
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import org.kordamp.bootstrapfx.BootstrapFX;
 
 /**
  * FXML Controller class
@@ -85,17 +97,12 @@ public class LoginController implements Initializable {
         } else {
             String username = this.txtUsername.getText();
             String password = this.txtPassword.getText();
-            
+
             LoginChecker checker = new LoginChecker();
-            
+
             if (checker.isSuccessLogin(username, password)) {
                 this.account = new AccountService().getAccountByUsername(username);
-                
-                if (account.getRole() == Role.ADMIN) {
-                    loadPrimaryController();
-                } else if (account.getRole() == Role.USER) {
-                    loadOrderController();
-                }
+                loadPrimaryController();
             } else {
                 Utils.showAlert(Alert.AlertType.ERROR, "Đăng nhập thất bại!", "Username hoặc password sai.");
             }
@@ -110,10 +117,6 @@ public class LoginController implements Initializable {
     public void loadPrimaryController() throws IOException {
         App app = new App();
         app.loaderController("Main.fxml", "Coffee Management App");
-    }
 
-    public void loadOrderController() throws IOException {
-        App app = new App();
-        app.loaderController("Order.fxml", "Coffee Management App - Order");
     }
 }

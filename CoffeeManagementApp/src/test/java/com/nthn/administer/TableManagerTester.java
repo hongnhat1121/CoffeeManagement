@@ -39,61 +39,43 @@ public class TableManagerTester {
     @ParameterizedTest(name = "{index} => id={0}, name={1}, capacity={2}, status={3}")
     @CsvSource({"c9491382-ree5-4920-ab42-c04fed63bc45, Bàn 023, 5, Còn trống"})
     public void testAddTableSuccess(String id, String name, String capacity, String status) {
-        try {
-            Table table = new Table(id, name, Integer.parseInt(capacity), Status.getByContent(status));
-            service.addTable(table);
+        Table table = new Table(id, name, Integer.parseInt(capacity), Status.getByContent(status));
+        service.addTable(table);
 
-            table = service.getTable(id);
-            Assertions.assertNotNull(table);
-        } catch (SQLException ex) {
-            Logger.getLogger(TableManagerTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        table = service.getTable(id);
+        Assertions.assertNotNull(table);
     }
     
     @ParameterizedTest(name = "{index} => id={0}, name={1}, capacity={2}, status={3}")
-    @CsvSource({"c9491382-ree5-4920-ab42-c04fed63bc45, Bàn 023, 5, Còn trống"})
+    @CsvSource({"c9891382-ree5-4920-ab42-c04fed63bc45, Bàn 073, 5, Còn trống"})
     public void testAddTableFailed(String id, String name, String capacity, String status) {
-        try {
-            Table table = new Table(id, name, Integer.parseInt(capacity), Status.getByContent(status));
-            service.addTable(table);
-
-            table = service.getTable(id);
-            Assertions.assertNull(table);
-        } catch (SQLException ex) {
-            Logger.getLogger(TableManagerTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Table table = new Table(id, name, Integer.parseInt(capacity), Status.getByContent(status));
+        table = service.getTable(id);
+        Assertions.assertNull(table);
     }
 
     @ParameterizedTest(name = "{index} => id={0}, name={1}, capacity={2}, status={3}")
     @CsvSource({"c9491382-63e5-4920-ab42-c04fed63bc45, , 5, Đã đặt"})
     public void testUpdateTableSuccess(String id, String name, String capacity, String status) {
-        try {
-            Table table1=service.getTable(id); //table trước khi update
-            
-            Table table = new Table(id, name, Integer.parseInt(capacity), Status.getByContent(status));
-            service.updateTable(table);
+        Table table1=service.getTable(id); //table trước khi update
 
-            table = service.getTable(id); //table đã update
-            
-            Assertions.assertNotEquals(table, table1);
-        } catch (SQLException ex) {
-            Logger.getLogger(TableManagerTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Table table = new Table(id, name, Integer.parseInt(capacity),  Status.getByContent(status));
+        service.updateTable(table);
+
+        table = service.getTable(id); //table đã update
+
+        Assertions.assertNotEquals(table, table1);
     }
     
     @ParameterizedTest(name = "{index} => id={0}, name={1}, capacity={2}, status={3}")
     @CsvSource({"c9491382-63e5-4920-ab42-c04fed63bc45, Bàn 023, 5, đã đặt"})
     public void testUpdateTableFailed(String id, String name, String capacity, String status) {
-        try {
-            Table table1=service.getTable(id); //table trước khi update
-            
-            Table table = new Table(id, name, Integer.parseInt(capacity), Status.getByContent(status));
-            service.updateTable(table);
+        Table table1=service.getTable(id); //table trước khi update
 
-            table = service.getTable(id); //table đã update
-            Assertions.assertEquals(table, table1);
-        } catch (SQLException ex) {
-            Logger.getLogger(TableManagerTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Table table = new Table(id, name, Integer.parseInt(capacity), Status.getByContent(status));
+        service.updateTable(table);
+
+        table = service.getTable(id); //table đã update
+        Assertions.assertEquals(table, table1);
     }
 }

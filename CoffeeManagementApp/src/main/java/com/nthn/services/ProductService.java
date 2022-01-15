@@ -8,6 +8,7 @@ package com.nthn.services;
 import com.nthn.pojo.Product;
 import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.Category;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author PC
  */
 public class ProductService {
@@ -36,13 +36,11 @@ public class ProductService {
                         Category.valueOf(rs.getString("Category")));
                 results.add(p);
             }
-            stm.close();
-            conn.close();
         }
         return results;
     }
 
-    public Product getProduct(String id) throws SQLException {
+    public Product getProduct(String id) {
         try (Connection conn = JdbcUtils.getConnection()) {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM products WHERE ProductID = ?");
             ps.setString(1, id);
@@ -51,9 +49,11 @@ public class ProductService {
             if (rs.next()) {
                 Product p = new Product(rs.getString("ProductID"),
                         rs.getString("ProductName"), rs.getLong("UnitPrice"),
-                        Category.getByContent(rs.getString("Category")));
+                        Category.valueOf(rs.getString("Category")));
                 return p;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -68,7 +68,7 @@ public class ProductService {
                 preparedStatement.setString(1, p.getProductID());
                 preparedStatement.setString(2, p.getProductName());
                 preparedStatement.setLong(3, p.getUnitPrice());
-                preparedStatement.setString(4, p.getCategory().name());
+                preparedStatement.setObject(4, p.getCategory().name());
 
                 preparedStatement.executeUpdate();
 
@@ -83,8 +83,8 @@ public class ProductService {
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(
                     "UPDATE products "
-                    + "SET ProductName = ?, UnitPrice = ?, Category = ?"
-                    + "WHERE ProductID = ?")) {
+                            + "SET ProductName = ?, UnitPrice = ?, Category = ?"
+                            + "WHERE ProductID = ?")) {
                 preparedStatement.setString(4, p.getProductID());
                 preparedStatement.setString(1, p.getProductName());
                 preparedStatement.setLong(2, p.getUnitPrice());
@@ -100,16 +100,12 @@ public class ProductService {
     public void deleteProduct(String p) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM products "
+                    + "WHERE ProductID = ?");
+            preparedStatement.setString(1, p);
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(
-                    "DELETE FROM products "
-                    + "WHERE ProductID = ?")) {
-                preparedStatement.setString(1, p);
-
-                preparedStatement.executeUpdate();
-
-                connection.commit();
-            }
+            preparedStatement.executeUpdate();
+            connection.commit();
         }
     }
 

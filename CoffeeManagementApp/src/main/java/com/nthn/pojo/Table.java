@@ -27,19 +27,6 @@ public class Table {
         this.status = status;
     }
 
-    public void edit(String text) {
-        this.setTableName(text);
-    }
-
-    public void edit(int number) {
-        this.setCapacity(number);
-    }
-
-    public void viewDetail() throws SQLException {
-        System.out.println("Tên bàn: " + this.tableName);
-        System.out.print("Sức chứa: " + this.getCapacity());
-        System.out.println("Trạng thái: " + this.status);
-    }
 
     @Override
     public String toString() {

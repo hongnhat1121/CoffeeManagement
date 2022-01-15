@@ -6,25 +6,25 @@ package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.Order;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author HONGNHAT
  */
 public class OrderService {
 
     /**
-     *
      * @param order
      * @return
      */
@@ -54,7 +54,6 @@ public class OrderService {
     }
 
     /**
-     *
      * @return
      */
     public List<Order> getOrders() {
@@ -77,7 +76,6 @@ public class OrderService {
     }
 
     /**
-     *
      * @param tableID
      * @return
      */
@@ -102,7 +100,6 @@ public class OrderService {
     }
 
     /**
-     *
      * @param id
      * @return
      * @throws SQLException
@@ -144,37 +141,57 @@ public class OrderService {
         }
         return orders;
     }
-    
-     public List<Order> getOrdersNotPay(String tableID) {
-        List<Order> orders = new ArrayList<>();
 
-        try (Connection c = JdbcUtils.getConnection()) {
+    public List<Order> getOrders(String tableName) {
+        List<Order> orders=new ArrayList<>();
+        try(Connection connection=JdbcUtils.getConnection()){
+            PreparedStatement statement=connection.prepareStatement("SELECT * FROM orders JOIN tables"
+                    + " ON orders.TableID=tables.TableID WHERE tables.TableName like concat('%', ?, '%')");
+            statement.setString(1, tableName);
 
-            PreparedStatement ps = c.prepareStatement("SELECT * FROM orders WHERE Payment=? AND TableID=?");
-            ps.setInt(1, 0);
-            ps.setString(2, tableID);
-
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Order o = new Order(rs.getString("OrderID"), rs.getObject("OrderDate", LocalDate.class),
+            ResultSet rs= statement.executeQuery();
+            while(rs.next()){
+                Order order=new Order(rs.getString("OrderID"), rs.getObject("OrderDate", LocalDate.class),
                         rs.getBigDecimal("Total"), rs.getString("EmployeeID"),
-                        rs.getString("TableID"), 0);
-                orders.add(o);
+                        rs.getString("TableID"), rs.getInt("Payment"));
+                orders.add(order);
             }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(OrderService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return orders;
     }
 
-    public void updateOrder(Order order) throws SQLException {
+    public List<Order> getOrders(LocalDate localDate) {
+        List<Order> orders = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM orders WHERE OrderDate=?");
+            ps.setObject(1, localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Order order= new Order(rs.getString("OrderID"), rs.getObject("OrderDate", LocalDate.class),
+                        rs.getBigDecimal("Total"), rs.getString("EmployeeID"),
+                        rs.getString("TableID"), rs.getInt("Payment"));
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+    public void updateOrder(Order order) {
+        try (Connection c = JdbcUtils.getConnection()) {
+            c.setAutoCommit(false);
             PreparedStatement ps = c.prepareStatement("UPDATE orders SET Payment=? WHERE OrderID=?");
             ps.setInt(1, 1);
             ps.setString(2, order.getOrderID());
 
             ps.executeUpdate();
+            c.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

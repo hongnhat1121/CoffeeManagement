@@ -25,14 +25,10 @@ public class ProductManagerTester {
 
     @ParameterizedTest
     @ValueSource(strings = {"c9491382-63e5-4920-ab42-c04fed63bc45"})
-    public void testDeleteProductSuccess(String input) {
-        try {
-            service.deleteProduct(input);
-            Product product = service.getProduct(input);
-            Assertions.assertNull(product);
-        } catch (SQLException ex) {
-            Logger.getLogger(TableManagerTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void testDeleteProductSuccess(String input) throws SQLException {
+        service.deleteProduct(input);
+        Product product = service.getProduct(input);
+        Assertions.assertNull(product);
     }
 
     @ParameterizedTest(name = "{index} => id={0}, name={1}, price={2}, category={3}")

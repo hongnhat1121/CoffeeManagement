@@ -30,15 +30,11 @@ public class ProductTester {
         "d3bec52c-a55e-4612-94b7-4b22df887bb6, Bánh caramel phô mai",
         "06e8e958-8fc9-4edd-8aa4-9bdfb767024f, Bánh chuối"})
     public void testGetProductByValidID(String id, String productName) {
-        try {
-            ProductService service = new ProductService();
-            Product product = service.getProduct(id);
+        ProductService service = new ProductService();
+        Product product = service.getProduct(id);
 
-            Assertions.assertEquals(id, product.getProductID());
-            Assertions.assertEquals(productName, product.getProductName());
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductTester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Assertions.assertEquals(id, product.getProductID());
+        Assertions.assertEquals(productName, product.getProductName());
     }
 
     @ParameterizedTest
