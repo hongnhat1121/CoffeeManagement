@@ -16,31 +16,29 @@ import com.nthn.services.OrderDetailService;
 import com.nthn.services.OrderService;
 import com.nthn.services.ProductService;
 import com.nthn.services.TableService;
+
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -83,7 +81,6 @@ public class OrderController implements Initializable {
 
     private Order order;
     private List<OrderDetail> orderDetails;
-    private List<Product> listProduct;
     private Table table;
     private Employee employee;
 
@@ -123,12 +120,21 @@ public class OrderController implements Initializable {
         });
 
         this.tbvProduct.getSelectionModel().selectedItemProperty().addListener((ov, t, t1) -> {
-            listProduct.add(t1);
-            OrderDetail detail = new OrderDetail(order.getOrderID(),
-                    t1.getProductID(), t1.getProductName(), 1,
-                    t1.getUnitPrice(), null);
-            orderDetails.add(detail);
-            loadTableViewOrder();
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setHeaderText("Nhập số lượng: ");
+            Optional<String> optional = dialog.showAndWait();
+            if (optional.isPresent()) {
+                int amount;
+                if (optional.get().isBlank() || Integer.parseInt(optional.get()) == 0) {
+                    amount = 1;
+                } else amount = Integer.parseInt(optional.get());
+
+                OrderDetail detail = new OrderDetail(order.getOrderID(),
+                        t1.getProductID(), t1.getProductName(), amount,
+                        t1.getUnitPrice(), null);
+                orderDetails.add(detail);
+                loadTableViewOrder();
+            }
         });
     }
 
@@ -156,18 +162,18 @@ public class OrderController implements Initializable {
                 service.updateTable(table);
                 loadTableViewTable(getTableList());
 
-                Utils.showAlert(Alert.AlertType.INFORMATION, "Order Successfull!", "Menu bạn đặt đã lưu");
+                showOrderDetail(order.getOrderID());
             }
             init();
         }
     }
 
     public void cancelHandler(ActionEvent event) {
-        init();
+        App app = new App();
+        app.loaderController("Main.fxml", "Coffee Management App");
     }
 
     private void init() {
-        this.listProduct = new ArrayList<>();
         this.orderDetails = new ArrayList<>();
         this.table = null;
         this.order = new Order();
@@ -246,12 +252,26 @@ public class OrderController implements Initializable {
 
     private void loadTableViewTable(ObservableList<Table> list) {
         this.tbvTable.setItems(list);
+    }
 
+    public void showOrderDetail(String orderID) throws SQLException {
+        OrderService orderService = new OrderService();
+        TableService tableService = new TableService();
+        OrderDetailService detailService = new OrderDetailService();
+        List<OrderDetail> orderDetails = detailService.getOrderDetailsByOrderID(orderID);
+        Order order = orderService.getOrderByID(orderID);
+        Table table = tableService.getTable(order.getTableID());
+        String result = String.format("- Mã hóa đơn: %s\n- Ngày đặt: %s\n- Bàn đặt: %s\n- Nhân viên: %s\nTHÔNG TIN SẢN PHẨM\n",
+                order.getOrderID(), Utils.converter.toString(order.getOrderDate()), table.getTableName(), null);
+
+        for (int i = 0; i < orderDetails.size(); i++) {
+            result += orderDetails.get(i).toString() + "\n";
+        }
+        Utils.showAlert(Alert.AlertType.INFORMATION, "THÔNG TIN HÓA ĐƠN", result);
     }
 
     private void loadTableViewProduct(ObservableList<Product> list) {
         this.tbvProduct.setItems(list);
-
     }
 
     private void loadTableViewOrder() {
@@ -298,15 +318,6 @@ public class OrderController implements Initializable {
         ProductService service = new ProductService();
         List<Product> products = service.getProducts(category, name);
         return FXCollections.observableArrayList(products);
-//
-//        ObservableList<Product> list = getProductList(category);
-//        ObservableList<Product> result = null;
-//        list.forEach((t) -> {
-//            if (t.getProductName().contains(name)) {
-//                result.add(t);
-//            }
-//        });
-//        return FXCollections.observableArrayList(result);
     }
 
 }

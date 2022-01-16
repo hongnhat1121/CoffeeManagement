@@ -6,24 +6,24 @@ package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
 import com.nthn.pojo.OrderDetail;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author HONGNHAT
  */
 public class OrderDetailService {
 
     /**
-     *
      * @param orderDetail
      * @return
      */
@@ -53,10 +53,7 @@ public class OrderDetailService {
         return false;
     }
 
-    
-    
     /**
-     *
      * @return
      */
     public List<OrderDetail> getOrderDetails() {
@@ -68,7 +65,7 @@ public class OrderDetailService {
                     + "WHERE orderdetails.ProductID=products.ProductID");
             while (rs.next()) {
                 OrderDetail od = new OrderDetail(rs.getString("OrderID"),
-                        rs.getString("ProductID"),rs.getString("ProductName"), rs.getInt("Quantity"),
+                        rs.getString("ProductID"), rs.getString("ProductName"), rs.getInt("Quantity"),
                         rs.getLong("UnitPrice"), rs.getString("Note"));
                 orderDetails.add(od);
             }
@@ -81,37 +78,35 @@ public class OrderDetailService {
     }
 
     /**
-     *
      * @param orderID
      * @return
      */
-    public List<OrderDetail> getOrderDetailsByOrderID(String orderID) {
-        try (Connection c = JdbcUtils.getConnection()) {
-            List<OrderDetail> orderDetails = new ArrayList<>();
 
-            PreparedStatement ps = c.prepareStatement("SELECT ProductID,"
-                    + " products.ProductName, Quantity, UnitPrice, Note "
-                    + "FROM orderdetails, products "
-                    + "WHERE orderdetails.ProductID=products.ProductID AND OrderID=?");
+    public List<OrderDetail> getOrderDetailsByOrderID(String orderID) {
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        try (Connection c = JdbcUtils.getConnection()) {
+
+            PreparedStatement ps = c.prepareStatement("SELECT products.ProductID, products.ProductName, Quantity, products.UnitPrice, Note " +
+                    "FROM orderdetails JOIN products ON orderdetails.ProductID=products.ProductID " +
+                    "WHERE OrderID=? GROUP BY products.ProductName;");
             ps.setString(1, orderID);
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 OrderDetail od = new OrderDetail(orderID,
-                        rs.getString("ProductID"), rs.getString("ProductName"), 
+                        rs.getString("ProductID"), rs.getString("ProductName"),
                         rs.getInt("Quantity"), rs.getLong("UnitPrice"), rs.getString("Note"));
                 orderDetails.add(od);
             }
 
-            return orderDetails;
+
         } catch (SQLException ex) {
             Logger.getLogger(OrderDetailService.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return orderDetails;
     }
 
     /**
-     *
      * @param productID
      * @return
      */

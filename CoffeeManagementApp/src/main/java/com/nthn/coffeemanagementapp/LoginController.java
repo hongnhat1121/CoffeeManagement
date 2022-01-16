@@ -41,6 +41,7 @@ import org.kordamp.bootstrapfx.BootstrapFX;
  */
 public class LoginController implements Initializable {
 
+
     @FXML
     private TextField txtUsername;
     @FXML
@@ -109,14 +110,8 @@ public class LoginController implements Initializable {
         }
     }
 
-    public void registerHandler(ActionEvent event) throws IOException {
-        App app = new App();
-        app.loaderController("Register.fxml", "Register");
-    }
-
     public void loadPrimaryController() throws IOException {
         App app = new App();
         app.loaderController("Main.fxml", "Coffee Management App");
-
     }
 }

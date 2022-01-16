@@ -34,18 +34,18 @@ public class ProductController {
     public void loadTableViewProduct(TableView tbvProduct) {
         tbvProduct.setEditable(true);
         TableColumn<Product, String> colProductName = new TableColumn<>("Tên sản phẩm");
-        colProductName.setCellValueFactory(new PropertyValueFactory("productName"));
+        colProductName.setCellValueFactory(new PropertyValueFactory("ProductName"));
         colProductName.setPrefWidth(200);
 
         TableColumn<Product, Integer> colUnitPrice = new TableColumn<>("Giá tiền (VNĐ)");
-        colUnitPrice.setCellValueFactory(new PropertyValueFactory("unitPrice"));
+        colUnitPrice.setCellValueFactory(new PropertyValueFactory("UnitPrice"));
         colUnitPrice.setPrefWidth(200);
 
-        TableColumn<Product, String> colCategory = new TableColumn<>("Danh mục");
-        colCategory.setCellValueFactory(new PropertyValueFactory<>("Category"));
-        colCategory.setPrefWidth(200);
+//        TableColumn<Product, String> colCategory = new TableColumn<>("Danh mục");
+//        colCategory.setCellValueFactory(new PropertyValueFactory<>("Category"));
+//        colCategory.setPrefWidth(200);
 
-        tbvProduct.getColumns().addAll(colProductName, colUnitPrice, colCategory);
+        tbvProduct.getColumns().addAll(colProductName, colUnitPrice);
     }
 
     public void loadTableDataProduct(String kw, TableView tbvProduct, ComboBox cbProduct) throws SQLException {

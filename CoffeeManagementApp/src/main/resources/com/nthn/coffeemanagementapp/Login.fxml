@@ -66,12 +66,7 @@
                         <DropShadow />
                     </effect>
                     <children>
-                  <Button fx:id="btnSwitchRegister" mnemonicParsing="false" onAction="#registerHandler" style="-fx-background-color: null;" text="Create an account" textFill="LIME" underline="true">
-                     <font>
-                        <Font name="System Bold Italic" size="12.0" />
-                     </font>
-                  </Button>
-                        <Button fx:id="btnLogin" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#loginHandler" prefHeight="28.0" prefWidth="131.0" style="-fx-background-radius: 50; -fx-border-radius: 50;" text="LOG IN" textAlignment="CENTER">
+                        <Button fx:id="btnLogin" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#loginHandler" prefHeight="28.0" prefWidth="147.0" style="-fx-background-radius: 50; -fx-border-radius: 50;" text="LOG IN" textAlignment="CENTER">
                             <effect>
                                 <DropShadow />
                             </effect>

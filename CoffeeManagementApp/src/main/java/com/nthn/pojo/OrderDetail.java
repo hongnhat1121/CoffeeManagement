@@ -31,26 +31,9 @@ public class OrderDetail {
         this.note = note;
     }
 
-    
-
-    public void changeQuantity(int number) {
-        this.setQuantity(getQuantity()+number);
-    }
-
-    public void changeNote(String text) {
-        this.setNote(text);
-    }
-
-    public void viewDetail() throws SQLException {
-        System.out.println(this.getProductID());
-        System.out.println("Số lượng: " + this.getQuantity());
-        System.out.println("Đơn giá: " + this.getUnitPrice());
-        System.out.println("Ghi chú: " + this.getNote());
-    }
-
     @Override
     public String toString() {
-        return String.format("%s\t%s\t%s", this.getQuantity(), this.getUnitPrice(), this.getNote());
+        return String.format("%s\n\t\t%d\t\t\t%s",this.getProductName(), this.getQuantity(), this.getUnitPrice());
     }
 
     /**

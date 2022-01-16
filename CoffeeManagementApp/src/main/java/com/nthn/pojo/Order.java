@@ -37,23 +37,7 @@ public class Order {
         this.payment = payment;
     }
 
-    
 
-//
-//    //Tính toán hoá đơn
-//    public void calculate() {
-//        getOrderDetails().forEach(orderDetail -> {
-//            this.setTotal((long) (this.getTotal() + orderDetail.getQuantity()
-//                    * orderDetail.getUnitPrice()));
-//        });
-//    }
-    public void viewDetail() throws SQLException {
-        System.out.println("Mã hoá đơn: " + this.getOrderID());
-        System.out.println("Ngày tạo: " + Utils.DATEFORMAT.format(getOrderDate()));
-        System.out.println("Tổng tiền: " + this.getTotal());
-        System.out.println("Nhân viên:" + new EmployeeService().getEmployeeByID(getEmployeeID()).getFullName());
-        System.out.println("Bàn: " + new TableService().getTable(getTableID()).toString());
-    }
 
     /**
      * @return the orderID

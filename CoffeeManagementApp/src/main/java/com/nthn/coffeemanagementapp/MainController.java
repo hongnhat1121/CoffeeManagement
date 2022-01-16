@@ -178,6 +178,7 @@ public class MainController implements Initializable {
         this.txtTable.textProperty().addListener((observable, oldValue, newValue) -> {
             this.sc.loadTableDataOrder(tbvOrder, newValue);
         });
+
     }
 
     @FXML
@@ -245,6 +246,10 @@ public class MainController implements Initializable {
 
     public void btnEditNameHandler(ActionEvent event) throws SQLException {
         Product product = this.tbvProduct.getSelectionModel().getSelectedItem();
+        if (product==null) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Edit Name Error!", "Vui lòng chọn sản phẩm!");
+            return;
+        }
         Product product1 = ps.getProduct(product.getProductID());
         product.setCategory(product1.getCategory());
 
@@ -263,6 +268,10 @@ public class MainController implements Initializable {
 
     public void btnEditPriceHandler(ActionEvent event) throws SQLException {
         Product product = this.tbvProduct.getSelectionModel().getSelectedItem();
+        if (product==null) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Edit Name Error!", "Vui lòng chọn sản phẩm!");
+            return;
+        }
         Product product1 = ps.getProduct(product.getProductID());
         product.setCategory(product1.getCategory());
 
@@ -501,15 +510,16 @@ public class MainController implements Initializable {
 
 
     //Tab order
-    public void btnPaymentHandler(ActionEvent event) {
+    public void btnPaymentHandler(ActionEvent event) throws SQLException{
         Order order = tbvOrder.getSelectionModel().getSelectedItem();
+        OrderController orderController=new OrderController();
+        orderController.showOrderDetail(order.getOrderID());
         this.os.updateOrder(order);
         Table table = ts.getTable(order.getTableID());
         table.setStatus(Status.EMPTY);
 
         ts.updateTable(table);
 
-        Utils.showAlert(Alert.AlertType.INFORMATION, "Payment Success", "Hóa đơn của bàn " + table.getTableName() + " đã được thanh toán.");
         this.sc.loadTableDataOrder(tbvOrder);
     }
 
@@ -527,6 +537,6 @@ public class MainController implements Initializable {
 
     public void btnOrderHandler(ActionEvent event) {
         App app = new App();
-        app.loaderController("Register.fxml", "Create an account");
+        app.loaderController("Order.fxml", "Order");
     }
 }
