@@ -7,6 +7,7 @@ package com.nthn.coffeemanagementapp;
 import com.nthn.pojo.Status;
 import com.nthn.pojo.Table;
 import com.nthn.services.TableService;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -55,6 +56,7 @@ public class TableController {
         tbvTable.setItems(FXCollections.observableList(tables));
     }
 
+    //Lấy danh sách bàn theo bộ lọc: sức chứa, trạng thái
     public void loadTableDateTable1(TableView tbvTable, ComboBox cbCapacity, ComboBox cbStatus) throws SQLException {
         TableService ts = new TableService();
         String capacity = null;
@@ -67,18 +69,20 @@ public class TableController {
         tbvTable.setItems(FXCollections.observableList(tables));
     }
 
-    public void loadComboBoxDataCapacity(ComboBox cbCapacity) throws SQLException {
-        List<String> s = new ArrayList<>();
 
+    //Lọc danh sách sức chứa
+    public void loadComboBoxDataCapacity(ComboBox cbCapacity) throws SQLException {
         TableService ts = new TableService();
         List<Table> list = ts.getTables();
-        
-        List<Integer> ints=new ArrayList<>();
+
+        //Lấy list số nguyên sức chứa
+        List<Integer> ints = new ArrayList<>();
         list.forEach((t) -> {
             ints.add(t.getCapacity());
         });
-        
-        Set<Integer> set=new HashSet<>(ints);
+
+        //Đưa list sức chứa về
+        Set<Integer> set = new HashSet<>(ints);
         ints.clear();
         set.forEach((t) -> {
             ints.add(t);

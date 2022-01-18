@@ -5,13 +5,11 @@
 package com.nthn.services;
 
 import com.nthn.configs.JdbcUtils;
-import com.nthn.configs.Utils;
 import com.nthn.pojo.Account;
 import com.nthn.pojo.Active;
 import com.nthn.pojo.Employee;
 import com.nthn.pojo.Gender;
 import com.nthn.pojo.Role;
-import javafx.scene.control.ComboBox;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,8 +27,9 @@ import java.util.logging.Logger;
  */
 public class EmployeeService {
 
-    private final AccountService as = new AccountService();
+    private final AccountService accountService = new AccountService();
 
+    //Lấy danh sách tất cả nhân viên
     public List<Employee> getEmployees() throws SQLException {
         List<Employee> employees = new ArrayList<>();
         try (Connection c = JdbcUtils.getConnection()) {
@@ -53,6 +52,7 @@ public class EmployeeService {
         return employees;
     }
 
+    //Thêm nhân viên, tài khoản
     public boolean addEmployee(Employee employee, Account account) {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
@@ -72,7 +72,7 @@ public class EmployeeService {
             ps.setObject(8, employee.getHireDate());
             ps.setString(9, account.getAccountID());
 
-            as.addAccount(account);
+            accountService.addAccount(account); //Thêm account
             ps.executeUpdate();
 
             connection.commit();
@@ -83,6 +83,7 @@ public class EmployeeService {
         return false;
     }
 
+    //Cập nhật: tên, địa chỉ
     public void updateEmployee(Employee employee, Account account) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
@@ -105,6 +106,7 @@ public class EmployeeService {
         }
     }
 
+    //Xóa nhân viên
     public void deleteEmployee(String employeeID, String accountID) {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
@@ -129,7 +131,7 @@ public class EmployeeService {
             ps.setString(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                Account account = as.getAccountByID(rs.getString("AccountID"));
+                Account account = accountService.getAccountByID(rs.getString("AccountID"));
                 return new Employee(rs.getString("EmployeeID"),
                         rs.getString("FullName"), Gender.valueOf(rs.getString("Gender")),
                         rs.getObject("BirthDate", LocalDate.class),
@@ -147,7 +149,7 @@ public class EmployeeService {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM employees WHERE AccountID=" + id);
             if (rs.next()) {
-                Account account = as.getAccountByID(rs.getString("AccountID"));
+                Account account = accountService.getAccountByID(rs.getString("AccountID"));
                 return new Employee(rs.getString("EmployeeID"),
                         rs.getString("FullName"), rs.getObject("Gender", Gender.class),
                         rs.getObject("BirthDate", LocalDate.class),

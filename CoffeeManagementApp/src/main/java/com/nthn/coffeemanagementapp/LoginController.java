@@ -8,6 +8,7 @@ import com.nthn.check.LoginChecker;
 import com.nthn.configs.JdbcUtils;
 import com.nthn.configs.Utils;
 import com.nthn.pojo.Account;
+import com.nthn.pojo.Active;
 import com.nthn.pojo.Role;
 import com.nthn.services.AccountService;
 
@@ -23,6 +24,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -54,6 +56,7 @@ public class LoginController implements Initializable {
     private Label lblError;
 
     private Account account;
+    private AccountService accountService = new AccountService();
 
     /**
      * Initializes the controller class.
@@ -102,16 +105,25 @@ public class LoginController implements Initializable {
             LoginChecker checker = new LoginChecker();
 
             if (checker.isSuccessLogin(username, password)) {
-                this.account = new AccountService().getAccountByUsername(username);
-                loadPrimaryController();
+                this.account = accountService.getAccountByUsername(username);
+                //loadPrimaryController();
+                loadPrimaryController(event);
             } else {
                 Utils.showAlert(Alert.AlertType.ERROR, "Đăng nhập thất bại!", "Username hoặc password sai.");
             }
         }
     }
 
-    public void loadPrimaryController() throws IOException {
-        App app = new App();
-        app.loaderController("Main.fxml", "Coffee Management App");
+    public void loadPrimaryController(ActionEvent event) throws IOException {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("Main.fxml"));
+        Parent parent = loader.load();
+
+        MainController controller = loader.getController();
+        controller.setAccount(account);
+        Scene scene = new Scene(parent);
+        stage.setScene(scene);
+
     }
 }

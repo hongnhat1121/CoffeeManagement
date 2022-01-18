@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class PasswordTester {
 
     //Test password rỗng
-    @ParameterizedTest
+    @ParameterizedTest(name = "{index} => input={0}")
     @ValueSource(strings = {"", "\t", "\n"})
     public void testPasswordEmpty(String input) {
         Assertions.assertEquals(input.trim().isEmpty(), true);

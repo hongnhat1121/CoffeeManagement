@@ -4,7 +4,9 @@
  */
 package com.nthn.database;
 
+import com.nthn.pojo.Order;
 import com.nthn.services.OrderService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -19,10 +21,5 @@ public class OrderTester {
 
     private OrderService service=new OrderService();
 
-    @ParameterizedTest(name = "{index} => orderID ={0}")
-    @ValueSource(strings = {"13a46c15-c294-456a-940c-334d18fd5b93"})
-    public void testPayment(String orderID) throws SQLException {
-//        if (service.getOrderByID(orderID).getPayment()==0)
 
-    }
 }

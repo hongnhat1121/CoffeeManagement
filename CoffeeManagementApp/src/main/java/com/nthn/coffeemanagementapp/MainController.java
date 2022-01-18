@@ -5,16 +5,13 @@
  */
 package com.nthn.coffeemanagementapp;
 
-import com.nthn.check.RegisterChecker;
 import com.nthn.configs.Utils;
 import com.nthn.pojo.*;
 import com.nthn.services.*;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -24,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 
 public class MainController implements Initializable {
     @FXML
@@ -98,12 +96,29 @@ public class MainController implements Initializable {
     private final OrderService os = new OrderService();
     private final OrderDetailService ods = new OrderDetailService();
 
+    private Account account;
+    @FXML
+    private Text txtHome;
+
+    public void setAccount(Account account) {
+        this.account=account;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        if (account != null) {
+
+            this.txtHome.setText(this.account.getUsername());
+        }
+
         this.dpOrderDate.setConverter(Utils.converter);
         this.dpOrderDate.setValue(LocalDate.now());
 
@@ -115,10 +130,14 @@ public class MainController implements Initializable {
         try {
             this.pc.loadComboBoxDataProduct(cbProduct);
             this.pc.loadChoiceBoxCategory(chbCategory);
+
             this.tc.loadComboBoxDataCapacity(cbCapacity);
             this.tc.loadComboBoxDataStatus(cbStatus);
+
             this.pc.loadTableDataProduct(null, tbvProduct, cbProduct);
-            this.tc.loadTableDataTable(null, tbvTable);
+
+            //Load danh sách bàn có trạng thái còn trống
+            this.tc.loadTableDateTable1(tbvTable, cbCapacity, cbStatus);
 
             this.ec.loadComboBoxOptional(cbOptional);
             this.ec.loadTableDataEmployee(tbvEmployee);
@@ -246,7 +265,7 @@ public class MainController implements Initializable {
 
     public void btnEditNameHandler(ActionEvent event) throws SQLException {
         Product product = this.tbvProduct.getSelectionModel().getSelectedItem();
-        if (product==null) {
+        if (product == null) {
             Utils.showAlert(Alert.AlertType.ERROR, "Edit Name Error!", "Vui lòng chọn sản phẩm!");
             return;
         }
@@ -268,7 +287,7 @@ public class MainController implements Initializable {
 
     public void btnEditPriceHandler(ActionEvent event) throws SQLException {
         Product product = this.tbvProduct.getSelectionModel().getSelectedItem();
-        if (product==null) {
+        if (product == null) {
             Utils.showAlert(Alert.AlertType.ERROR, "Edit Name Error!", "Vui lòng chọn sản phẩm!");
             return;
         }
@@ -416,20 +435,25 @@ public class MainController implements Initializable {
         }
     }
 
-    public void btnDeleteTableHandler(ActionEvent event) throws SQLException {
+    public void btnDeleteTableHandler(ActionEvent event) {
         Table table = this.tbvTable.getSelectionModel().getSelectedItem();
         if (table == null || table.getStatus() == Status.FULL) {
             Utils.showAlert(Alert.AlertType.ERROR, "Delete Table Error!", "Vui lòng chọn bàn cần xóa!");
             return;
         }
-        ts.deleteTable(table.getTableID());
-
-        if (ts.getTable(table.getTableID()) == null) {
-            Utils.showAlert(Alert.AlertType.INFORMATION, "Delete Table Success", "Bàn " + table.getTableName() + " đã xóa.");
-            this.tc.loadTableDataTable("", tbvTable);
-        } else {
-            Utils.showAlert(Alert.AlertType.INFORMATION, "Delete Table Failed", "Bàn " + table.getTableName() + " chưa xóa.");
+        try {
+            ts.deleteTable(table.getTableID());
+            if (ts.getTable(table.getTableID()) == null) {
+                Utils.showAlert(Alert.AlertType.INFORMATION, "Delete Table Success", table.getTableName() + " đã xóa.");
+                this.tc.loadTableDataTable("", tbvTable);
+            } else {
+                Utils.showAlert(Alert.AlertType.ERROR, "Delete Table Error", table.getTableName() + " không thể xóa.");
+            }
+        } catch (SQLException ex) {
+            Utils.showAlert(Alert.AlertType.ERROR, "Delete Table Error", table.getTableName() + " không thể xóa. Bàn đã đặt");
         }
+
+
     }
 
     //Tab employee
@@ -439,6 +463,7 @@ public class MainController implements Initializable {
         this.ec.loadTableDataEmployee(tbvEmployee);
     }
 
+    //Sửa địa chỉ
     public void btnEditAddressHandler(ActionEvent event) throws SQLException {
         Employee employee = this.tbvEmployee.getSelectionModel().getSelectedItem();
         if (employee == null) {
@@ -462,6 +487,7 @@ public class MainController implements Initializable {
         }
     }
 
+    //Sửa tên nhân viên
     public void btnEditFullNameHandler(ActionEvent event) throws SQLException {
         Employee employee = this.tbvEmployee.getSelectionModel().getSelectedItem();
         if (employee == null) {
@@ -491,6 +517,7 @@ public class MainController implements Initializable {
         }
     }
 
+    //Xóa nhân viên
     public void btnDeleteEmployeeHandler(ActionEvent event) {
         Employee employee = this.tbvEmployee.getSelectionModel().getSelectedItem();
         if (employee == null) {
@@ -510,9 +537,10 @@ public class MainController implements Initializable {
 
 
     //Tab order
-    public void btnPaymentHandler(ActionEvent event) throws SQLException{
+    //Thanh toán hóa đơn
+    public void btnPaymentHandler(ActionEvent event) throws SQLException {
         Order order = tbvOrder.getSelectionModel().getSelectedItem();
-        OrderController orderController=new OrderController();
+        OrderController orderController = new OrderController();
         orderController.showOrderDetail(order.getOrderID());
         this.os.updateOrder(order);
         Table table = ts.getTable(order.getTableID());
@@ -523,6 +551,7 @@ public class MainController implements Initializable {
         this.sc.loadTableDataOrder(tbvOrder);
     }
 
+    //Lấy date từ datepicker
     private LocalDate getLocalDate(DatePicker datePicker) {
         TextField textField = datePicker.getEditor();
         String date = textField.getText();
@@ -539,4 +568,5 @@ public class MainController implements Initializable {
         App app = new App();
         app.loaderController("Order.fxml", "Order");
     }
+
 }

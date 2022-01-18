@@ -34,7 +34,7 @@
                         </ImageView>
                         <VBox alignment="CENTER" prefHeight="562.0" prefWidth="900.0">
                             <children>
-                                <Text fill="#90fa00" stroke="#eb0000" strokeType="OUTSIDE" styleClass="h2" text="CHÀO MỪNG ĐẾN VỚI" wrappingWidth="305.25">
+                                <Text fx:id="txtHome" fill="#90fa00" stroke="#eb0000" strokeType="OUTSIDE" styleClass="h2" text="CHÀO MỪNG ĐẾN VỚI" wrappingWidth="305.25">
                                     <effect>
                                         <DropShadow />
                                     </effect>

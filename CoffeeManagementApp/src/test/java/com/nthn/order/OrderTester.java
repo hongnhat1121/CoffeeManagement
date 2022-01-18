@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  *
@@ -77,5 +79,17 @@ public class OrderTester {
         Order order1 = service.getOrderByID(order.getOrderID());
 
         Assertions.assertNull(order1);
+    }
+
+
+    @ParameterizedTest(name = "{index} => orderID ={0}")
+    @ValueSource(strings = {"13a46c15-c294-456a-940c-334d18fd5b93"})
+    public void testPayment(String orderID) throws SQLException {
+        Order order=service.getOrderByID(orderID);
+        if (order.getPayment()==0)
+            order.setPayment(1);
+
+        order=service.getOrderByID(orderID);
+        Assertions.assertEquals(order.getPayment(), 1);
     }
 }

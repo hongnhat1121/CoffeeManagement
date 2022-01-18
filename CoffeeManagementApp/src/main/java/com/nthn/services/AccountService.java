@@ -79,13 +79,14 @@ public class AccountService {
     public void updateAccount(Account account) throws SQLException {
         try (Connection connection = JdbcUtils.getConnection()) {
             connection.setAutoCommit(false);
-            PreparedStatement ps1 = connection.prepareStatement("INSERT INTO accounts(AccountID, Username, Password, Active, Role) "
-                    + "VALUES(?,?,?,?,?)");
-            ps1.setString(1, account.getAccountID());
-            ps1.setString(2, account.getUsername());
-            ps1.setString(3, DigestUtils.sha256Hex(account.getPassword()));
-            ps1.setString(4, account.getActive().name());
-            ps1.setString(5, account.getRole().name());
+            PreparedStatement ps1 = connection.prepareStatement("UPDATE accounts SET " +
+                    "Active = ?, Role = ? WHERE AccountID = ?");
+
+            ps1.setString(1, account.getUsername());
+            ps1.setString(2, DigestUtils.sha256Hex(account.getPassword()));
+            ps1.setString(3, account.getActive().name());
+            ps1.setString(4, account.getRole().name());
+            ps1.setString(5, account.getAccountID());
 
             ps1.executeUpdate();
 
